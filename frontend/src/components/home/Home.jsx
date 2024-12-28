@@ -4,11 +4,12 @@ import MenFashion from "./MenFashion";
 import NewArrival from "./NewArrival";
 import Sale from "./Sale";
 import WomenFashion from "./WomenFashion";
+import "./Home.css"
 
 export default function Home() {
   return (
     <>
-      <div
+      {/* <div
         id="marketing-banner"
         tabindex="-1"
         class="fixed z-50 flex flex-col md:flex-row justify-between w-[calc(100%-2rem)] p-4 -translate-x-1/2 bg-white border border-gray-100 rounded-lg shadow-sm lg:max-w-7xl left-1/2 top-6 dark:bg-gray-700 dark:border-gray-600"
@@ -61,7 +62,7 @@ export default function Home() {
             <span class="sr-only">Close banner</span>
           </button>
         </div>
-      </div>
+      </div> */}
       <Hero />
       <Category/>
       <Sale/>

@@ -1,0 +1,34 @@
+.height-wall {
+    height: 100vh;
+    width: 100%;
+}
+
+.mobile-btn{
+    display: block;
+}
+
+@media (min-width: 420px) {
+    .height-wall{
+        height: 20rem;
+    };
+    .mobile-nav {
+        display: none;
+    }
+    .mobile-btn{
+        display: none;
+    }
+}
+
+@media (min-width: 734px) {
+    .height-wall{
+        height: 30rem;
+        width: 100%;
+    }
+}
+
+@media (min-width: 1180px) {
+    .height-wall{
+        height: 100vh;
+        width: 100%;
+    }
+}

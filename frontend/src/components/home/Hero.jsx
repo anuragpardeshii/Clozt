@@ -1,11 +1,11 @@
 export default function Hero() {
   return (
-    <section className="bg-center h-screen bg-no-repeat bg-[url('/src/assets/Videos/video1.mp4')] bg-gray-700 bg-blend-multiply">
+    <section className="bg-center w-100 height-wall bg-no-repeat bg-[url('/src/assets/Videos/video1.mp4')] bg-gray-700 bg-blend-multiply">
         <video
     autoPlay
     loop
     muted
-    className="absolute w-full h-full object-cover"
+    className="absolute height-wall object-cover"
   >
     <source src="/src/assets/Videos/video1.mp4" type="video/mp4" style={{zIndex: "1"}} />
     Your browser does not support the video tag.
