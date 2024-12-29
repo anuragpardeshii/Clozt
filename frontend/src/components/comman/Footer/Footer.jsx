@@ -1,29 +1,29 @@
 export default function Footer() {
   return (
-    <footer className="bg-white dark:bg-gray-900" style={{borderTop: "1px solid gray-200"}}>
+    <footer className="bg-white p-8 dark:bg-gray-900" style={{backgroundColor: "#f5f5f5"}}>
       <div className="mx-auto w-full p-4 py-6 lg:py-8">
         <div className="md:flex md:justify-between">
           <div className="mb-6 md:mb-0">
             <a href="https://flowbite.com/" className="flex items-center">
               <img
-                src="https://flowbite.com/docs/images/logo.svg"
+                src="/src/assets/Logo/logo.png"
                 className="h-8 me-3"
-                alt="FlowBite Logo"
+                alt="CLOZT Logo"
               />
               <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                Flowbite
+                CLOZT
               </span>
             </a>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
             <div>
               <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">
-                Resources
+                About Clozt
               </h2>
               <ul className="text-gray-500 dark:text-gray-400 font-medium">
                 <li className="mb-4">
                   <a href="https://flowbite.com/" className="hover:underline">
-                    Flowbite
+                    About us
                   </a>
                 </li>
                 <li>
@@ -58,17 +58,22 @@ export default function Footer() {
             </div>
             <div>
               <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">
-                Legal
+              Help &amp; Information
               </h2>
               <ul className="text-gray-500 dark:text-gray-400 font-medium">
                 <li className="mb-4">
                   <a href="#" className="hover:underline">
-                    Privacy Policy
+                    Track Order
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:underline">
-                    Terms &amp; Conditions
+                    Delivery &amp; returns
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:underline">
+                    Gift cards
                   </a>
                 </li>
               </ul>
@@ -80,7 +85,7 @@ export default function Footer() {
           <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
             © 2023{" "}
             <a href="https://flowbite.com/" className="hover:underline">
-              Flowbite™
+              CLOZT™
             </a>
             . All Rights Reserved.
           </span>

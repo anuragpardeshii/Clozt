@@ -1,3 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: white;
+}
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+}
+
+.nav-padding {
+    padding: 0.5rem 1rem;
+}
+
+@media (min-width: 320px) {
+    .nav-padding {
+        padding: 0rem 0.5rem;
+    }
+
+    .height-mob {
+        height: 1.3rem;
+    }
+}
+
+@media (min-width: 734px) {
+
+}
+
+@media (min-width: 1180px) {
+    .nav-padding {
+        padding: 0.5rem 1rem;
+    }
+}
