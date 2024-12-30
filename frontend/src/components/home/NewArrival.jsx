@@ -12,7 +12,7 @@ export default function NewArrival() {
       >
         <div className="py-8 px-4 mx-auto max-w-screen-xl text-center">
           <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white">
-            Explore Women Fashion
+            Explore New Arrival
           </h1>
           <div className="flex justify-center space-y-2 sm:flex-row sm:justify-center ">
             <a
@@ -28,7 +28,7 @@ export default function NewArrival() {
         <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Category/Top.jpeg"
+            src="/src/assets/Images/New/Top.jpg"
             alt=""
           />
           <div className="p-2">
@@ -42,7 +42,7 @@ export default function NewArrival() {
         <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Category/Shirt.jpeg"
+            src="/src/assets/Images/New/Shirt.jpeg"
             alt=""
           />
           <div className="p-2">
@@ -56,7 +56,7 @@ export default function NewArrival() {
         <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Category/Denim.jpeg"
+            src="/src/assets/Images/New/Denim.jpg"
             alt=""
           />
           <div className="p-2">
@@ -70,7 +70,7 @@ export default function NewArrival() {
         <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Category/Winter.jpeg"
+            src="/src/assets/Images/New/Winter.jpg"
             alt=""
           />
           <div className="p-2">

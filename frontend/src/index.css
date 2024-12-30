@@ -19,7 +19,7 @@ input:-webkit-autofill {
 
 @media (min-width: 320px) {
     .nav-padding {
-        padding: 0rem 0.5rem;
+        padding: 0.3rem 1rem;
     }
 
     .height-mob {
@@ -28,7 +28,9 @@ input:-webkit-autofill {
 }
 
 @media (min-width: 734px) {
-
+    .nav-padding {
+        padding: 0.5rem 1rem;
+    }
 }
 
 @media (min-width: 1180px) {

@@ -22,7 +22,7 @@ export default function Footer() {
               </h2>
               <ul className="text-gray-500 dark:text-gray-400 font-medium">
                 <li className="mb-4">
-                  <a href="https://flowbite.com/" className="hover:underline">
+                  <a href="/about" className="hover:underline">
                     About us
                   </a>
                 </li>
@@ -62,8 +62,8 @@ export default function Footer() {
               </h2>
               <ul className="text-gray-500 dark:text-gray-400 font-medium">
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
-                    Track Order
+                  <a href="/customer-care" className="hover:underline">
+                    Customer care
                   </a>
                 </li>
                 <li>

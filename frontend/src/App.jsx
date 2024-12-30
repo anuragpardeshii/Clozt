@@ -5,6 +5,7 @@ import Footer from "./components/comman/Footer/Footer";
 import Home from "./components/home/Home";
 import Admin from "./components/Admin/Admin";
 import Help from "./components/Help/Help";
+import About from "./components/About/About";
 
 function App() {
   const location = useLocation();
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/customer-care" element={<Help/>} />
+        <Route path="/about" element={<About/>} />
       </Routes>
       {!isAdminRoute && <Footer />}
     </>

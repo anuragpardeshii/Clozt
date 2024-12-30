@@ -27,7 +27,7 @@ export default function MenFashion() {
         <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Category/Top.jpeg"
+            src="/src/assets/Images/Men/Top.jpeg"
             alt=""
           />
           <div className="p-2">
@@ -41,7 +41,7 @@ export default function MenFashion() {
         <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Category/Shirt.jpeg"
+            src="/src/assets/Images/Men/Shirt2.jpeg"
             alt=""
           />
           <div className="p-2">
@@ -55,7 +55,7 @@ export default function MenFashion() {
         <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Category/Denim.jpeg"
+            src="/src/assets/Images/Men/Denim.jpg"
             alt=""
           />
           <div className="p-2">
@@ -69,7 +69,7 @@ export default function MenFashion() {
         <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Category/Winter.jpeg"
+            src="/src/assets/Images/Men/Winter.jpg"
             alt=""
           />
           <div className="p-2">

@@ -14,7 +14,7 @@ export default function Navbar() {
       >
         <div className="flex items-center md:items-center md:flex-row md:mb-0">
           <a
-            href="https:/"
+            href="/"
             className="flex items-center border-gray-200 md:pe-4 md:me-4  md:mb-0 dark:border-gray-600"
           >
             <img
@@ -31,7 +31,7 @@ export default function Navbar() {
           <input
             type="search"
             id="search-dropdown"
-            className="block mobile-nav bg-white w-full z-20 text-sm text-gray-900 rounded-lg border-s-white border border-white focus:outline-none focus:ring-white-500 focus:border-black-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-black-500"
+            className="block bg-white w-full z-20 text-sm text-gray-900 rounded-lg border-s-white border border-white focus:outline-none focus:ring-white-500 focus:border-black-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-black-500"
             placeholder="Search Products, brands and more..."
             required
           />
