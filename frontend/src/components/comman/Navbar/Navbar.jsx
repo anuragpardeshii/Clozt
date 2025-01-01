@@ -9,7 +9,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className="fixed z-50 flex md:flex-row nav-padding justify-between w-[calc(100%-2rem)] -translate-x-1/2 bg-white border border-gray-100 rounded-lg shadow-sm lg:max-w-7xl left-1/2 top-6 dark:bg-gray-700 dark:border-gray-600"
+        className="fixed z-50 flex md:flex-row nav-padding justify-between w-[calc(100%-2rem)] -translate-x-1/2 bg-white rounded-lg shadow-sm lg:max-w-7xl left-1/2 top-6 dark:bg-gray-700 dark:border-gray-600"
         style={{ zIndex: "1000" }}
       >
         <div className="flex items-center md:items-center md:flex-row md:mb-0">
@@ -89,17 +89,18 @@ export default function Navbar() {
       {isDropdownVisible && (
         <div
           id="mega-menu-full-dropdown"
-          className="fixed flex md:flex-row justify-between w-[calc(100%-2rem)] -translate-x-1/2 bg-white border border-gray-100 rounded-lg shadow-sm lg:max-w-7xl left-1/2 top-6 dark:bg-gray-700 dark:border-gray-600"
+          className="fixed flex md:flex-row justify-between w-[calc(100%-2rem)] -translate-x-1/2  rounded-lg shadow-sm lg:max-w-7xl left-1/2 top-6 dark:bg-gray-700 dark:border-gray-600"
           style={{ zIndex: "1000", marginTop: "4rem" }}
         >
-          <div className="grid max-w-screen-xl px-4 py-5 mx-auto gap-8 text-gray-900 dark:text-white sm:grid-cols-3 md:px-6">
+          <div className="max-w-screen-xl ms-auto">
+            <div className="grid max-w-screen-md px-4 bg-white py-5 gap-8 text-gray-900 dark:text-white sm:grid-cols-3 md:px-6" style={{marginLeft: "auto"}}>
             <ul>
               <li>
                 <a
-                  href="#"
+                  href="/customer-care"
                   className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
-                  <div className="font-semibold">Whishlist</div>
+                  <div className="font-semibold">Help</div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">
                     Connect with third-party tools that you're already using.
                   </span>
@@ -110,7 +111,7 @@ export default function Navbar() {
                   href="#"
                   className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
-                  <div className="font-semibold">Shopping Bag</div>
+                  <div className="font-semibold">Contact us</div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">
                     Connect with third-party tools that you're already using.
                   </span>
@@ -121,7 +122,7 @@ export default function Navbar() {
                   href="#"
                   className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
-                  <div className="font-semibold">Manage Account</div>
+                  <div className="font-semibold">Gift card</div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">
                     Connect with third-party tools that you're already using.
                   </span>
@@ -177,7 +178,7 @@ export default function Navbar() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/about"
                   className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <div className="font-semibold">About</div>
@@ -198,6 +199,7 @@ export default function Navbar() {
                 </a>
               </li>
             </ul>
+            </div>
           </div>
         </div>
       )}

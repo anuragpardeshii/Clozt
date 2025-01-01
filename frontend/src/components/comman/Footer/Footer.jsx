@@ -1,10 +1,10 @@
 export default function Footer() {
   return (
     <footer className="bg-white p-8 dark:bg-gray-900" style={{backgroundColor: "#f5f5f5"}}>
-      <div className="mx-auto w-full p-4 py-6 lg:py-8">
+      <div className="mx-auto w-full lg:max-w-7xl mx-auto p-4 py-6 lg:py-8">
         <div className="md:flex md:justify-between">
           <div className="mb-6 md:mb-0">
-            <a href="https://flowbite.com/" className="flex items-center">
+            <a href="/" className="flex items-center">
               <img
                 src="/src/assets/Logo/logo.png"
                 className="h-8 me-3"
@@ -83,11 +83,7 @@ export default function Footer() {
         <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
         <div className="sm:flex sm:items-center sm:justify-between">
           <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-            © 2023{" "}
-            <a href="https://flowbite.com/" className="hover:underline">
-              CLOZT™
-            </a>
-            . All Rights Reserved.
+            Designed and Developed by <a style={{color: "blue"}} href="https://www.linkedin.com/in/pardeshianurag22/">Anurag Pardeshi</a>
           </span>
           <div className="flex mt-4 sm:justify-center sm:mt-0">
             <a
