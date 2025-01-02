@@ -10,6 +10,7 @@ import Men from "./components/Products/Men/Men";
 import Sale from "./components/Products/Sale/Sale";
 import New from "./components/Products/New/New";
 import Women from "./components/Products/Women/Women";
+import Details from "./components/comman/Details/Details";
 
 function App() {
   const location = useLocation();
@@ -27,6 +28,7 @@ function App() {
         <Route path="/women" element={<Women/>} />
         <Route path="/new-arrival" element={<New/>} />
         <Route path="/sale" element={<Sale/>} />
+        <Route path="/details" element={<Details/>} />
       </Routes>
       {!isAdminRoute && <Footer />}
     </>
