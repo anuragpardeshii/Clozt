@@ -1,0 +1,21 @@
+.maximum-60vw {
+    width: 35rem;
+}
+
+@media (max-width: 768px) {
+    .maximum-60vw {
+        width: 30rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .maximum-60vw {
+        width: 18rem;
+        flex-direction: column-reverse;
+    }
+
+    .column-down{
+        display: flex;
+        flex-direction: row;
+    }
+}

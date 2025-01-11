@@ -1,3 +1,4 @@
+import "./Details.css";
 import React, { useState } from "react";
 export default function Details() {
   const [isInWishlist, setIsInWishlist] = useState(false);
@@ -29,59 +30,48 @@ export default function Details() {
     // Clear the alert after 3 seconds
     setTimeout(() => setAlertMessage(""), 3000);
   };
+  const [selectedImage, setSelectedImage] = useState(
+    "/src/assets/Products/Men/1.jpeg"
+  );
+
+  const images = [
+    "/src/assets/Products/Men/1.jpeg",
+    "/src/assets/Products/Men/1b.jpeg",
+  ];
+
+  const handleImageClick = (src) => {
+    setSelectedImage(src);
+  };
   return (
     <>
       <div
-        className="flex flex-wrap mx-auto flex-row"
-        style={{ marginTop: "6rem", maxWidth: "70rem" }}
+        className="flex  flex-wrap mx-auto flex-row justify-center items-center"
+        style={{ marginTop: "6rem" }}
       >
-        <div className="flex flex-wrap justify-around">
-          <div className="flex flex-row mx-auto justify-around align-center">
-            <div>
-              <img
-                className="m-4"
-                src="/src/assets/Products/Men/1.jpeg"
-                style={{ maxWidth: "4rem" }}
-                alt=""
-              />
-              <img
-                className="w-20 m-4"
-                src="/src/assets/Products/Men/1b.jpeg"
-                style={{ maxWidth: "4rem" }}
-                alt=""
-              />
-              <img
-                className="w-20 m-4"
-                src="/src/assets/Products/Men/1.jpeg"
-                style={{ maxWidth: "4rem" }}
-                alt=""
-              />
-              <img
-                className="w-20 m-4"
-                src="/src/assets/Products/Men/1b.jpeg"
-                style={{ maxWidth: "4rem" }}
-                alt=""
-              />
-              <img
-                className="w-20 m-4"
-                src="/src/assets/Products/Men/1.jpeg"
-                style={{ maxWidth: "4rem" }}
-                alt=""
-              />
+        <div className="flex flex-wrap justify-center">
+          <div className="flex flex-row maximum-60vw mx-auto justify-around align-center">
+            <div className="column-down">
+              {images.map((image, index) => (
+                <img
+                  key={index}
+                  className="m-4 cursor-pointer"
+                  src={image}
+                  style={{ width: "4rem" }}
+                  alt={`Thumbnail ${index + 1}`}
+                  onClick={() => handleImageClick(image)}
+                />
+              ))}
             </div>
-
-            <div className="Image">
               <img
-                className="m-4"
-                src="/src/assets/Products/Men/1.jpeg"
-                style={{ maxWidth: "25rem" }}
-                alt=""
+                className="p-4"
+                src={selectedImage}
+                style={{ width: "25rem" }}
+                alt="Selected"
               />
-            </div>
           </div>
 
-          <div style={{ flex: "1" }}>
-            <div className="m-4 flex-one">
+          <div className="maximum-60vw">
+            <div className="m-4">
               <h1 className="text-gray-600 font-bold text-2xl">
                 Black Oversided Butterfly Tshirt
               </h1>
@@ -95,7 +85,7 @@ export default function Details() {
                     Size:
                   </p>
                 </div>
-                <div className="flex justify-start">
+                <div className="flex flex-wrap justify-start">
                   <button
                     type="button"
                     className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
@@ -227,8 +217,194 @@ export default function Details() {
                   </div>
                 )}
               </div>
+
               <div
                 id="accordion-flush"
+                style={{ width: "100%" }}
+                data-accordion="collapse"
+                data-active-classes="bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                data-inactive-classes="text-gray-500 dark:text-gray-400"
+              >
+                <h2 id="accordion-flush-heading-1">
+                  <button
+                    type="button"
+                    class="flex justify-between w-full py-5 font-medium rtl:text-right text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 gap-3"
+                    data-accordion-target="#accordion-flush-body-1"
+                    aria-expanded="true"
+                    aria-controls="accordion-flush-body-1"
+                  >
+                    <span>What is Flowbite?</span>
+                    <svg
+                      data-accordion-icon
+                      class="w-3 h-3 rotate-180 shrink-0"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5 5 1 1 5"
+                      />
+                    </svg>
+                  </button>
+                </h2>
+                <div
+                  id="accordion-flush-body-1"
+                  class="hidden"
+                  aria-labelledby="accordion-flush-heading-1"
+                >
+                  <div class="py-5 border-b border-gray-200 dark:border-gray-700">
+                    <p class="mb-2 text-gray-500 dark:text-gray-400">
+                      Flowbite is an open-source library of interactive
+                      components built on top of Tailwind CSS including buttons,
+                      dropdowns, modals, navbars, and more.
+                    </p>
+                    <p class="text-gray-500 dark:text-gray-400">
+                      Check out this guide to learn how to{" "}
+                      <a
+                        href="/docs/getting-started/introduction/"
+                        class="text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        get started
+                      </a>{" "}
+                      and start developing websites even faster with components
+                      on top of Tailwind CSS.
+                    </p>
+                  </div>
+                </div>
+                <h2 id="accordion-flush-heading-2">
+                  <button
+                    type="button"
+                    class="flex justify-between w-full py-5 font-medium rtl:text-right text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 gap-3"
+                    data-accordion-target="#accordion-flush-body-2"
+                    aria-expanded="false"
+                    aria-controls="accordion-flush-body-2"
+                  >
+                    <span>Is there a Figma file available?</span>
+                    <svg
+                      data-accordion-icon
+                      class="w-3 h-3 rotate-180 shrink-0"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5 5 1 1 5"
+                      />
+                    </svg>
+                  </button>
+                </h2>
+                <div
+                  id="accordion-flush-body-2"
+                  class="hidden"
+                  aria-labelledby="accordion-flush-heading-2"
+                >
+                  <div class="py-5 border-b border-gray-200 dark:border-gray-700">
+                    <p class="mb-2 text-gray-500 dark:text-gray-400">
+                      Flowbite is first conceptualized and designed using the
+                      Figma software so everything you see in the library has a
+                      design equivalent in our Figma file.
+                    </p>
+                    <p class="text-gray-500 dark:text-gray-400">
+                      Check out the{" "}
+                      <a
+                        href="https://flowbite.com/figma/"
+                        class="text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Figma design system
+                      </a>{" "}
+                      based on the utility classes from Tailwind CSS and
+                      components from Flowbite.
+                    </p>
+                  </div>
+                </div>
+                <h2 id="accordion-flush-heading-3">
+                  <button
+                    type="button"
+                    class="flex justify-between w-full py-5 font-medium rtl:text-right text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 gap-3"
+                    data-accordion-target="#accordion-flush-body-3"
+                    aria-expanded="false"
+                    aria-controls="accordion-flush-body-3"
+                  >
+                    <span>
+                      What are the differences between Flowbite and Tailwind UI?
+                    </span>
+                    <svg
+                      data-accordion-icon
+                      class="w-3 h-3 rotate-180 shrink-0"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5 5 1 1 5"
+                      />
+                    </svg>
+                  </button>
+                </h2>
+                <div
+                  id="accordion-flush-body-3"
+                  class="hidden"
+                  aria-labelledby="accordion-flush-heading-3"
+                >
+                  <div class="py-5 border-b border-gray-200 dark:border-gray-700">
+                    <p class="mb-2 text-gray-500 dark:text-gray-400">
+                      The main difference is that the core components from
+                      Flowbite are open source under the MIT license, whereas
+                      Tailwind UI is a paid product. Another difference is that
+                      Flowbite relies on smaller and standalone components,
+                      whereas Tailwind UI offers sections of pages.
+                    </p>
+                    <p class="mb-2 text-gray-500 dark:text-gray-400">
+                      However, we actually recommend using both Flowbite,
+                      Flowbite Pro, and even Tailwind UI as there is no
+                      technical reason stopping you from using the best of two
+                      worlds.
+                    </p>
+                    <p class="mb-2 text-gray-500 dark:text-gray-400">
+                      Learn more about these technologies:
+                    </p>
+                    <ul class="ps-5 text-gray-500 list-disc dark:text-gray-400">
+                      <li>
+                        <a
+                          href="https://flowbite.com/pro/"
+                          class="text-blue-600 dark:text-blue-500 hover:underline"
+                        >
+                          Flowbite Pro
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="https://tailwindui.com/"
+                          rel="nofollow"
+                          class="text-blue-600 dark:text-blue-500 hover:underline"
+                        >
+                          Tailwind UI
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* <div
+                id="accordion-flush"
+                className="w-100"
+                style={{ width: "100%" }}
                 data-accordion="collapse"
                 data-active-classes="bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                 data-inactive-classes="text-gray-500 dark:text-gray-400"
@@ -371,7 +547,7 @@ export default function Details() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

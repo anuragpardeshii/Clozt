@@ -90,6 +90,78 @@ export default function Men() {
       description: "A stylish oversized tee with a butterfly design.",
       rating: 5.0,
     },
+    {
+      id: 12,
+      title: "Black Oversized Butterfly Tee",
+      price: 999,
+      image: "/src/assets/Products/Men/12.jpeg",
+      description: "A stylish oversized tee with a butterfly design.",
+      rating: 5.0,
+    },
+    {
+      id: 13,
+      title: "Black Oversized Butterfly Tee",
+      price: 999,
+      image: "/src/assets/Products/Men/13.jpeg",
+      description: "A stylish oversized tee with a butterfly design.",
+      rating: 5.0,
+    },
+    {
+      id: 14,
+      title: "Black Oversized Butterfly Tee",
+      price: 999,
+      image: "/src/assets/Products/Men/14.jpeg",
+      description: "A stylish oversized tee with a butterfly design.",
+      rating: 5.0,
+    },
+    {
+      id: 15,
+      title: "Black Oversized Butterfly Tee",
+      price: 999,
+      image: "/src/assets/Products/Men/15.jpeg",
+      description: "A stylish oversized tee with a butterfly design.",
+      rating: 5.0,
+    },
+    {
+      id: 16,
+      title: "Black Oversized Butterfly Tee",
+      price: 999,
+      image: "/src/assets/Products/Men/16.jpeg",
+      description: "A stylish oversized tee with a butterfly design.",
+      rating: 5.0,
+    },
+    // {
+    //   id: 17,
+    //   title: "Black Oversized Butterfly Tee",
+    //   price: 999,
+    //   image: "/src/assets/Products/Men/17.jpeg",
+    //   description: "A stylish oversized tee with a butterfly design.",
+    //   rating: 5.0,
+    // },
+    // {
+    //   id: 18,
+    //   title: "Black Oversized Butterfly Tee",
+    //   price: 999,
+    //   image: "/src/assets/Products/Men/18.jpeg",
+    //   description: "A stylish oversized tee with a butterfly design.",
+    //   rating: 5.0,
+    // },
+    {
+      id: 19,
+      title: "Black Oversized Butterfly Tee",
+      price: 999,
+      image: "/src/assets/Products/Men/19.jpeg",
+      description: "A stylish oversized tee with a butterfly design.",
+      rating: 5.0,
+    },
+    {
+      id: 20,
+      title: "Black Oversized Butterfly Tee",
+      price: 999,
+      image: "/src/assets/Products/Men/20.jpeg",
+      description: "A stylish oversized tee with a butterfly design.",
+      rating: 5.0,
+    },
   ];
 
   const [visibleCount, setVisibleCount] = useState(8); // Initially show 8 products
@@ -134,6 +206,35 @@ export default function Men() {
             style={{ zIndex: 5 }}
           ></div>
         </div>
+        <div className="pb-4 mx-4 mb-4">
+          <button
+            type="button"
+            className="py-2.5 px-5 me-2 mb-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+          >
+            T-shirts
+          </button>
+          <button
+            type="button"
+            className="py-2.5 px-5 me-2 mb-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+          >
+            Shirts
+          </button>
+          <button
+            type="button"
+            className="py-2.5 px-5 me-2 mb-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+          >
+            Denims
+          </button>
+          <button
+            type="button"
+            className="py-2.5 px-5 me-2 mb-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+          >
+            Winter Wear
+          </button>
+          <br />
+          <hr />
+        </div>
+
 
         {/* Product Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-auto px-4 gap-8 mb-8">
@@ -180,7 +281,7 @@ export default function Men() {
                     ₹{product.price}
                   </span>
                   <a
-                    href="#"
+                    href="/details"
                     className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
                     Add to cart
