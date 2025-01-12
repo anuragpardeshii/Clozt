@@ -1,3 +1,8 @@
+import Top from "/src/assets/Images/Men/Top.jpeg";
+import Shirt from "/src/assets/Images/Men/Shirt2.jpeg";
+import Denim from "/src/assets/Images/Men/Denim.jpg";
+import Winter from "/src/assets/Images/Men/Winter.jpeg";
+
 export default function MenFashion() {
   return (
     <>
@@ -24,56 +29,58 @@ export default function MenFashion() {
         </div>
       </div>
       <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-4 justify-around gap-6 p-8">
-        <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
+        <a href="/men" className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Men/Top.jpeg"
+            src={Top}
             alt=""
           />
           <div className="p-2">
-            <a href="#">
+            <a href="/men">
               <h5 className="mb-2 text-xl text-center font-bold tracking-tight text-gray-900 dark:text-white">
                 T-shirts
               </h5>
             </a>
           </div>
         </a>
-        <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
+        <a 
+        href="/men"
+        className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Men/Shirt2.jpeg"
+            src={Shirt}
             alt=""
           />
           <div className="p-2">
-            <a href="#">
+            <a href="/men">
               <h5 className="mb-2 text-xl text-center font-bold tracking-tight text-gray-900 dark:text-white">
                 Shirts
               </h5>
             </a>
           </div>
         </a>
-        <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
+        <a href="/men" className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Men/Denim.jpg"
+            src={Denim}
             alt=""
           />
           <div className="p-2">
-            <a href="#">
+            <a href="/men">
               <h5 className="mb-2 text-xl text-center font-bold tracking-tight text-gray-900 dark:text-white">
                 Denim
               </h5>
             </a>
           </div>
         </a>
-        <a className="bg-white dark:bg-gray-800 dark:border-gray-700">
+        <a href="/men" className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
             className="m-5"
-            src="/src/assets/Images/Men/Winter.jpg"
+            src={Winter}
             alt=""
           />
           <div className="p-2">
-            <a href="#">
+            <a href="/men">
               <h5 className="mb-2 text-xl text-center font-bold tracking-tight text-gray-900 dark:text-white">
                 Winter Wear
               </h5>
