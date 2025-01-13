@@ -11,10 +11,13 @@ import Sale from "./components/Products/Sale/Sale";
 import New from "./components/Products/New/New";
 import Women from "./components/Products/Women/Women";
 import Details from "./components/comman/Details/Details";
+import NewProduct from "./components/Admin/NewProduct";
+import AllProducts from "./components/Admin/AllProducts";
 
 function App() {
   const location = useLocation();
-  const isAdminRoute = location.pathname === "/admin";
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
 
   return (
     <>
@@ -29,6 +32,8 @@ function App() {
         <Route path="/new-arrival" element={<New/>} />
         <Route path="/sale" element={<Sale/>} />
         <Route path="/details" element={<Details/>} />
+        <Route path="/admin/newProduct" element={<NewProduct/>} />
+        <Route path="/admin/allProducts" element={<AllProducts/>} />
       </Routes>
       {!isAdminRoute && <Footer />}
     </>

@@ -7,7 +7,7 @@ export default function MenFashion() {
   return (
     <>
       <div
-        className="bg-white dark:bg-gray-900 w-100 height-wall bg-cover bg-center flex items-center justify-center"
+        className="bg-white dark:bg-gray-900 w-100 bg-cover bg-center flex items-center justify-center"
         style={{
           backgroundImage:
             "url('https://static.vecteezy.com/system/resources/previews/048/986/963/large_2x/trendy-male-fashion-model-in-sandy-beige-suit-elegant-portrait-with-fashionable-lifestyle-background-suitable-for-modern-fashion-campaigns-free-photo.jpg')",

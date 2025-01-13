@@ -8,7 +8,7 @@ export default function NewArrival() {
   return (
     <>
       <div
-        className="bg-white dark:bg-gray-900 w-100 height-wall bg-cover flex items-center justify-center"
+        className="bg-white dark:bg-gray-900 w-100 bg-cover flex items-center justify-center"
         style={{
           
           backgroundImage: `url(${backgroundImage})`,
