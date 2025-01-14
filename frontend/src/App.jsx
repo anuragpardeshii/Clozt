@@ -13,6 +13,7 @@ import Women from "./components/Products/Women/Women";
 import Details from "./components/comman/Details/Details";
 import NewProduct from "./components/Admin/NewProduct";
 import AllProducts from "./components/Admin/AllProducts";
+import Cart from "./components/comman/Cart/Cart";
 
 function App() {
   const location = useLocation();
@@ -34,6 +35,7 @@ function App() {
         <Route path="/details" element={<Details/>} />
         <Route path="/admin/newProduct" element={<NewProduct/>} />
         <Route path="/admin/allProducts" element={<AllProducts/>} />
+        <Route path="/cart" element={<Cart/>} />
       </Routes>
       {!isAdminRoute && <Footer />}
     </>
