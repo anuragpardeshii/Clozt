@@ -5,7 +5,7 @@ function PriceDetails() {
     <div className='flex flex-wrap'>
       
 
-<div class="relative max-w-4xl mx-auto p-4 overflow-x-auto">
+<div class="relative mx-auto p-4 overflow-x-auto" style={{width: "100%"}}>
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
             <tr>

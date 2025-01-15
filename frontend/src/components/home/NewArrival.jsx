@@ -2,7 +2,7 @@ import Top from "/src/assets/Images/New/Top.jpg";
 import Shirt from "/src/assets/Images/New/Shirt.jpeg";
 import Denim from "/src/assets/Images/New/Denim.jpg";
 import Winter from "/src/assets/Images/New/Winter.jpg";
-import backgroundImage from "/src/assets/images/new.jpg"
+import backgroundImage from "/src/assets/Images/new.jpg"
 
 export default function NewArrival() {
   return (
