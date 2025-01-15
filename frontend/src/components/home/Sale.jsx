@@ -1,4 +1,4 @@
-import backgroundImage from "/src/assets/images/sale.jpg"
+import backgroundImage from "/src/assets/Images/sale.jpg"
 import Top from "/src/assets/Images/Sale/Top.jpg";
 import Shirt from "/src/assets/Images/Sale/Shirt.jpeg";
 import Denim from "/src/assets/Images/Sale/Denim.jpeg";

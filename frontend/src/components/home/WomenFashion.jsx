@@ -2,7 +2,7 @@ import Top from "/src/assets/Images/Women/Top.jpg";
 import Shirt from "/src/assets/Images/Women/Shirt.jpeg";
 import Denim from "/src/assets/Images/Women/Denim.jpeg";
 import Winter from "/src/assets/Images/Women/Winter.jpg";
-import backgroundImage from "/src/assets/images/WomenFashion.jpg"
+import backgroundImage from "/src/assets/Images/WomenFashion.jpg"
 
 export default function WomenFashion() {
   return (
