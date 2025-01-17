@@ -1,3 +1,5 @@
+import logo from "/src/assets/Logo/Logo.png";
+
 export default function Footer() {
   return (
     <footer className="bg-white p-8 dark:bg-gray-900" style={{backgroundColor: "#f5f5f5"}}>
@@ -6,7 +8,7 @@ export default function Footer() {
           <div className="mb-6 md:mb-0">
             <a href="/" className="flex items-center">
               <img
-                src="/src/assets/Logo/logo.png"
+                src={logo}
                 className="h-8 me-3"
                 alt="CLOZT Logo"
               />

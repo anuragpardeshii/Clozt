@@ -5,7 +5,6 @@ import NewArrival from "./NewArrival";
 import Sale from "./Sale";
 import WomenFashion from "./WomenFashion";
 import "./Home.css"
-import Download from "./Download";
 
 export default function Home() {
   return (
@@ -70,7 +69,6 @@ export default function Home() {
       <NewArrival />
       <MenFashion />
       <WomenFashion />
-      <Download/>
     </>
   );
 }

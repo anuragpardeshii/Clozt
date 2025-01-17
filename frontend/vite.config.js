@@ -5,5 +5,6 @@ export default defineConfig({
   plugins: [react()],
   build: {
     target: "esnext",
+      outDir: 'dist', // Ensure the output directory matches what Vercel expects
   },
 });

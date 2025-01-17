@@ -48,12 +48,12 @@ export default function Category() {
 
       <div
         className="bg-white dark:bg-gray-900 bg-cover flex flex-wrap items-center justify-center"
-        style={{backgroundColor: "#f5f5f5"}}
+        style={{backgroundColor: "#f5f5f5", height: "30vh"}}
       >
         <div className="py-8 px-4 mx-auto text-center">
           <h1
             className="mb-4 font-extrabold text-black 
-             text-3xl xs:text-xl sm:text-2xl md:text-5xl lg:text-6xl"
+             text-4xl xs:text-xl sm:text-2xl md:text-5xl lg:text-6xl"
           >
             Shop by Category
           </h1>
@@ -62,7 +62,7 @@ export default function Category() {
       <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-4 justify-around gap-6 p-8">
         <a href="/men" className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
-            className="m-5"
+            className=""
             src={Top}
             alt=""
           />
@@ -76,7 +76,7 @@ export default function Category() {
         </a>
         <a href="/men" className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
-            className="m-5"
+            className=""
             src={Shirt}
             alt=""
           />
@@ -90,7 +90,7 @@ export default function Category() {
         </a>
         <a href="/men" className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
-            className="m-5"
+            className=""
             src={Denim}
             alt=""
           />
@@ -104,7 +104,7 @@ export default function Category() {
         </a>
         <a href="/men" className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
-            className="m-5"
+            className=""
             src={Winter}
             alt=""
           />

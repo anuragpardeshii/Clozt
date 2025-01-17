@@ -53,8 +53,8 @@ export default function Men() {
 
   return (
     <>
-      <div className="max-w-6xl mx-auto" style={{ maxWidth: "80rem" }}>
-        <div className="relative max-w-6xl mx-auto" style={{ marginTop: "6rem", height: "22rem", marginBottom: "3rem", overflow: "hidden" }}>
+      <div className="mx-auto px-8" style={{ maxWidth: "82rem" }}>
+        <div className="relative mx-auto" style={{ marginTop: "6rem", height: "22rem", marginBottom: "3rem", overflow: "hidden" }}>
           <video autoPlay loop muted playsInline className="absolute top-0 left-0 w-full h-full object-cover">
             <source src={menVideo} type="video/mp4" />
             Your browser does not support the video tag.
@@ -66,7 +66,7 @@ export default function Men() {
         </div>
 
         {/* Buttons */}
-        <div className="pb-4 mx-4 mb-4">
+        <div className="pb-4 mb-4">
           <button
             type="button"
             className="py-2.5 px-5 me-2 mb-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
@@ -99,10 +99,10 @@ export default function Men() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {products.slice(0, visibleCount).map((product) => (
             <div key={product.id} className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-              <img className="p-8 rounded-t-lg" src={product.image} alt={product.title} />
+              <img className="p-4 rounded-t-lg" src={product.image} alt={product.title} />
               <div className="px-5 pb-5">
                 <h5 className="text-xl font-semibold text-gray-900 dark:text-white">{product.title}</h5>
-                <div className="flex items-center mt-2.5 mb-5">{/* Rating code */}</div>
+                <div className="flex items-center mt-2.5">{/* Rating code */}</div>
                 <div className="flex items-center justify-between">
                   <span className="text-2xl font-bold text-gray-900 dark:text-white">₹{product.price}</span>
                   <a

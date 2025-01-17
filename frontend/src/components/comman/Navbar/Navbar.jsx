@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import logo from "/src/assets/Logo/Logo.png";
 
 export default function Navbar() {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -18,7 +19,7 @@ export default function Navbar() {
             className="flex items-center border-gray-200 md:pe-4 md:me-4  md:mb-0 dark:border-gray-600"
           >
             <img
-              src="/src/assets/Logo/Logo.png"
+              src={logo}
               className="h-6 me-2 height-mob"
               alt="Flowbite Logo"
             />

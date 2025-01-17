@@ -31,7 +31,7 @@ export default function MenFashion() {
       <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-4 justify-around gap-6 p-8">
         <a href="/men" className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
-            className="m-5"
+            className=""
             src={Top}
             alt=""
           />
@@ -47,7 +47,7 @@ export default function MenFashion() {
         href="/men"
         className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
-            className="m-5"
+            className=""
             src={Shirt}
             alt=""
           />
@@ -61,7 +61,7 @@ export default function MenFashion() {
         </a>
         <a href="/men" className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
-            className="m-5"
+            className=""
             src={Denim}
             alt=""
           />
@@ -75,7 +75,7 @@ export default function MenFashion() {
         </a>
         <a href="/men" className="bg-white dark:bg-gray-800 dark:border-gray-700">
           <img
-            className="m-5"
+            className=""
             src={Winter}
             alt=""
           />
