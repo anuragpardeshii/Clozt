@@ -45,16 +45,16 @@ export default function Sale() {
     { id: 20, title: "Black Oversized Butterfly Tee", price: 999, image: img20, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
   ];
 
-  const [visibleCount, setVisibleCount] = useState(8);
+  const [visibleCount, setVisibleCount] = useState(10);
 
   const handleLoadMore = () => {
-    setVisibleCount((prevCount) => prevCount + 8);
+    setVisibleCount((prevCount) => prevCount + 10);
   };
 
   return (
     <>
       <div className="mx-auto px-8" style={{ maxWidth: "82rem" }}>
-        <div className="relative mx-auto" style={{ marginTop: "6rem", height: "22rem", marginBottom: "3rem", overflow: "hidden" }}>
+        <div className="relative rounded-lg mx-auto" style={{ marginTop: "6rem", height: "22rem", marginBottom: "1.5rem", overflow: "hidden" }}>
           <video autoPlay loop muted playsInline className="absolute top-0 left-0 w-full h-full object-cover">
             <source src="https://videos.pexels.com/video-files/6120789/6120789-uhd_2732_1440_25fps.mp4" type="video/mp4" />
             Your browser does not support the video tag.
@@ -96,24 +96,26 @@ export default function Sale() {
         </div>
 
         {/* Product Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           {products.slice(0, visibleCount).map((product) => (
             <div key={product.id} className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-              <img className="p-4 rounded-t-lg" src={product.image} alt={product.title} />
-              <div className="px-5 pb-5">
-                <h5 className="text-xl font-semibold text-gray-900 dark:text-white">{product.title}</h5>
-                <div className="flex items-center mt-2.5">{/* Rating code */}</div>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">₹{product.price}</span>
-                  <a
-                    href="/details"
-                    className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  >
-                    Add to cart
-                  </a>
+            <img className="p-4 rounded-t-lg" src={product.image} alt={product.title} />
+            <div className="px-5 pb-5">
+              <h5 className="text-md font-semibold text-gray-900 dark:text-white">{product.title}</h5>
+              <div className="flex items-center mt-2.5">
+                {/* Rating code */}
                 </div>
+              <div className="flex items-center justify-between">
+                <span className="text-lg font-bold text-gray-900 dark:text-white">₹{product.price}</span>
+                <a
+                  href="/details"
+                  className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Add to cart
+                </a>
               </div>
             </div>
+          </div>
           ))}
         </div>
 

@@ -3,7 +3,7 @@ export default function Faq() {
     <>
       <div
         className="grid mb-8 rounded-lg dark:border-gray-700 text-gray-500 md:mb-12 md:grid-cols-3 p-8 pt-4 gap-8 m-4 bg-white dark:bg-gray-800"
-        style={{ maxWidth: "60rem", margin: "3rem auto" }}
+        style={{ maxWidth: "75rem", margin: "3rem auto" }}
       >
         <div className="border border-gray-200">
           <div className="" style={{ backgroundColor: "#f5f5f5" }}>
@@ -209,7 +209,7 @@ export default function Faq() {
         id="accordion-collapse"
         className="p-8 pt-2 m-4 mb-8"
         data-accordion="collapse"
-        style={{ maxWidth: "60rem", margin: "auto"}}
+        style={{ maxWidth: "75rem", margin: "auto"}}
       >
         <h2 id="accordion-collapse-heading-1">
           <button

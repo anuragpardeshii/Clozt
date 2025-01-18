@@ -11,7 +11,7 @@ export default function MenFashion() {
         style={{
           backgroundImage:
             "url('https://static.vecteezy.com/system/resources/previews/048/986/963/large_2x/trendy-male-fashion-model-in-sandy-beige-suit-elegant-portrait-with-fashionable-lifestyle-background-suitable-for-modern-fashion-campaigns-free-photo.jpg')",
-            minHeight: "40vh",
+            minHeight: "50vh",
         }}
       >
         <div className="py-8 px-4 mx-auto max-w-screen-xl text-center">

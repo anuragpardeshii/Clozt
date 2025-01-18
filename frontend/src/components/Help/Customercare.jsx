@@ -2,12 +2,13 @@ export default function Customer() {
   return (
     <>
       <div
-        className="max-w-6xl mx-auto"
+        className=" mx-auto rounded-lg"
         style={{
           backgroundImage: `url("/src/assets/Images/customer-care.jpg")`,
           backgroundSize: "cover", // Optional: To ensure the image covers the div
             backgroundPosition: "center", // Optional: To center the image
             marginTop: "6rem",
+            maxWidth: "90rem",
             height: "22rem",
             marginBottom: "3rem",
         }}

@@ -10,8 +10,8 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className="fixed z-50 flex md:flex-row nav-padding justify-between w-[calc(100%-2rem)] -translate-x-1/2 bg-white rounded-lg shadow-sm lg:max-w-7xl left-1/2 top-6 dark:bg-gray-700 dark:border-gray-600"
-        style={{ zIndex: "1000" }}
+        className="fixed z-50 flex md:flex-row nav-padding justify-between  -translate-x-1/2 bg-white rounded-lg shadow-sm lg:max-w-7xl left-1/2 top-6 dark:bg-gray-700 dark:border-gray-600"
+        style={{ zIndex: "1000", width: "90rem" }}
       >
         <div className="flex items-center md:items-center md:flex-row md:mb-0">
           <a

@@ -12,7 +12,7 @@ export default function NewArrival() {
         style={{
           
           backgroundImage: `url(${backgroundImage})`,
-            minHeight: "40vh",
+            minHeight: "50vh",
         }}
       >
         <div className="py-8 px-4 mx-auto max-w-screen-xl text-center">

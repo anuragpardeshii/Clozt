@@ -1,14 +1,13 @@
 export default function About() {
   return (
     <>
-      <div className="max-w-6xl mx-auto" style={{ maxWidth: "80rem" }}>
+      <div className="mx-auto px-8" style={{ maxWidth: "90rem", marginTop: "6rem" }}>
         <div
-          className="max-w-6xl mx-auto"
+          className="rounded-lg mx-auto"
           style={{
             backgroundImage: `url("/src/assets/Images/about.jpg")`,
             backgroundSize: "cover", // Optional: To ensure the image covers the div
             backgroundPosition: "center", // Optional: To center the image
-            marginTop: "6rem",
             height: "22rem",
             marginBottom: "3rem",
           }}
@@ -26,7 +25,7 @@ export default function About() {
             <div>
               <h1
                 className="mb-4 font-medium max-w-4xl mx-auto text-white 
-             text-xl xs:text-md sm:text-lg md:text-3xl text-center lg:text-4xl"
+             text-xl xs:text-md sm:text-lg md:text-xl text-center lg:text-xl"
               >
                 We are a worldwide network of brands and businesses, empowering
                 customers across the globe to express their individuality
@@ -35,7 +34,7 @@ export default function About() {
             </div>
           </div>
         </div>
-        <div className="mx-auto text-center" style={{ maxWidth: "60rem", margin: "5rem auto" }}>
+        <div className="mx-auto text-center" style={{ maxWidth: "70rem", margin: "5rem auto" }}>
           <h1 className="mb-4 text-3xl text-gray-900 md:text-5xl lg:text-5xl dark:text-white text-center">
             Who we are?
           </h1>
@@ -64,7 +63,7 @@ export default function About() {
             </a>
           </div>
         </div>
-        <div className="mx-auto" style={{ maxWidth: "60rem" }}>
+        <div className="mx-auto" style={{ maxWidth: "70rem" }}>
           <div
             className="flex flex-row gap-4 flex-wrap items-center p-8 mx-auto"
             style={{ background: "#FCF4DA", justifyContent: "space-evenly", margin: "4rem auto" }}
@@ -106,7 +105,7 @@ export default function About() {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-auto px-4" style={{ maxWidth: "60rem", margin: "3rem auto" }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-auto px-4" style={{ maxWidth: "70rem", margin: "3rem auto" }}>
           <div>
             <img src="/src/assets/Images/History.jpg" alt="" />
             <h1 className="mb-6 mt-6 text-2xl text-gray-700">Our Story</h1>
@@ -126,10 +125,10 @@ export default function About() {
             <p className="mb-6 text-gray-700 font-medium"><a href="">Inclusion & diversity &gt; </a></p>
           </div>
         </div>
-        <div className="border text-center border-gray-100 px-2 mx-auto" style={{ maxWidth: "60rem", margin: "3rem auto", backgroundColor: "#f5f5f5" }}>
+        <div className="border text-center border-gray-100 px-2 mx-auto" style={{  margin: "3rem auto", backgroundColor: "#f5f5f5" }}>
             <h1 className="mb-6 mt-6 text-2xl text-gray-700">Read more in our Annual and Sustainability Report 2023</h1>
             <div style={{ margin: "3rem" }}>
-            <a className="border border-gray-100 bg-white p-4 m-4" href="">
+            <a className="border border-gray-100 md:text-lg bg-white p-4 m-4" href="">
               Read more about our business
             </a>
           </div>

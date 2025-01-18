@@ -1,3 +1,6 @@
+import { Button } from "flowbite-react";
+import { HR } from "flowbite-react";
+import React from 'react'
 import { useState } from "react";
 
 // Import all product images
@@ -20,10 +23,8 @@ import img16 from "/src/assets/Products/Men/16.jpeg";
 import img19 from "/src/assets/Products/Men/19.jpeg";
 import img20 from "/src/assets/Products/Men/20.jpeg";
 
-// Import video
-import menVideo from "/src/assets/Videos/men.mp4";
+export default function Wishlist() {
 
-export default function Men() {
   const products = [
     { id: 1, title: "Black Oversized Butterfly Tee", price: 999, image: img1, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
     { id: 2, title: "Black Oversized Butterfly Tee", price: 999, image: img2, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
@@ -50,72 +51,38 @@ export default function Men() {
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 10);
   };
-
   return (
-    <>
-      <div className="mx-auto px-8" style={{ maxWidth: "90rem" }}>
-        <div className="relative rounded-lg mx-auto" style={{ marginTop: "6rem", height: "22rem", marginBottom: "1.5rem", overflow: "hidden" }}>
-          <video autoPlay loop muted playsInline className="absolute top-0 left-0 w-full h-full object-cover">
-            <source src={menVideo} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <div className="relative z-10 flex flex-col gap-8 justify-center" style={{ height: "22rem" }}>
-            <h1 className="mb-4 font-extrabold text-white text-3xl text-center lg:text-6xl">Men's Fashion</h1>
-          </div>
-          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50" style={{ zIndex: 5 }}></div>
-        </div>
-
-        {/* Buttons */}
-        <div className="pb-4 mb-4">
-          <button
-            type="button"
-            className="py-2.5 px-5 me-2 mb-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-          >
-            T-shirts
-          </button>
-          <button
-            type="button"
-            className="py-2.5 px-5 me-2 mb-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-          >
-            Shirts
-          </button>
-          <button
-            type="button"
-            className="py-2.5 px-5 me-2 mb-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-          >
-            Denims
-          </button>
-          <button
-            type="button"
-            className="py-2.5 px-5 me-2 mb-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-          >
-            Winter Wear
-          </button>
-          <br />
-          <hr />
-        </div>
-
-        {/* Product Cards */}
+    <div className="mx-auto px-8" style={{ maxWidth: "90rem", marginTop: "6rem" }}>
+        <h2 className='text-2xl'>My Wishlist <span className="text-sm text-gray-800">20 items</span></h2>
+        <HR />
+        <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           {products.slice(0, visibleCount).map((product) => (
             <div key={product.id} className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-              <img className="p-4 rounded-t-lg" src={product.image} alt={product.title} />
-              <div className="px-5 pb-5">
-                <h5 className="text-md font-semibold text-gray-900 dark:text-white">{product.title}</h5>
-                <div className="flex items-center mt-2.5">
-                  {/* Rating code */}
-                  </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-gray-900 dark:text-white">₹{product.price}</span>
-                  <a
-                    href="/details"
-                    className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  >
-                    Add to cart
-                  </a>
+            <img className="p-4 rounded-t-lg" src={product.image} alt={product.title} />
+            <div className="px-5 pb-5">
+              <h5 className="text-md font-semibold text-gray-900 dark:text-white">{product.title}</h5>
+              <div className="flex items-center mt-2.5">
+                {/* Rating code */}
+                </div>
+              <div className="flex items-center justify-between flex-col">
+                <p className="text-lg pb-5 font-bold text-gray-900 dark:text-white">MRP: ₹{product.price}</p>
+                <div className="flex flex-row gap-2">
+                <a
+                  href="/details"
+                  className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Add to cart
+                </a>
+                <Button color="failure"
+                //   className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Remove 
+                </Button>
                 </div>
               </div>
             </div>
+          </div>
           ))}
         </div>
 
@@ -130,7 +97,7 @@ export default function Men() {
             </button>
           </div>
         )}
-      </div>
-    </>
-  );
+        </div>
+    </div>
+  )
 }
