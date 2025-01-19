@@ -53,7 +53,7 @@ export default function New() {
 
   return (
     <>
-      <div className="mx-auto px-8" style={{ maxWidth: "82rem" }}>
+      <div className="mx-auto px-8" style={{ maxWidth: "90rem" }}>
         <div className="relative rounded-lg mx-auto" style={{ marginTop: "6rem", height: "22rem", marginBottom: "1.5rem", overflow: "hidden" }}>
           <video autoPlay loop muted playsInline className="absolute top-0 left-0 w-full h-full object-cover">
             <source src="https://videos.pexels.com/video-files/6612629/6612629-hd_1920_1080_25fps.mp4" type="video/mp4" />

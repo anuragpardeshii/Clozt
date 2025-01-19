@@ -109,7 +109,7 @@ export default function Navbar() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/contact-us"
                   className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <div className="font-semibold">Contact us</div>
@@ -133,7 +133,7 @@ export default function Navbar() {
             <ul>
               <li>
                 <a
-                  href="#"
+                  href="/wishlist"
                   className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <div className="font-semibold">Whishlist</div>
@@ -144,7 +144,7 @@ export default function Navbar() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/cart"
                   className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <div className="font-semibold">Shopping Bag</div>
@@ -168,7 +168,7 @@ export default function Navbar() {
             <ul>
               <li>
                 <a
-                  href="#"
+                  href="/orders"
                   className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <div className="font-semibold">Orders</div>

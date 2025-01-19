@@ -53,7 +53,7 @@ export default function Women() {
 
   return (
     <>
-      <div className="mx-auto px-8" style={{ maxWidth: "82rem" }}>
+      <div className="mx-auto px-8" style={{ maxWidth: "90rem" }}>
         <div className="relative rounded-lg mx-auto" style={{ marginTop: "6rem", height: "22rem", marginBottom: "1.5rem", overflow: "hidden" }}>
           <video autoPlay loop muted playsInline className="absolute top-0 left-0 w-full h-full object-cover">
           {/* "https://videos.pexels.com/video-files/8531225/8531225-uhd_2560_1440_25fps.mp4"  */}
