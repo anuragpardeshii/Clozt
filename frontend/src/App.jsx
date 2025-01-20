@@ -16,6 +16,7 @@ import AllProducts from "./components/Admin/AllProducts";
 import Cart from "./components/comman/Cart/Cart";
 import Wishlist from "./components/Wishlist/Wishlist";
 import Order from "./components/comman/Orders/Order";
+import Summary from "./components/comman/Summary/Summary";
 
 function App() {
   const location = useLocation();
@@ -38,6 +39,7 @@ function App() {
         <Route path="/admin/newProduct" element={<NewProduct/>} />
         <Route path="/admin/allProducts" element={<AllProducts/>} />
         <Route path="/cart" element={<Cart/>} />
+        <Route path="/order-summary" element={<Summary/>} />
         <Route path="/orders" element={<Order/>} />
         <Route path="/wishlist" element={<Wishlist/>} />
       </Routes>
