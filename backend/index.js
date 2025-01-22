@@ -13,10 +13,11 @@ app.use(cors()); // Enable cross-origin requests
 app.use(bodyParser.json()); // Parse JSON requests
 const productRoutes = require("./Routes/productRoutes");
 const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI;
 
 mongoose
   .connect(
-    "mongodb+srv://pardeshianurag22:qwertyuiop@clozt.bxmri.mongodb.net/?retryWrites=true&w=majority&appName=Clozt"
+    process.env.MONGO_URI
   )
   .then(() => {
     console.log("MongoDB database connection established successfully");
