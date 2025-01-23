@@ -1,6 +1,30 @@
 import React, { useState } from "react";
 export default function Login() {
-  const [alertMessage, setAlertMessage] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/login",
+        { email, password },
+        { withCredentials: true } // Send cookies with the request
+      );
+      
+      // On success
+      setMessage("Login successful!");
+    } catch (error) {
+      // Handle error
+      if (error.response) {
+        setMessage(error.response.data);
+      } else {
+        setMessage("An error occurred. Please try again.");
+      }
+    }
+  };
 
   return (
     <>
@@ -41,13 +65,13 @@ export default function Login() {
               <h2 className="text-2xl text-center font-bold text-gray-900 dark:text-white">
                 Login
               </h2>
-              {alertMessage && (
+              {/* {alertMessage && (
                 <div className="p-4 mb-4 text-sm text-white bg-red-500 rounded-lg dark:bg-red-800">
                   {alertMessage}
                 </div>
-              )}
+              )} */}
 
-              <form className="max-w-md mx-auto">
+              <form onSubmit={handleLogin} className="max-w-md mx-auto">
                 <div className="mb-5">
                   <label
                     htmlFor="email"
@@ -56,8 +80,10 @@ export default function Login() {
                     Your email
                   </label>
                   <input
-                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     id="email"
+                    name="email"
                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                     placeholder="name@flowbite.com"
                     required
@@ -72,13 +98,16 @@ export default function Login() {
                   </label>
                   <input
                     type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
                     id="password"
+                    name="password"
                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                     required
                   />
                 </div>
                 <div className="text-center">
-                <div className="flex items-center justify-center mb-5">
+                {/* <div className="flex items-center justify-center mb-5">
                   <div className="flex items-center h-5">
                     <input
                       id="terms"
@@ -100,11 +129,10 @@ export default function Login() {
                       terms and conditions
                     </a>
                   </label>
-                </div>
+                </div> */}
                 </div>
                 <div className="text-center">
                 <button
-                  type="submit"
                   className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   style={{width: "10rem"}}
                 >
@@ -112,6 +140,7 @@ export default function Login() {
                 </button>
                 </div>
               </form>
+              {message && <p>{message}</p>}
             </div>
           </div>
         </div>

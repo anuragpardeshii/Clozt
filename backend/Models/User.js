@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/clozt');
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  mobile: { type: String, required: true },
+});
 
-const userSchema = mongoose.Schema({
-    username: String, 
-    email: String,
-    mobile: Number,
-    password: String,
-}); 
+const userModel = mongoose.model('User', userSchema);
 
-mongoose.exports = mongoose.model("user", userSchema);
+module.exports = userModel; // Make sure this export is correct

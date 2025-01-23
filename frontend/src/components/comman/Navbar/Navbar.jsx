@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "/src/assets/Logo/Logo.png";
 
 export default function Navbar() {
@@ -7,6 +7,21 @@ export default function Navbar() {
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
   };
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check auth state on load
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+  };
+
   return (
     <>
       <nav
@@ -190,13 +205,16 @@ export default function Navbar() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href={isAuthenticated ? "/logout" : "/login"}
+                  onClick={isAuthenticated ? handleLogout : null}
                   className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
-                  <div className="font-semibold">Signin/Login</div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Connect with third-party tools that you're already using.
-                  </span>
+                  <div className="font-semibold">{isAuthenticated ? "Logout" : "Signin/Login"}</div>
+                  {!isAuthenticated && (
+        <span className="text-sm text-gray-500 dark:text-gray-400">
+          Connect with third-party tools that you're already using.
+        </span>
+      )}
                 </a>
               </li>
             </ul>
