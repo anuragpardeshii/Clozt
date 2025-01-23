@@ -8,7 +8,7 @@ const userModel = require("./Models/User");
 const multer = require("multer");
 const fs = require("fs");
 const cors = require("cors");
-const bodyParser = require("body-parser");
+const bodyParser = require("body-parser"); 
 const bcrypt = require("bcrypt")
 const path = require("path");
 const jwt = require("jsonwebtoken");
@@ -16,13 +16,26 @@ const productRoutes = require("./Routes/productRoutes");
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = "mongodb+srv://pardeshianurag22:qwertyuiop@clozt.bxmri.mongodb.net/?retryWrites=true&w=majority&appName=Clozt";
 
-app.use(cors()); // Enable cross-origin requests
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Allow only your frontend origin
+    credentials: true, // Allow cookies to be sent
+  })
+);
 app.use(bodyParser.json()); // Parse JSON requests
 app.use(morgan("dev"));
 
 // Middleware to parse incoming JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+app.use(cors({
+  origin: "http://localhost:5173", // Vite dev server
+  credentials: true, // Allow cookies to be sent
+}));
 
 mongoose
   .connect(MONGO_URI)
@@ -93,22 +106,31 @@ app.post("/create", async (req, res) => {
 });
 
 // login
-app.post("/login", async function(req, res) {
+app.post("/login-user", async (req, res) => {
   let user = await userModel.findOne({email: req.body.email});
   if(!user) return res.send("User does not exist");
 
   bcrypt.compare(req.body.password, user.password, function (err, result) {
-    if(result) {
-      res.send("yes you can login");
-      let token = jwt.sign({email: user.email}, "secretkey");
-    res.cookie("token", token);
+    if (err) {
+      console.error("Error during bcrypt comparison:", err);
+      return res.status(500).send("Internal server error");
     }
-    else res.send("Wrong Password");
-  })
-}) 
+    if (result) {
+      let token = jwt.sign({ email: user.email }, "secretkey");
+      res.cookie("token", token, { 
+        httpOnly: true,
+        secure: false, // Set true in production with HTTPS
+        sameSite: "lax", // Controls cookie sharing between origins
+          });
+      res.send("yes you can login");
+    } else {
+      res.status(401).send("Wrong Password");
+    }
+  });
+}); 
 
 //log out
-app.get("/logout", function(req,res) {
+app.get("/logout", (req,res) => {
   res.cookie("token", "");
   res.redirect("/");
 })
