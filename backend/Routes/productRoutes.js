@@ -1,8 +1,10 @@
 const express = require("express");
-const router = express.Router();
-const productController = require("../Controller/ProductController");
+const { addProduct, getProducts } = require("../Controller/ProductController");
+const upload = require("../config/multerconfig"); // Import Multer config, NOT Cloudinary
 
-// Route to add a product
-router.post("/add", productController.addProduct);
+const router = express.Router();
+
+router.post("/newproduct", upload.array("image", 4), addProduct);
+router.get("/products", getProducts); // New route to get all products
 
 module.exports = router;

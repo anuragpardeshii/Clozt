@@ -1,261 +1,271 @@
-import React from "react";
+import React, { useState } from "react";
 import Admin from "./Admin";
+import axios from "axios";
 
 export default function NewProduct() {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    price: "",
+    color: "",
+    gender: "",
+    category: "",
+    listings: [],
+    sizes: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+    },
+    image: null,
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    if (type === "checkbox") {
+      setFormData((prev) => ({
+        ...prev,
+        listings: checked
+          ? [...prev.listings, name] // Add to array if checked
+          : prev.listings.filter((item) => item !== name), // Remove if unchecked
+      }));
+    } else if (["XS", "S", "M", "L", "XL", "XXL"].includes(name)) {
+      setFormData((prev) => ({
+        ...prev,
+        sizes: {
+          ...prev.sizes,
+          [name]: Number(value), // Store quantity as number
+        },
+      }));
+    } else if (name === "image") {
+      setFormData((prev) => ({
+        ...prev,
+        image: e.target.files[0], // Store the uploaded file
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (key === "sizes") {
+        formDataToSend.append(key, JSON.stringify(formData[key]));
+      } else if (key === "listings") {
+        formData[key].forEach((listing) => formDataToSend.append("listings[]", listing));
+      } else if (key === "image") {
+        formDataToSend.append("image", formData[key]);
+      } else {
+        formDataToSend.append(key, formData[key]);
+      }
+    });
+  
+    try {
+      const response = await axios.post("http://localhost:3000/api/products/newproduct", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      console.log("Product added:", response.data);
+    } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
+    }
+  };
+
   return (
     <>
       <Admin />
-
-      <div class="p-4 sm:ml-64">
-        <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
-          <form className="max-w-xl mx-auto">
+      <div className="p-4 sm:ml-64">
+        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+          <form
+            action="/newproduct"
+            method="POST"
+            className="max-w-xl mx-auto"
+            encType="multipart/form-data"
+            onSubmit={handleSubmit}
+          >
             <div className="mb-5">
               <label
-                htmlFor="email"
+                htmlFor="product"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 Product Title
               </label>
               <input
-                type="email"
-                id="email"
+                type="text"
+                name="title"
+                onChange={handleChange}
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                placeholder="name@flowbite.com"
                 required
               />
             </div>
+
             <div className="mb-5">
               <label
-                htmlFor="email"
+                htmlFor="description"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 Product Description
               </label>
-              <input
-                type="email"
-                id="email"
+              <textarea
+                name="description"
+                onChange={handleChange}
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                placeholder="name@flowbite.com"
                 required
               />
             </div>
-            <div class="grid md:grid-cols-2 md:gap-6">
+
+            <div className="grid md:grid-cols-2 md:gap-6">
               <div className="mb-5">
                 <label
-                  htmlFor="email"
+                  htmlFor="price"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Price
                 </label>
                 <input
-                  type="Number"
-                    id="Number"
+                  type="number"
+                  name="price"
+                  onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                  placeholder="INR"
                   required
                 />
               </div>
               <div className="mb-5">
                 <label
-                  htmlFor="email"
+                  htmlFor="color"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Color
                 </label>
                 <input
-                  type="email"
-                  id="email"
+                  type="text"
+                  name="color"
+                  onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                  placeholder="name@flowbite.com"
                   required
                 />
               </div>
             </div>
-            <div class="grid md:grid-cols-2 md:gap-6">
+
+            <div className="grid md:grid-cols-2 md:gap-6">
               <div className="mb-5">
                 <label
-                  for="gender"
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  htmlFor="gender"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Gender
                 </label>
                 <select
-                  id="gender"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="gender"
+                  onChange={handleChange}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 >
-                  <option selected>Select Gender</option>
-                  <option value="US">Male</option>
-                  <option value="CA">Female</option>
+                  <option>Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
                 </select>
               </div>
               <div className="mb-5">
                 <label
-                  for="gender"
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  htmlFor="category"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Category
                 </label>
                 <select
-                  id="gender"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="category"
+                  onChange={handleChange}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
                 >
-                  <option selected>Select Category</option>
-                  <option value="US">Top</option>
-                  <option value="CA">Shirts</option>
-                  <option value="CA">Denim</option>
-                  <option value="CA">Winter Wear</option>
+                  <option>Select Category</option>
+                  <option value="Top">Top</option>
+                  <option value="Shirts">Shirts</option>
+                  <option value="Denim">Denim</option>
+                  <option value="Winter Wear">Winter Wear</option>
                 </select>
               </div>
             </div>
 
             <div className="mb-5">
-              
-<h3 class="mb-5 text-md font-medium text-gray-900 dark:text-white">Listings:</h3>
-<ul class="grid w-full mb-5 gap-6 md:grid-cols-4">
-    <li>
-        <input type="checkbox" id="new-option" value="" class="hidden peer" required=""/>
-        <label for="new-option" class="inline-flex items-center justify-between w-full p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">                           
-            <div class="block">
-                <div class="w-full text-sm font-semibold">New Arrivals</div>
+              <h3 className="mb-5 text-md font-medium text-gray-900 dark:text-white">
+                Listings:
+              </h3>
+              <ul className="grid w-full mb-5 gap-6 md:grid-cols-4">
+                {["New Arrivals", "Sale", "Men", "Women"].map((listing) => (
+                  <li key={listing}>
+                    <input
+                      type="checkbox"
+                      id={listing}
+                      name={listing}
+                      onChange={handleChange}
+                      className="hidden peer"
+                    />
+                    <label
+                      htmlFor={listing}
+                      className="inline-flex items-center w-full p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 hover:text-gray-600"
+                    >
+                      <div className="block">
+                        <div className="w-full text-sm font-semibold">
+                          {listing}
+                        </div>
+                      </div>
+                    </label>
+                  </li>
+                ))}
+              </ul>
             </div>
-        </label>
-    </li>
-    <li>
-        <input type="checkbox" id="sale-option" value="" class="hidden peer"/>
-        <label for="sale-option" class="inline-flex items-center justify-between w-full p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-            <div class="block">
-                <div class="w-full text-sm font-semibold">Sale</div>
-            </div>
-        </label>
-    </li>
-    <li>
-        <input type="checkbox" id="men-option" value="" class="hidden peer"/>
-        <label for="men-option" class="inline-flex items-center justify-between w-full p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-            <div class="block">
-                <div class="w-full text-sm font-semibold">Men</div>
-            </div>
-        </label>
-    </li>
-    <li>
-        <input type="checkbox" id="women-option" value="" class="hidden peer"/>
-        <label for="women-option" class="inline-flex items-center justify-between w-full p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-            <div class="block">
-                <div class="w-full text-sm font-semibold">Women</div>
-            </div>
-        </label>
-    </li>
-</ul>
 
-              <label
-                htmlFor="password"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+            <div className="mb-5">
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Quantity
               </label>
-              <div class="grid md:grid-cols-4 md:gap-6">
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    XS
-                  </label>
-                  <input
-                    type="Number"
-                    id="Number"
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    S
-                  </label>
-                  <input
-                    type="Number"
-                    id="Number"
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    M
-                  </label>
-                  <input
-                    type="Number"
-                    id="Number"
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    L
-                  </label>
-                  <input
-                    type="Number"
-                    id="Number"
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    XL
-                  </label>
-                  <input
-                    type="Number"
-                    id="Number"
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    XXL
-                  </label>
-                  <input
-                    type="Number"
-                    id="Number"
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                    required
-                  />
-                </div>
+              <div className="grid md:grid-cols-4 md:gap-6">
+                {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
+                  <div key={size}>
+                    <label
+                      htmlFor={size}
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      {size}
+                    </label>
+                    <input
+                      type="number"
+                      name={size}
+                      onChange={handleChange}
+                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                      required
+                    />
+                  </div>
+                ))}
               </div>
             </div>
+
             <div className="mb-5">
               <label
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 htmlFor="file_input"
               >
                 Upload Images (max: 4)
               </label>
               <input
-                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                aria-describedby="file_input_help"
-                id="file_input"
                 type="file"
+                name="image"
+                onChange={handleChange}
+                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
               />
-              <p
-                class="mt-1 text-sm text-gray-500 dark:text-gray-300"
-                id="file_input_help"
-              >
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">
                 SVG, PNG, JPG or GIF (MAX. 800x400px).
               </p>
             </div>

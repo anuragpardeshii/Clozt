@@ -9,19 +9,13 @@ const multer = require("multer");
 const fs = require("fs");
 const cors = require("cors");
 const bodyParser = require("body-parser"); 
-const bcrypt = require("bcrypt")
-const path = require("path");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const productRoutes = require("./Routes/productRoutes");
+const getProducts = require("./Routes/productRoutes");
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = "mongodb+srv://pardeshianurag22:qwertyuiop@clozt.bxmri.mongodb.net/?retryWrites=true&w=majority&appName=Clozt";
 
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Allow only your frontend origin
-    credentials: true, // Allow cookies to be sent
-  })
-);
 app.use(bodyParser.json()); // Parse JSON requests
 app.use(morgan("dev"));
 
@@ -104,6 +98,10 @@ app.post("/create", async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 });
+
+// new file 
+app.use("/api/products", productRoutes);
+router.get("/products", getProducts);// New route to get all products
 
 // login
 app.post("/login-user", async (req, res) => {
