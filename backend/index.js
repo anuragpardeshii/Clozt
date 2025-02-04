@@ -101,14 +101,14 @@ app.post("/create", async (req, res) => {
 
 // new file 
 app.use("/api/products", productRoutes);
-router.get("/products", getProducts);// New route to get all products
 
 // login
 app.post("/login-user", async (req, res) => {
-  let user = await userModel.findOne({email: req.body.email});
-  if(!user) return res.send("User does not exist");
+  let {email, password} = req.body;
+  let user = await userModel.findOne({email});
+  if(!user) return res.status(500).send("User does not exist");
 
-  bcrypt.compare(req.body.password, user.password, function (err, result) {
+  bcrypt.compare(password, user.password, function (err, result) {
     if (err) {
       console.error("Error during bcrypt comparison:", err);
       return res.status(500).send("Internal server error");
