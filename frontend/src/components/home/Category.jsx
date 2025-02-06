@@ -46,7 +46,11 @@ export default function Category() {
         </div>
       </div>
 
-      <div
+      <section id="featured_categories" className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4"></div>
+      </section>
+
+      {/* <div
         className="bg-white dark:bg-gray-900 bg-cover flex flex-wrap items-center justify-center"
         style={{backgroundColor: "#f5f5f5", height: "30vh"}}
       >
@@ -116,7 +120,7 @@ export default function Category() {
             </a>
           </div>
         </a>
-      </div>
+      </div> */}
     </>
   );
 }

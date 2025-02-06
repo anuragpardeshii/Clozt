@@ -19,6 +19,7 @@ import Order from "./components/comman/Orders/Order";
 import Summary from "./components/comman/Summary/Summary";
 import Login from "./components/comman/Login/Login";
 import Signup from "./components/comman/Signup/Signup";
+import Navbar2 from "./components/comman/Navbar/Navbar2";
 
 function App() {
   const location = useLocation();
@@ -27,7 +28,8 @@ function App() {
 
   return (
     <>
-      {!isAdminRoute && <Navbar />}
+      {/* {!isAdminRoute && <Navbar />} */}
+      <Navbar2/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<Admin />} />

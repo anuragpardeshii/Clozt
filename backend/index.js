@@ -114,7 +114,7 @@ app.post("/login-user", async (req, res) => {
       return res.status(500).send("Internal server error");
     }
     if (result) {
-      let token = jwt.sign({ email: user.email }, "secretkey");
+      let token = jwt.sign({ email: user.email }, process.env.TOKEN_SECRET);
       res.cookie("token", token, { 
         httpOnly: true,
         secure: false, // Set true in production with HTTPS
