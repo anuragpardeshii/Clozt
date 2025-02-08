@@ -7,7 +7,7 @@ import Winter from "/src/assets/Images/Sale/Winter.jpeg";
 export default function Sale() {
   return (
     <>
-      <div
+      {/* <div
         className="bg-white dark:bg-gray-900 w-100 bg-cover flex items-center justify-center"
         style={{
           backgroundImage: `url(${backgroundImage})`,
@@ -82,6 +82,125 @@ export default function Sale() {
             </a>
           </div>
         </a>
+      </div> */}
+      <div id="sale_section" className="py-16 bg-red-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <span className="text-red-600 font-medium mb-2 inline-block"></span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Season End Sale
+            </h2>
+            <p className="text-gray-600">Up to 70% off on selected items</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="group rounded-lg">
+              <div className="relative overflow-hidden mb-4">
+                <div className="bg-[url('https://placehold.co/400x500')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
+                <div className="absolute top-4 left-4">
+                  <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    -40%
+                  </span>
+                </div>
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button
+                    className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors"
+                    fdprocessedid="k2lm5"
+                  >
+                    Add to cart
+                  </button>
+                </div>
+              </div>
+              <h3 className="font-medium">Denim Jacket</h3>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-red-600 font-medium">Rs. 1299</span>
+                <span className="text-gray-400 line-through text-sm">
+                  Rs. 699
+                </span>
+              </div>
+            </div>
+
+            <div className="group rounded-lg">
+              <div className="relative overflow-hidden mb-4">
+                <div className="bg-[url('https://placehold.co/400x500')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
+                <div className="absolute top-4 left-4">
+                  <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    -40%
+                  </span>
+                </div>
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button
+                    className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors"
+                    fdprocessedid="k2lm5"
+                  >
+                    Add to cart
+                  </button>
+                </div>
+              </div>
+              <h3 className="font-medium">Denim Jacket</h3>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-red-600 font-medium">Rs. 1299</span>
+                <span className="text-gray-400 line-through text-sm">
+                  Rs. 699
+                </span>
+              </div>
+            </div>
+
+            <div className="group rounded-lg">
+              <div className="relative overflow-hidden mb-4">
+                <div className="bg-[url('https://placehold.co/400x500')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
+                <div className="absolute top-4 left-4">
+                  <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    -40%
+                  </span>
+                </div>
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button
+                    className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors"
+                    fdprocessedid="k2lm5"
+                  >
+                    Add to cart
+                  </button>
+                </div>
+              </div>
+              <h3 className="font-medium">Denim Jacket</h3>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-red-600 font-medium">Rs. 1299</span>
+                <span className="text-gray-400 line-through text-sm">
+                  Rs. 699
+                </span>
+              </div>
+            </div>
+
+            <div className="group rounded-lg">
+              <div className="relative overflow-hidden mb-4">
+                <div className="bg-[url('https://placehold.co/400x500')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
+                <div className="absolute top-4 left-4">
+                  <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    -40%
+                  </span>
+                </div>
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button
+                    className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors"
+                    fdprocessedid="k2lm5"
+                  >
+                    Add to cart
+                  </button>
+                </div>
+              </div>
+              <h3 className="font-medium">Denim Jacket</h3>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-red-600 font-medium">Rs. 1299</span>
+                <span className="text-gray-400 line-through text-sm">
+                  Rs. 699
+                </span>
+              </div>
+            </div>
+          </div>
+            <div className="text-center mt-12">
+              <a href="" className="inline-flex items-center gap-2 bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transition-colors">View All Sale Items</a>
+            </div>
+        </div>
       </div>
     </>
   );

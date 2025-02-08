@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* * {
+  font-family: "Belleza", serif;
+  font-weight: 400;
+  font-style: normal;
+} */
+
 input:focus {
   outline: none !important;
   box-shadow: none !important;
@@ -14,27 +20,27 @@ input:-webkit-autofill {
 }
 
 .nav-padding {
-    padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem;
 }
 
 @media (min-width: 320px) {
-    .nav-padding {
-        padding: 0.3rem 1rem;
-    }
+  .nav-padding {
+    padding: 0.3rem 1rem;
+  }
 
-    .height-mob {
-        height: 1.3rem;
-    }
+  .height-mob {
+    height: 1.3rem;
+  }
 }
 
 @media (min-width: 734px) {
-    .nav-padding {
-        padding: 0.5rem 1rem;
-    }
+  .nav-padding {
+    padding: 0.5rem 1rem;
+  }
 }
 
 @media (min-width: 1180px) {
-    .nav-padding {
-        padding: 0.5rem 1rem;
-    }
+  .nav-padding {
+    padding: 0.5rem 1rem;
+  }
 }
