@@ -6,7 +6,7 @@ import Winter from "/src/assets/Images/Men/Winter.jpeg";
 export default function MenFashion() {
   return (
     <>
-      <div
+      {/* <div
         className="bg-white dark:bg-gray-900 w-100 bg-cover bg-center flex items-center justify-center"
         style={{
           backgroundImage:
@@ -87,7 +87,137 @@ export default function MenFashion() {
             </a>
           </div>
         </a>
-      </div>
+      </div> */}
+      <section id="mens_collection" className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold">Men's Collection</h2>
+            <a
+              href="/men"
+              className="text-gray-600 hover:text-black transition-colors flex items-center gap-2"
+            >
+              View All
+              {/* Right arrow */}
+            </a>
+          </div>
+          {/* Featured Categories */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <div className="relative group overflow-hidden rounded-lg">
+              <div className="bg-[url('https://placehold.co/800x400')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+              <div className="absolute inset-0 bg-black/30"></div>
+              <div className="absolute bottom-8 left-8">
+                <h3 className="text-white text-2xl font-bold mb-2">
+                  Casual Collection
+                </h3>
+                <a
+                  href="/men"
+                  className="inline-flex items-center gap-2 bg-white text-black px-6 py-2 rounded-full hover:bg-black hover:text-white transition-colors"
+                >
+                  Shop Now
+                </a>
+              </div>
+            </div>
+            <div className="relative group overflow-hidden rounded-lg">
+              <div className="bg-[url('https://placehold.co/800x400')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+              <div className="absolute inset-0 bg-black/30"></div>
+              <div className="absolute bottom-8 left-8">
+                <h3 className="text-white text-2xl font-bold mb-2">
+                  Casual Collection
+                </h3>
+                <a
+                  href="/men"
+                  className="inline-flex items-center gap-2 bg-white text-black px-6 py-2 rounded-full hover:bg-black hover:text-white transition-colors"
+                >
+                  Shop Now
+                </a>
+              </div>
+            </div>
+          </div>
+          {/* Category */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {/* Tops Category */}
+            <div className="group cursor-pointer">
+              <div className="relative overflow-hidden rounded-lg mb-3">
+                <div
+                  className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  style={{ backgroundImage: `url(${Top})` }}
+                ></div>
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+              </div>
+              <h3 className="text-xl font-medium text-center">Tops</h3>
+              <div className="flex justify-center mt-2">
+                <a
+                  href=""
+                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
+                >
+                  Shop Now {/*right arrow*/}{" "}
+                  <i className="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+
+            <div className="group cursor-pointer">
+              <div className="relative overflow-hidden rounded-lg mb-3">
+                <div
+                  className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  style={{ backgroundImage: `url(${Shirt})` }}
+                ></div>
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+              </div>
+              <h3 className="text-xl font-medium text-center">Shirts</h3>
+              <div className="flex justify-center mt-2">
+                <a
+                  href=""
+                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
+                >
+                  Shop Now {/*right arrow*/}{" "}
+                  <i className="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+
+            <div className="group cursor-pointer">
+              <div className="relative overflow-hidden rounded-lg mb-3">
+                <div
+                  className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  style={{ backgroundImage: `url(${Denim})` }}
+                ></div>
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+              </div>
+              <h3 className="text-xl font-medium text-center">Denim</h3>
+              <div className="flex justify-center mt-2">
+                <a
+                  href=""
+                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
+                >
+                  Shop Now {/*right arrow*/}{" "}
+                  <i className="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+
+            <div className="group cursor-pointer">
+              <div className="relative overflow-hidden rounded-lg mb-3">
+                <div
+                  className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  style={{ backgroundImage: `url(${Winter})` }}
+                ></div>
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+              </div>
+              <h3 className="text-xl font-medium text-center">Winter Wear</h3>
+              <div className="flex justify-center mt-2">
+                <a
+                  href=""
+                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
+                >
+                  Shop Now {/*right arrow*/}{" "}
+                  <i className="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

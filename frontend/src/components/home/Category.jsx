@@ -47,7 +47,55 @@ export default function Category() {
       </div>
 
       <section id="featured_categories" className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4"></div>
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">Shop By Category</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {/* Tops Category */}
+            <div className="group cursor-pointer">
+              <div className="relative overflow-hidden rounded-lg mb-3">
+                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url(${Top})` }} ></div>
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+              </div>
+              <h3 className="text-xl font-medium text-center">Tops</h3>
+              <div className="flex justify-center mt-2">
+                <a href="" className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2">Shop Now {/*right arrow*/} <i className="fa-solid fa-arrow-right"></i></a>
+              </div>
+            </div>
+
+            <div className="group cursor-pointer">
+              <div className="relative overflow-hidden rounded-lg mb-3">
+                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url(${Shirt})`}}></div>
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+              </div>
+              <h3 className="text-xl font-medium text-center">Shirts</h3>
+              <div className="flex justify-center mt-2">
+                <a href="" className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2">Shop Now {/*right arrow*/} <i className="fa-solid fa-arrow-right"></i></a>
+              </div>
+            </div>
+
+            <div className="group cursor-pointer">
+              <div className="relative overflow-hidden rounded-lg mb-3">
+                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url(${Denim})`}}></div>
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+              </div>
+              <h3 className="text-xl font-medium text-center">Denim</h3>
+              <div className="flex justify-center mt-2">
+                <a href="" className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2">Shop Now {/*right arrow*/} <i className="fa-solid fa-arrow-right"></i></a>
+              </div>
+            </div>
+
+            <div className="group cursor-pointer">
+              <div className="relative overflow-hidden rounded-lg mb-3">
+                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url(${Winter})`}}></div>
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+              </div>
+              <h3 className="text-xl font-medium text-center">Winter Wear</h3>
+              <div className="flex justify-center mt-2">
+                <a href="" className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2">Shop Now {/*right arrow*/} <i className="fa-solid fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* <div

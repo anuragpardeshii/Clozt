@@ -7,7 +7,96 @@ import backgroundImage from "/src/assets/Images/new.jpg"
 export default function NewArrival() {
   return (
     <>
-      <div
+      <section id="new_arrivals" className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold">New Arrival</h2>
+            <a href="/new-arrival" className="text-gray-600 hover:text-black transition-colors flex items-center gap-2">View All {/* right arrow*/}</a>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="group">
+              <div className="relative overflow-hidden mb-4 rounded-lg">
+                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg" style={{ backgroundImage: `url(${Top})`}} ></div>
+                <div className="absolute top-4 left-4">
+                  <span className="bg-white px-3 py-1 rounded-full text-sm font-medium">New</span>
+                </div>
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors" fdprocessedid="5907hd">
+                    {/* bag icon */}
+                    Add to cart
+                  </button>
+                </div>
+                <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
+                  {/* Heart icon */}
+                </button>
+              </div>
+              <h3 className="font-medium">Black Tshirt</h3>
+              <p className="text-gray-600 mt-1">Rs. 999</p>
+            </div>
+            <div className="group">
+              <div className="relative overflow-hidden mb-4 rounded-lg">
+                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg" style={{ backgroundImage: `url(${Shirt})`}}></div>
+                <div className="absolute top-4 left-4">
+                  <span className="bg-white px-3 py-1 rounded-full text-sm font-medium">New</span>
+                </div>
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors" fdprocessedid="5907hd">
+                    {/* bag icon */}
+                    Add to cart
+                  </button>
+                </div>
+                <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
+                  {/* Heart icon */}
+                </button>
+              </div>
+              <h3 className="font-medium">Black Tshirt</h3>
+              <p className="text-gray-600 mt-1">Rs. 999</p>
+            </div>
+            
+            <div className="group">
+              <div className="relative overflow-hidden mb-4 rounded-lg">
+                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg" style={{ backgroundImage: `url(${Denim})`}}></div>
+                <div className="absolute top-4 left-4">
+                  <span className="bg-white px-3 py-1 rounded-full text-sm font-medium">New</span>
+                </div>
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors" fdprocessedid="5907hd">
+                    {/* bag icon */}
+                    Add to cart
+                  </button>
+                </div>
+                <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
+                  {/* Heart icon */}
+                </button>
+              </div>
+              <h3 className="font-medium">Black Tshirt</h3>
+              <p className="text-gray-600 mt-1">Rs. 999</p>
+            </div>
+
+            <div className="group">
+              <div className="relative overflow-hidden mb-4 rounded-lg">
+                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg" style={{ backgroundImage: `url(${Winter})`}}></div>
+                <div className="absolute top-4 left-4 rounded-lg">
+                  <span className="bg-white px-3 py-1 rounded-full text-sm font-medium">New</span>
+                </div>
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 rounded-lg transition-opacity duration-300">
+                  <button className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors" fdprocessedid="5907hd">
+                    {/* bag icon */}
+                    Add to cart
+                  </button>
+                </div>
+                <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
+                  {/* Heart icon */}
+                </button>
+              </div>
+              <h3 className="font-medium">Black Tshirt</h3>
+              <p className="text-gray-600 mt-1">Rs. 999</p>
+            </div>
+            
+          </div>
+        </div>
+      </section>
+      {/* <div
         className="bg-white dark:bg-gray-900 w-100 bg-cover flex items-center justify-center"
         style={{
           
@@ -86,7 +175,7 @@ export default function NewArrival() {
             </a>
           </div>
         </a>
-      </div>
+      </div> */}
     </>
   );
 }

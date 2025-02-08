@@ -65,10 +65,10 @@ export default function Home() {
       </div> */}
       <Hero />
       <Category/>
-      <Sale/>
       <NewArrival />
       <MenFashion />
       <WomenFashion />
+      <Sale/>
     </>
   );
 }
