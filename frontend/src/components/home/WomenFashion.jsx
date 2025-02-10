@@ -100,7 +100,7 @@ export default function WomenFashion() {
           {/* Main categories grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div className="relative group overflow-hidden rounded-lg col-span-2">
-              <div className="bg-[url('https://placehold.co/800x600')] h-[600px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+              <div className="bg-[url('https://images.pexels.com/photos/12641091/pexels-photo-12641091.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] h-[600px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               <div className="absolute bottom-8 left-8">
                 <h3 className="text-white text-2xl font-bold mb-2">
@@ -119,7 +119,8 @@ export default function WomenFashion() {
             </div>
             <div className="space-y-6">
               <div className="relative group overflow-hidden rounded-lg">
-                <div className="bg-[url('https://placehold.co/400x285')] h-[285px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+              {/* https://images.pexels.com/photos/30628347/pexels-photo-30628347/free-photo-of-elegant-woman-in-black-sequin-jacket-with-shadow.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1 */}
+                <div className="bg-[url('https://images.pexels.com/photos/13156195/pexels-photo-13156195.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load')] h-[285px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
                 <div className="absolute inset-0 bg-black/30"></div>
                 <div className="absolute bottom-6 left-6">
                   <h3 className="text-white text-xl font-bold mb-2">
@@ -134,7 +135,7 @@ export default function WomenFashion() {
                 </div>
               </div>
               <div className="relative group overflow-hidden rounded-lg">
-                <div className="bg-[url('https://placehold.co/400x285')] h-[285px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+                <div className="bg-[url('https://images.pexels.com/photos/7644913/pexels-photo-7644913.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] h-[285px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
                 <div className="absolute inset-0 bg-black/30"></div>
                 <div className="absolute bottom-6 left-6">
                   <h3 className="text-white text-xl font-bold mb-2">

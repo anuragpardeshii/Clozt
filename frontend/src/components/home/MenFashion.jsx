@@ -103,7 +103,7 @@ export default function MenFashion() {
           {/* Featured Categories */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             <div className="relative group overflow-hidden rounded-lg">
-              <div className="bg-[url('https://placehold.co/800x400')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+              <div className="bg-[url('https://images.pexels.com/photos/30186077/pexels-photo-30186077/free-photo-of-stylish-man-with-tattoos-wearing-sunglasses.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
               <div className="absolute inset-0 bg-black/30"></div>
               <div className="absolute bottom-8 left-8">
                 <h3 className="text-white text-2xl font-bold mb-2">
@@ -118,7 +118,7 @@ export default function MenFashion() {
               </div>
             </div>
             <div className="relative group overflow-hidden rounded-lg">
-              <div className="bg-[url('https://placehold.co/800x400')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+              <div className="bg-[url('https://images.pexels.com/photos/10264891/pexels-photo-10264891.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
               <div className="absolute inset-0 bg-black/30"></div>
               <div className="absolute bottom-8 left-8">
                 <h3 className="text-white text-2xl font-bold mb-2">
@@ -139,8 +139,8 @@ export default function MenFashion() {
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
-                  className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                  style={{ backgroundImage: `url(${Top})` }}
+                  className="bg-[url('https://i.pinimg.com/736x/dc/ae/b1/dcaeb15360561a657016a9003731d097.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  // style={{ backgroundImage: `url(${Top})` }}
                 ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
               </div>
@@ -159,8 +159,9 @@ export default function MenFashion() {
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
-                  className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                  style={{ backgroundImage: `url(${Shirt})` }}
+                  className="bg-[url('https://images.pexels.com/photos/19461514/pexels-photo-19461514/free-photo-of-back-view-of-man-in-shirt-and-sunglasses.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  // style={{ backgroundImage: `url(${Shirt})` }}
+                  // https://images.pexels.com/photos/19461514/pexels-photo-19461514/free-photo-of-back-view-of-man-in-shirt-and-sunglasses.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1
                 ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
               </div>
@@ -179,8 +180,8 @@ export default function MenFashion() {
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
-                  className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                  style={{ backgroundImage: `url(${Denim})` }}
+                  className="bg-[url('https://i.pinimg.com/736x/d1/03/93/d1039330aa936dcfe83a46da257f4c19.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  // style={{ backgroundImage: `url(${Denim})` }}
                 ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
               </div>
