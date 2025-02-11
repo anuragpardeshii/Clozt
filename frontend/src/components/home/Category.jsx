@@ -16,7 +16,7 @@ export default function Category() {
           whiteSpace: "nowrap",
         }}
       >
-        <div >
+        <div>
           <marquee>
             FLAT Rs 500 OFF* &nbsp; USE CODE : FIRST500 &nbsp;&nbsp;&nbsp;&nbsp;
             &nbsp;&nbsp;&nbsp;&nbsp; FLAT Rs 500 OFF* USE CODE: FIRST500
@@ -42,56 +42,94 @@ export default function Category() {
             &nbsp;&nbsp;&nbsp;&nbsp; FLAT Rs 500 OFF* USE CODE: FIRST500
             &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; FLAT Rs 500 OFF*
             USE CODE: FIRST500 &nbsp;&nbsp;&nbsp;&nbsp;
-            </marquee>
+          </marquee>
         </div>
       </div>
 
       <section id="featured_categories" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Shop By Category</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Shop By Category
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {/* Tops Category */}
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
-                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url(${Top})` }} ></div>
+                <div
+                  className="bg-[url('https://i.pinimg.com/736x/8b/b1/80/8bb1806f674cc13a0e636615c3712020.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  // style={{ backgroundImage: `url(${Top})` }}
+                ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
               </div>
-              <h3 className="text-xl font-medium text-center">Tops</h3>
+              <h3 className="text-xl font-medium text-center">T-shirts</h3>
               <div className="flex justify-center mt-2">
-                <a href="" className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2">Shop Now {/*right arrow*/} <i className="fa-solid fa-arrow-right"></i></a>
+                <a
+                  href=""
+                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
+                >
+                  Shop Now {/*right arrow*/}{" "}
+                  <i className="fa-solid fa-arrow-right"></i>
+                </a>
               </div>
             </div>
 
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
-                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url(${Shirt})`}}></div>
+                <div
+                  className="bg-[url('https://i.pinimg.com/736x/c0/48/78/c04878e6254d3d0d166102fbf242904e.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  // style={{ backgroundImage: `url(${Shirt})` }}
+                ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
               </div>
               <h3 className="text-xl font-medium text-center">Shirts</h3>
               <div className="flex justify-center mt-2">
-                <a href="" className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2">Shop Now {/*right arrow*/} <i className="fa-solid fa-arrow-right"></i></a>
+                <a
+                  href=""
+                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
+                >
+                  Shop Now {/*right arrow*/}{" "}
+                  <i className="fa-solid fa-arrow-right"></i>
+                </a>
               </div>
             </div>
 
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
-                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url(${Denim})`}}></div>
+                <div
+                  className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  style={{ backgroundImage: `url(${Denim})` }}
+                ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
               </div>
               <h3 className="text-xl font-medium text-center">Denim</h3>
               <div className="flex justify-center mt-2">
-                <a href="" className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2">Shop Now {/*right arrow*/} <i className="fa-solid fa-arrow-right"></i></a>
+                <a
+                  href=""
+                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
+                >
+                  Shop Now {/*right arrow*/}{" "}
+                  <i className="fa-solid fa-arrow-right"></i>
+                </a>
               </div>
             </div>
 
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
-                <div className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url(${Winter})`}}></div>
+                <div
+                  className="bg-[url('https://i.pinimg.com/736x/25/b3/d1/25b3d152aba0c3490240aa69fb3cc664.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  // style={{ backgroundImage: `url(${Winter})` }}
+                ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
               </div>
               <h3 className="text-xl font-medium text-center">Winter Wear</h3>
               <div className="flex justify-center mt-2">
-                <a href="" className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2">Shop Now {/*right arrow*/} <i className="fa-solid fa-arrow-right"></i></a>
+                <a
+                  href=""
+                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
+                >
+                  Shop Now {/*right arrow*/}{" "}
+                  <i className="fa-solid fa-arrow-right"></i>
+                </a>
               </div>
             </div>
           </div>

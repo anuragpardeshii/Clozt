@@ -144,7 +144,7 @@ export default function MenFashion() {
                 ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
               </div>
-              <h3 className="text-xl font-medium text-center">Tops</h3>
+              <h3 className="text-xl font-medium text-center">T-shirts</h3>
               <div className="flex justify-center mt-2">
                 <a
                   href=""
@@ -200,8 +200,8 @@ export default function MenFashion() {
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
-                  className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                  style={{ backgroundImage: `url(${Winter})` }}
+                  className="bg-[url('https://i.pinimg.com/736x/79/de/84/79de84bea14c182a521b437408355437.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  // style={{ backgroundImage: `url(${Winter})` }}
                 ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
               </div>
