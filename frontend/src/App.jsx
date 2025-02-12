@@ -21,7 +21,19 @@ import Login from "./components/comman/Login/Login";
 import Signup from "./components/comman/Signup/Signup";
 import Navbar2 from "./components/comman/Navbar/Navbar2";
 
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/user", { withCredentials: true })
+      .then(response => setUser(response.data.user))
+      .catch(() => setUser(null));
+  }, []);
+
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
 
@@ -29,7 +41,7 @@ function App() {
   return (
     <>
       {/* {!isAdminRoute && <Navbar />} */}
-      <Navbar2/>
+      <Navbar2 user={user} setUser={setUser} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<Admin />} />
