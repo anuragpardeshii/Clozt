@@ -15,6 +15,9 @@ const productRoutes = require("./Routes/productRoutes");
 const getProducts = require("./Routes/productRoutes");
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = "mongodb+srv://pardeshianurag22:qwertyuiop@clozt.bxmri.mongodb.net/?retryWrites=true&w=majority&appName=Clozt";
+const cookieParser = require("cookie-parser");
+
+app.use(cookieParser()); 
 
 app.use(bodyParser.json()); // Parse JSON requests
 app.use(morgan("dev"));
@@ -102,36 +105,68 @@ app.post("/create", async (req, res) => {
 // new file 
 app.use("/api/products", productRoutes);
 
-// login
+//login
 app.post("/login-user", async (req, res) => {
-  let {email, password} = req.body;
-  let user = await userModel.findOne({email});
-  if(!user) return res.status(500).send("User does not exist");
+  try {
+    const { email, password } = req.body;
 
-  bcrypt.compare(password, user.password, function (err, result) {
-    if (err) {
-      console.error("Error during bcrypt comparison:", err);
-      return res.status(500).send("Internal server error");
-    }
-    if (result) {
-      let token = jwt.sign({ email: user.email }, process.env.TOKEN_SECRET);
-      res.cookie("token", token, { 
-        httpOnly: true,
-        secure: false, // Set true in production with HTTPS
-        sameSite: "lax", // Controls cookie sharing between origins
-          });
-      res.send("yes you can login");
-    } else {
-      res.status(401).send("Wrong Password");
-    }
-  });
-}); 
+    // Find user by email
+    const user = await userModel.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User does not exist" });
 
-//log out
-app.get("/logout", (req,res) => {
-  res.cookie("token", "");
-  res.redirect("/");
-})
+    // Check if user has a password before comparing
+    if (!user.password) return res.status(500).json({ message: "Password not set" });
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ message: "Wrong Password" });
+
+    // Generate JWT token
+    const token = jwt.sign({ id: user._id }, "secretkey", { expiresIn: "1d" });
+
+    // Set cookie with security settings
+    res.cookie("token", token, { 
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // True in production
+      sameSite: "Lax",
+      path: "/", // Apply cookie to the entire site
+      maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
+    });
+
+    // Remove password from user object before sending response
+    const { password: _, ...userData } = user.toObject();
+
+    res.json({ message: "Login successful", user: userData });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+app.post("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logged out successfully" });
+});
+
+
+
+
+app.get("/auth-status", (req, res) => {
+  const token = req.cookies.token; // Now `req.cookies` will be defined
+
+  if (!token) {
+    return res.json({ loggedIn: false });
+  }
+
+  try {
+    jwt.verify(token, "secretkey"); // Use the correct secret key
+    res.json({ loggedIn: true });
+  } catch (err) {
+    res.json({ loggedIn: false });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

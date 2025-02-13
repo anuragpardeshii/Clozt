@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
@@ -7,6 +7,6 @@ const userSchema = new mongoose.Schema({
   mobile: { type: String, required: true },
 });
 
-const userModel = mongoose.model('User', userSchema);
+const userModel = mongoose.model("User", userSchema);
 
-module.exports = userModel; // Make sure this export is correct
+module.exports = userModel; // Correct export
