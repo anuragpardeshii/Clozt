@@ -109,114 +109,116 @@ export default function Navbar() {
           style={{ zIndex: "1000", marginTop: "4rem" }}
         >
           <div className="max-w-screen-xl ms-auto">
-            <div className="grid max-w-screen-md px-4 bg-white py-5 gap-8 text-gray-900 dark:text-white sm:grid-cols-3 md:px-6" style={{marginLeft: "auto"}}>
-            <ul>
-              <li>
-                <a
-                  href="/customer-care"
-                  className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <div className="font-semibold">Help</div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Connect with third-party tools that you're already using.
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/contact-us"
-                  className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <div className="font-semibold">Contact us</div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Connect with third-party tools that you're already using.
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <div className="font-semibold">Gift card</div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Connect with third-party tools that you're already using.
-                  </span>
-                </a>
-              </li>
-            </ul>
-            <ul>
-              <li>
-                <a
-                  href="/wishlist"
-                  className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <div className="font-semibold">Whishlist</div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Connect with third-party tools that you're already using.
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/cart"
-                  className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <div className="font-semibold">Shopping Bag</div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Connect with third-party tools that you're already using.
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <div className="font-semibold">Manage Account</div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Connect with third-party tools that you're already using.
-                  </span>
-                </a>
-              </li>
-            </ul>
-            <ul>
-              <li>
-                <a
-                  href="/orders"
-                  className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <div className="font-semibold">Orders</div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Connect with third-party tools that you're already using.
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/about"
-                  className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <div className="font-semibold">About</div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Connect with third-party tools that you're already using.
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href={isAuthenticated ? "/logout" : "/login"}
-                  onClick={isAuthenticated ? handleLogout : null}
-                  className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <div className="font-semibold">Login</div>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
-          Connect with third-party tools that you're already using.
-        </span>
-
-                </a>
-              </li>
-            </ul>
+            <div
+              className="grid max-w-screen-md px-4 bg-white py-5 gap-8 text-gray-900 dark:text-white sm:grid-cols-3 md:px-6"
+              style={{ marginLeft: "auto" }}
+            >
+              <ul>
+                <li>
+                  <a
+                    href="/customer-care"
+                    className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <div className="font-semibold">Help</div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Connect with third-party tools that you're already using.
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/contact-us"
+                    className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <div className="font-semibold">Contact us</div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Connect with third-party tools that you're already using.
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <div className="font-semibold">Gift card</div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Connect with third-party tools that you're already using.
+                    </span>
+                  </a>
+                </li>
+              </ul>
+              <ul>
+                <li>
+                  <a
+                    href="/wishlist"
+                    className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <div className="font-semibold">Whishlist</div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Connect with third-party tools that you're already using.
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/cart"
+                    className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <div className="font-semibold">Shopping Bag</div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Connect with third-party tools that you're already using.
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <div className="font-semibold">Manage Account</div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Connect with third-party tools that you're already using.
+                    </span>
+                  </a>
+                </li>
+              </ul>
+              <ul>
+                <li>
+                  <a
+                    href="/orders"
+                    className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <div className="font-semibold">Orders</div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Connect with third-party tools that you're already using.
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/about"
+                    className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <div className="font-semibold">About</div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Connect with third-party tools that you're already using.
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={isAuthenticated ? "/logout" : "/login"}
+                    onClick={isAuthenticated ? handleLogout : null}
+                    className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <div className="font-semibold">Login</div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Connect with third-party tools that you're already using.
+                    </span>
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
         </div>

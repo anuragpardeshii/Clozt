@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Search, User, Heart, ShoppingCart, Menu } from "lucide-react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Navbar2({user, setUser}) {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -14,9 +16,35 @@ export default function Navbar2({user, setUser}) {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/auth-status", { withCredentials: true });
+        if (res.data.loggedIn) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
   const handleLogout = async () => {
-    await axios.post("http://localhost:3000/logout", {}, { withCredentials: true });
-    setUser(null);
+    try {
+      await axios.post("http://localhost:3000/logout", {}, { withCredentials: true });
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      setIsLoggedIn(false);
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
   
   return (
@@ -88,19 +116,18 @@ export default function Navbar2({user, setUser}) {
                     >
                       Settings
                     </a>
-                    {user ? (
-                      <>
+                    {isLoggedIn ? (
+                      <a
+                      onClick={handleLogout}
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      >Logout</a>
+                    ) : (
                       <a
                         href="/Login"
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                       >
                         Login
                       </a>
-                      </>
-                    ) : (
-                      <>
-                      <button onClick={handleLogout} className="bg-red-500 px-3 py-1 rounded">Logout</button>
-                      </>
                     )}
                   </div>
                 )}

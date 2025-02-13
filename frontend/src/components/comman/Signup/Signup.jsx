@@ -58,7 +58,7 @@ export default function Signup() {
           <div className="relative">
             {/* <!-- Fixed prefix --> */}
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-400">
-              +91-
+              +91
             </span>
             {/* <!-- Input field for the 10-digit number --> */}
             <input

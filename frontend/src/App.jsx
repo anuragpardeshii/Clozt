@@ -23,45 +23,51 @@ import Navbar2 from "./components/comman/Navbar/Navbar2";
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import MainLayout from "./components/Layout/MainLayout";
 
 function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/user", { withCredentials: true })
-      .then(response => setUser(response.data.user))
+    axios
+      .get("http://localhost:3000/user", { withCredentials: true })
+      .then((response) => setUser(response.data.user))
       .catch(() => setUser(null));
   }, []);
 
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
-
+  const isLogin = location.pathname.startsWith("/Login");
+  const isSignup = location.pathname.startsWith("/signup");
 
   return (
     <>
-      {/* {!isAdminRoute && <Navbar />} */}
-      <Navbar2 user={user} setUser={setUser} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/customer-care" element={<Help/>} />
-        <Route path="/about" element={<About/>} />
-        <Route path="/men" element={<Men/>} />
-        <Route path="/women" element={<Women/>} />
-        <Route path="/new-arrival" element={<New/>} />
-        <Route path="/sale" element={<Sale/>} />
-        <Route path="/details" element={<Details/>} />
-        <Route path="/admin/newProduct" element={<NewProduct/>} />
-        <Route path="/admin/allProducts" element={<AllProducts/>} />
-        <Route path="/cart" element={<Cart/>} />
-        <Route path="/order-summary" element={<Summary/>} />
-        <Route path="/orders" element={<Order/>} />
-        <Route path="/wishlist" element={<Wishlist/>} />
-        <Route path="/Login" element={<Login/>} />
-        <Route path="/signup" element={<Signup/>} />
-      </Routes>
-      {!isAdminRoute && <Footer />}
+      {isAdminRoute || isSignup || isLogin ? (
+        <Routes>
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/newProduct" element={<NewProduct />} />
+          <Route path="/admin/allProducts" element={<AllProducts />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/signup" element={<Signup/>} />
+        </Routes>
+      ) : (
+        <MainLayout user={user} setUser={setUser}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/customer-care" element={<Help />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/men" element={<Men />} />
+            <Route path="/women" element={<Women />} />
+            <Route path="/new-arrival" element={<New />} />
+            <Route path="/sale" element={<Sale />} />
+            <Route path="/details" element={<Details />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/order-summary" element={<Summary />} />
+            <Route path="/orders" element={<Order />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+          </Routes>
+        </MainLayout>
+      )}
     </>
   );
 }

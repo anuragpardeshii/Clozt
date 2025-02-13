@@ -46,14 +46,14 @@ export default function Login({ setUser }) {
   };
 
   return (
-    <section className="bg-gray-50 pt-12 min-h-screen dark:bg-gray-900">
-      <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 grid lg:grid-cols-2 gap-8 lg:gap-16">
+    <section className="bg-gray-50 min-h-screen dark:bg-gray-900">
+      <div className="py-8 px-4 mx-auto h-screen items-center max-w-screen-xl lg:py-16 grid lg:grid-cols-2 gap-8 lg:gap-16">
         <div className="flex flex-col sm:max-w-lg mx-auto justify-center">
           <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-            Access the Care You Need
+          Stay Stylish, Shop Smart
           </h1>
           <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
-            Log in to easily book appointments, manage your health records, and stay updated on your healthcare journey.
+          Log in to explore the latest trends, manage your orders, and enjoy a seamless shopping experience with CLOZT.
           </p>
           <a href="/signup" className="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center">
             Sign up
