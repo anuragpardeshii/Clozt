@@ -19,9 +19,8 @@ export default function NewProduct() {
       XL: 0,
       XXL: 0,
     },
-    image: null,
+    image: [],
   });
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -29,21 +28,16 @@ export default function NewProduct() {
       setFormData((prev) => ({
         ...prev,
         listings: checked
-          ? [...prev.listings, name] // Add to array if checked
-          : prev.listings.filter((item) => item !== name), // Remove if unchecked
+          ? [...prev.listings, name]
+          : prev.listings.filter((item) => item !== name),
       }));
     } else if (["XS", "S", "M", "L", "XL", "XXL"].includes(name)) {
       setFormData((prev) => ({
         ...prev,
         sizes: {
           ...prev.sizes,
-          [name]: Number(value), // Store quantity as number
+          [name]: Number(value),
         },
-      }));
-    } else if (name === "image") {
-      setFormData((prev) => ({
-        ...prev,
-        image: e.target.files[0], // Store the uploaded file
       }));
     } else {
       setFormData((prev) => ({
@@ -53,32 +47,47 @@ export default function NewProduct() {
     }
   };
 
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setFormData((prev) => ({
+      ...prev,
+      images: files, // Store files in state
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const formDataToSend = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (key === "sizes") {
-        formDataToSend.append(key, JSON.stringify(formData[key]));
-      } else if (key === "listings") {
-        formData[key].forEach((listing) => formDataToSend.append("listings[]", listing));
-      } else if (key === "image") {
-        formDataToSend.append("image", formData[key]);
-      } else {
-        formDataToSend.append(key, formData[key]);
-      }
+
+    const newFormData = new FormData();
+    newFormData.append("title", formData.title);
+    newFormData.append("description", formData.description);
+    newFormData.append("price", formData.price);
+    newFormData.append("color", formData.color);
+    newFormData.append("gender", formData.gender);
+    newFormData.append("category", formData.category);
+    newFormData.append("listings", JSON.stringify(formData.listings));
+    newFormData.append("sizes", JSON.stringify(formData.sizes));
+
+    // Append each image file
+    formData.images.forEach((image) => {
+      newFormData.append("images", image);
     });
-  
+
     try {
-      const response = await axios.post("http://localhost:3000/api/products/newproduct", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-  
-      console.log("Product added:", response.data);
+      const response = await fetch(
+        "http://localhost:3000/api/products/newproduct",
+        {
+          method: "POST",
+          body: newFormData,
+        }
+      );
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+
+      console.log("Product added successfully:", data);
     } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
+      console.error("Error adding product:", error.message);
     }
   };
 
@@ -262,7 +271,8 @@ export default function NewProduct() {
               <input
                 type="file"
                 name="image"
-                onChange={handleChange}
+                onChange={handleImageChange}
+                multiple
                 className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
               />
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">

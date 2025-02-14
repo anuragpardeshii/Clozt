@@ -24,6 +24,7 @@ import Navbar2 from "./components/comman/Navbar/Navbar2";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import MainLayout from "./components/Layout/MainLayout";
+import "flowbite";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -37,7 +38,7 @@ function App() {
 
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
-  const isLogin = location.pathname.startsWith("/Login");
+  const isLogin = location.pathname.startsWith("/login");
   const isSignup = location.pathname.startsWith("/signup");
 
   return (
@@ -47,7 +48,7 @@ function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/newProduct" element={<NewProduct />} />
           <Route path="/admin/allProducts" element={<AllProducts />} />
-          <Route path="/Login" element={<Login />} />
+          <Route path="/login" element={ <Login />} />
           <Route path="/signup" element={<Signup/>} />
         </Routes>
       ) : (

@@ -100,7 +100,7 @@ export default function WomenFashion() {
           {/* Main categories grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div className="relative group overflow-hidden rounded-lg col-span-2">
-              <div className="bg-[url('https://images.pexels.com/photos/12641091/pexels-photo-12641091.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] h-[600px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+              <div className="bg-[url('https://img.freepik.com/free-photo/three-young-beautiful-smiling-hipster-girls-trendy-summer-clothes-sexy-carefree-women-posing-near-pink-wall-positive-models-having-fun-pointing-shop-sales_158538-6391.jpg?t=st=1739445717~exp=1739449317~hmac=1c1902b62244852a3c9124e85f0ad16e07bb0d4854174ccd6455fade9e12a2b3&w=900')] h-[600px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               <div className="absolute bottom-8 left-8">
                 <h3 className="text-white text-2xl font-bold mb-2">
@@ -120,7 +120,7 @@ export default function WomenFashion() {
             <div className="space-y-6">
               <div className="relative group overflow-hidden rounded-lg">
               {/* https://images.pexels.com/photos/30628347/pexels-photo-30628347/free-photo-of-elegant-woman-in-black-sequin-jacket-with-shadow.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1 */}
-                <div className="bg-[url('https://images.pexels.com/photos/13156195/pexels-photo-13156195.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load')] h-[285px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+                <div className="bg-[url('https://i.pinimg.com/736x/69/2b/1c/692b1cec1ee86c9ac72ad64ef5b844c0.jpg')] h-[285px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
                 <div className="absolute inset-0 bg-black/30"></div>
                 <div className="absolute bottom-6 left-6">
                   <h3 className="text-white text-xl font-bold mb-2">
@@ -156,7 +156,7 @@ export default function WomenFashion() {
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
-                  className="bg-[url('https://i.pinimg.com/736x/bc/96/21/bc9621b9d9cdbc4e982f91ad461138e9.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  className="bg-[url('https://i.pinimg.com/736x/3f/7a/94/3f7a947f4bcb4acf7861f957ae9d4dcd.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
                   // style={{ backgroundImage: `url(${Top})` }}
                 ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
@@ -176,7 +176,7 @@ export default function WomenFashion() {
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
-                  className="bg-[url('https://i.pinimg.com/736x/34/d5/42/34d5422c391a8757a010e71757ca94c7.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                  className="bg-[url('https://i.pinimg.com/736x/0c/46/9a/0c469adaedafd03f41e23a1df355dc63.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
                   // style={{ backgroundImage: `url(${Shirt})` }}
                 ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>

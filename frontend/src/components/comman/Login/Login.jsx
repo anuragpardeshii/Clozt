@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -7,7 +7,27 @@ export default function Login({ setUser }) {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // Initialize navigate
+  const [isLoggedIn, setIsLoggedIn] = useState(null); // Track auth status
+  const navigate = useNavigate();
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/auth-status", { withCredentials: true });
+        if (res.data.loggedIn) {
+          setIsLoggedIn(true);
+          navigate("/"); // Redirect if already logged in
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,7 +42,7 @@ export default function Login({ setUser }) {
       );
 
       if (setUser) {
-        setUser(response.data.user); // Ensure setUser is passed as a prop
+        setUser(response.data.user);
       }
 
       setMessage("Login successful!");
@@ -31,7 +51,7 @@ export default function Login({ setUser }) {
 
       setTimeout(() => {
         navigate("/");
-      }, 1000); // Delay redirect for better UX
+      }, 1000);
     } catch (error) {
       if (error.response) {
         setMessage(error.response.data.message || "Login failed");
@@ -45,15 +65,19 @@ export default function Login({ setUser }) {
     }
   };
 
+  if (isLoggedIn === null) {
+    return <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-white">Checking authentication...</div>;
+  }
+
   return (
     <section className="bg-gray-50 min-h-screen dark:bg-gray-900">
       <div className="py-8 px-4 mx-auto h-screen items-center max-w-screen-xl lg:py-16 grid lg:grid-cols-2 gap-8 lg:gap-16">
         <div className="flex flex-col sm:max-w-lg mx-auto justify-center">
           <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-          Stay Stylish, Shop Smart
+            Stay Stylish, Shop Smart
           </h1>
           <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
-          Log in to explore the latest trends, manage your orders, and enjoy a seamless shopping experience with CLOZT.
+            Log in to explore the latest trends, manage your orders, and enjoy a seamless shopping experience with CLOZT.
           </p>
           <a href="/signup" className="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center">
             Sign up

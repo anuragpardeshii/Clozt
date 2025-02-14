@@ -1,4 +1,5 @@
 import React from "react";
+import { Heart } from 'lucide-react';
 
 export default function Trending() {
   return (
@@ -27,14 +28,14 @@ export default function Trending() {
           <div className='flex overflow-x-auto gap-6 no-scrollbar pb-4'>
             <div className="min-w-[280px] group">
               <div className="relative overflow-hidden rounded-lg mb-4">
-                <div className="bg-[url('https://placehold.co/400x500')] h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+                <div className="bg-[url('https://i.pinimg.com/474x/be/f5/c4/bef5c4cecffd3b1fb1ece9119b1f2453.jpg')] h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
                 <div className="absolute top-4 left-4">
                   <span className="bg-black text-white px-3 py-1 rounded-full text-sm">
                     Trending
                   </span>
                 </div>
-                <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
-                  Heart icon
+                <button className="absolute top-4 right-4 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ">
+                  <Heart color="gray" size={"1.5rem"} />
                 </button>
               </div>
               <h3 className="font-medium">Premium Cotton Shirt</h3>
@@ -43,14 +44,14 @@ export default function Trending() {
 
             <div className="min-w-[280px] group">
               <div className="relative overflow-hidden rounded-lg mb-4">
-                <div className="bg-[url('https://placehold.co/400x500')] h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+                <div className="bg-[url('https://i.pinimg.com/736x/25/fc/a0/25fca0e30224c837c8878395aef69764.jpg')] h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
                 <div className="absolute top-4 left-4">
                   <span className="bg-black text-white px-3 py-1 rounded-full text-sm">
                     Trending
                   </span>
                 </div>
-                <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
-                  Heart icon
+                <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ">
+                <Heart color="gray" size={"1.5rem"} />
                 </button>
               </div>
               <h3 className="font-medium">Premium Cotton Shirt</h3>
@@ -59,14 +60,14 @@ export default function Trending() {
 
             <div className="min-w-[280px] group">
               <div className="relative overflow-hidden rounded-lg mb-4">
-                <div className="bg-[url('https://placehold.co/400x500')] h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+                <div className="bg-[url('https://i.pinimg.com/736x/f8/96/de/f896dec379b3bf9d07ce4d71061418ad.jpg')] h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
                 <div className="absolute top-4 left-4">
                   <span className="bg-black text-white px-3 py-1 rounded-full text-sm">
                     Trending
                   </span>
                 </div>
-                <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
-                  Heart icon
+                <button className="absolute top-4 right-4 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ">
+                  <Heart color="gray" size={"1.5rem"} />
                 </button>
               </div>
               <h3 className="font-medium">Premium Cotton Shirt</h3>
@@ -75,14 +76,14 @@ export default function Trending() {
 
             <div className="min-w-[280px] group">
               <div className="relative overflow-hidden rounded-lg mb-4">
-                <div className="bg-[url('https://placehold.co/400x500')] h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+                <div className="bg-[url('https://i.pinimg.com/736x/cf/ce/17/cfce17714697056b7726fd63cead66cf.jpg')] h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
                 <div className="absolute top-4 left-4">
                   <span className="bg-black text-white px-3 py-1 rounded-full text-sm">
                     Trending
                   </span>
                 </div>
-                <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
-                  Heart icon
+                <button className="absolute top-4 right-4 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ">
+                  <Heart color="gray" size={"1.5rem"} />
                 </button>
               </div>
               <h3 className="font-medium">Premium Cotton Shirt</h3>
@@ -91,14 +92,14 @@ export default function Trending() {
 
             <div className="min-w-[280px] group">
               <div className="relative overflow-hidden rounded-lg mb-4">
-                <div className="bg-[url('https://placehold.co/400x500')] h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
+                <div className="bg-[url('https://i.pinimg.com/736x/15/26/8e/15268e1dd98eeb1463caf9ee9d847c7a.jpg')] h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
                 <div className="absolute top-4 left-4">
                   <span className="bg-black text-white px-3 py-1 rounded-full text-sm">
                     Trending
                   </span>
                 </div>
-                <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
-                  Heart icon
+                <button className="absolute top-4 right-4 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ">
+                  <Heart color="gray" size={"1.5rem"} />
                 </button>
               </div>
               <h3 className="font-medium">Premium Cotton Shirt</h3>

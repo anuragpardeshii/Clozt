@@ -52,64 +52,215 @@ export default function Men() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/products/products"); // Adjust if needed
-        setProducts(response.data); // Set the fetched products
+        const response = await axios.get("http://localhost:3000/api/products/products");
+        console.log("Fetched Products:", response.data); // Debugging Output
+        setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
-
+  
     fetchProducts();
   }, []);
+  
+  
+  
 
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 10);
   };
 
-   return (
+  return (
     <div className="mx-auto px-8" style={{ maxWidth: "90rem" }}>
       {/* Video Section */}
-      <div className="relative rounded-lg mx-auto" style={{ marginTop: "6rem", height: "22rem", marginBottom: "1.5rem", overflow: "hidden" }}>
-        <video autoPlay loop muted playsInline className="absolute top-0 left-0 w-full h-full object-cover">
+      <div
+        className="relative rounded-lg mx-auto"
+        style={{
+          marginTop: "6rem",
+          height: "22rem",
+          marginBottom: "1.5rem",
+          overflow: "hidden",
+        }}
+      >
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute top-0 left-0 w-full h-full object-cover"
+        >
           <source src={menVideo} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-        <div className="relative z-10 flex flex-col gap-8 justify-center" style={{ height: "22rem" }}>
-          <h1 className="mb-4 font-extrabold text-white text-3xl text-center lg:text-6xl">Men's Fashion</h1>
+        <div
+          className="relative z-10 flex flex-col gap-8 justify-center"
+          style={{ height: "22rem" }}
+        >
+          <h1 className="mb-4 font-extrabold text-white text-3xl text-center lg:text-6xl">
+            Men's Fashion
+          </h1>
         </div>
-        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50" style={{ zIndex: 5 }}></div>
+        <div
+          className="absolute top-0 left-0 w-full h-full bg-black opacity-50"
+          style={{ zIndex: 5 }}
+        ></div>
       </div>
 
       {/* Product Categories */}
-      <div className="pb-4 mb-4">
-        {["T-shirts", "Shirts", "Denims", "Winter Wear"].map((category) => (
+      <div>
+        <div className="flex justify-end gap-2">
+          {/* First Dropdown */}
           <button
-            key={category}
+            id="dropdownDelayButton"
+            data-dropdown-toggle="dropdownDelay"
+            data-dropdown-delay="500"
+            data-dropdown-trigger="hover"
+            className="text-white bg-black hover:bg-zinc-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             type="button"
-            className="py-2.5 px-5 me-2 mb-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
           >
-            {category}
+            Sort by
+            <svg
+              className="w-2.5 h-2.5 ms-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 10 6"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m1 1 4 4 4-4"
+              />
+            </svg>
           </button>
-        ))}
-        <br />
-        <hr />
+
+          {/* Dropdown menu */}
+          <div
+            id="dropdownDelay"
+            className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700"
+          >
+            <ul
+              className="py-2 text-sm text-gray-700 dark:text-gray-200"
+              aria-labelledby="dropdownDelayButton"
+            >
+              <li>
+                <a
+                  href="#"
+                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Low to High
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  High to low
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Second Dropdown */}
+          <button
+            id="dropdownDelayButton1"
+            data-dropdown-toggle="dropdownDelay1"
+            data-dropdown-delay="500"
+            data-dropdown-trigger="hover"
+            className="text-white bg-black hover:bg-zinc-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            type="button"
+          >
+            Category
+            <svg
+              className="w-2.5 h-2.5 ms-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 10 6"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m1 1 4 4 4-4"
+              />
+            </svg>
+          </button>
+
+          {/* Dropdown menu */}
+          <div
+            id="dropdownDelay1"
+            className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700"
+          >
+            <ul
+              className="py-2 text-sm text-gray-700 dark:text-gray-200"
+              aria-labelledby="dropdownDelayButton1"
+            >
+              <li>
+                <a
+                  href="#"
+                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Men
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Women
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Earnings
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Sign out
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <hr className="my-4" />
       </div>
 
       {/* Product Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
         {products.slice(0, visibleCount).map((product) => (
-          <div key={product._id} className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            <img className="p-4 rounded-t-lg w-full h-64 object-cover" src={product.images[0]} alt={product.title} />
+          <div
+            key={product._id}
+            className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+          >
+            <img
+              className="p-4 rounded-t-lg w-full  h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+              src={product.images?.[0] || "https://via.placeholder.com/300"}
+              alt={product.title}
+            />
             <div className="px-5 pb-5">
-              <h5 className="text-md font-semibold text-gray-900 dark:text-white">{product.title}</h5>
-              <div className="flex items-center mt-2.5">
-                {/* Rating */}
-              </div>
+              <h5 className="text-md font-semibold text-gray-900 dark:text-white">
+                {product.title}
+              </h5>
+              <div className="flex items-center mt-2.5">{/* Rating */}</div>
               <div className="flex items-center justify-between">
-                <span className="text-lg font-bold text-gray-900 dark:text-white">₹{product.price}</span>
-                <button
-                  className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
+                <span className="text-lg font-bold text-gray-900 dark:text-white">
+                  ₹{product.price}
+                </span>
+                <button className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                   Add to cart
                 </button>
               </div>

@@ -95,7 +95,7 @@ export default function Sale() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="group rounded-lg">
               <div className="relative overflow-hidden mb-4">
-                <div className="bg-[url('https://placehold.co/400x500')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
+                <div className="bg-[url('https://i.pinimg.com/736x/7b/d2/39/7bd239a21d52404251386526461a82c0.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
                 <div className="absolute top-4 left-4">
                   <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                     -40%
@@ -121,7 +121,7 @@ export default function Sale() {
 
             <div className="group rounded-lg">
               <div className="relative overflow-hidden mb-4">
-                <div className="bg-[url('https://placehold.co/400x500')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
+                <div className="bg-[url('https://i.pinimg.com/736x/10/95/36/109536cc353bb3ff9e9243295b423787.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
                 <div className="absolute top-4 left-4">
                   <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                     -40%
@@ -147,7 +147,7 @@ export default function Sale() {
 
             <div className="group rounded-lg">
               <div className="relative overflow-hidden mb-4">
-                <div className="bg-[url('https://placehold.co/400x500')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
+                <div className="bg-[url('https://i.pinimg.com/736x/ff/af/38/ffaf38afd49826c7a48b9a826c436ffc.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
                 <div className="absolute top-4 left-4">
                   <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                     -40%
@@ -173,7 +173,7 @@ export default function Sale() {
 
             <div className="group rounded-lg">
               <div className="relative overflow-hidden mb-4">
-                <div className="bg-[url('https://placehold.co/400x500')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
+                <div className="bg-[url('https://i.pinimg.com/736x/f4/11/d8/f411d89aef4d0cead9197afaa89897dc.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500 rounded-lg"></div>
                 <div className="absolute top-4 left-4">
                   <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                     -40%

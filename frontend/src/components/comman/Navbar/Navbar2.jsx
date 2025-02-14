@@ -41,7 +41,7 @@ export default function Navbar2({user, setUser}) {
       await axios.post("http://localhost:3000/logout", {}, { withCredentials: true });
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       setIsLoggedIn(false);
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }

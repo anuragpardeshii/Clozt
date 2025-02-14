@@ -53,7 +53,7 @@ export default function Category() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {/* Tops Category */}
-            <div className="group cursor-pointer">
+            <a href="/men" className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
                   className="bg-[url('https://i.pinimg.com/736x/8b/b1/80/8bb1806f674cc13a0e636615c3712020.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
@@ -71,7 +71,7 @@ export default function Category() {
                   <i className="fa-solid fa-arrow-right"></i>
                 </a>
               </div>
-            </div>
+            </a>
 
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">

@@ -3,6 +3,7 @@ import Shirt from "/src/assets/Images/New/Shirt.jpeg";
 import Denim from "/src/assets/Images/New/Denim.jpg";
 import Winter from "/src/assets/Images/New/Winter.jpg";
 import backgroundImage from "/src/assets/Images/new.jpg"
+import { ShoppingCart, Heart } from 'lucide-react';
 
 export default function NewArrival() {
   return (
@@ -22,12 +23,12 @@ export default function NewArrival() {
                 </div>
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <button className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors" fdprocessedid="5907hd">
-                    {/* bag icon */}
+                  <ShoppingCart />
                     Add to cart
                   </button>
                 </div>
                 <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
-                  {/* Heart icon */}
+                  <Heart color="gray" size={"1.5rem"} />
                 </button>
               </div>
               <h3 className="font-medium">Black Tshirt</h3>
@@ -41,12 +42,12 @@ export default function NewArrival() {
                 </div>
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <button className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors" fdprocessedid="5907hd">
-                    {/* bag icon */}
+                    <ShoppingCart />
                     Add to cart
                   </button>
                 </div>
                 <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
-                  {/* Heart icon */}
+                  <Heart color="gray" size={"1.5rem"} />
                 </button>
               </div>
               <h3 className="font-medium">Black Tshirt</h3>
@@ -61,12 +62,12 @@ export default function NewArrival() {
                 </div>
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <button className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors" fdprocessedid="5907hd">
-                    {/* bag icon */}
+                    <ShoppingCart />
                     Add to cart
                   </button>
                 </div>
                 <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
-                  {/* Heart icon */}
+                  <Heart color="gray" size={"1.5rem"} />
                 </button>
               </div>
               <h3 className="font-medium">Black Tshirt</h3>
@@ -81,12 +82,12 @@ export default function NewArrival() {
                 </div>
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 rounded-lg transition-opacity duration-300">
                   <button className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black hover:text-white transition-colors" fdprocessedid="5907hd">
-                    {/* bag icon */}
+                    <ShoppingCart />
                     Add to cart
                   </button>
                 </div>
                 <button className="absolute top-4 right-4 bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100">
-                  {/* Heart icon */}
+                  <Heart color="gray" size={"1.5rem"} />
                 </button>
               </div>
               <h3 className="font-medium">Black Tshirt</h3>
