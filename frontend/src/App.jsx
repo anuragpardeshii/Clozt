@@ -25,6 +25,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import MainLayout from "./components/Layout/MainLayout";
 import "flowbite";
+import AdminDashboard from "./components/Admin/AdminDasbord";
+import AdminLogin from "./components/Admin/AdminLogin";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -45,9 +47,8 @@ function App() {
     <>
       {isAdminRoute || isSignup || isLogin ? (
         <Routes>
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/newProduct" element={<NewProduct />} />
-          <Route path="/admin/allProducts" element={<AllProducts />} />
+          <Route path="/admin/*" element={<AdminDashboard />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/login" element={ <Login />} />
           <Route path="/signup" element={<Signup/>} />
         </Routes>

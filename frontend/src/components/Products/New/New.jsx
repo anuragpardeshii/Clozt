@@ -98,7 +98,7 @@ export default function New() {
         {/* Product Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           {products.slice(0, visibleCount).map((product) => (
-            <div key={prod3.uct.id} className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <div key={product.id} className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <img className="p-4 rounded-t-lg" src={product.image} alt={product.title} />
             <div className="px-5 pb-5">
               <h5 className="text-md font-semibold text-gray-900 dark:text-white">{product.title}</h5>
