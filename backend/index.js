@@ -15,9 +15,10 @@ const jwt = require("jsonwebtoken");
 const productRoutes = require("./Routes/product");
 // const getProducts = require("./Routes/product");
 const PORT = process.env.PORT || 3000;
-const MONGO_URI =
-  "mongodb+srv://pardeshianurag22:qwertyuiop@clozt.bxmri.mongodb.net/?retryWrites=true&w=majority&appName=Clozt";
 const cookieParser = require("cookie-parser");
+const MONGO_URI ="mongodb+srv://pardeshianurag22:qwertyuiop@clozt.bxmri.mongodb.net/?retryWrites=true&w=majority&appName=Clozt";
+const authRoutes = require("./routes/auth"); // Example auth routes
+const wishlistRoutes = require("./Routes/Wishlist"); // Import wishlist route
 
 app.use(cookieParser());
 
@@ -55,7 +56,6 @@ connection.once("open", () => {
 app.get("/", (req, res) => {
   res.send("Hello, App is working");
 });
-
 app.use("/api/products", productRoutes);
 
 // Create user signin
@@ -107,6 +107,16 @@ app.post("/create", async (req, res) => {
 });
 
 
+//user 
+app.get("/user", async (req, res) => {
+  try {
+    const user = await userModel.find(); // Adjust based on your database
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
 // Create admin
 app.post("/admin", async (req, res) => {
   try {
@@ -157,6 +167,9 @@ app.post("/admin", async (req, res) => {
 
 // new file
 app.use("/api/products", productRoutes);
+
+app.use("/api/auth", authRoutes);
+app.use("/api/wishlist", wishlistRoutes); 
 
 //login
 app.post("/login-user", async (req, res) => {

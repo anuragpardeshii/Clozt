@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 // // Import all product images
 // import img1 from "/src/assets/Products/Men/1.jpeg";
 // import img2 from "/src/assets/Products/Men/2.jpeg";
@@ -44,26 +45,35 @@ export default function Men() {
   //   { id: 19, title: "Black Oversized Butterfly Tee", price: 999, image: img19, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
   //   { id: 20, title: "Black Oversized Butterfly Tee", price: 999, image: img20, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
   // ];
-
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [visibleCount, setVisibleCount] = useState(10);
 
-  // Fetch products from backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get("http://localhost:3000/api/products/products");
-        console.log("Fetched Products:", response.data); // Debugging Output
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
-  
     fetchProducts();
   }, []);
   
-  
+  const handleAddToWishlist = async (productId) => {
+    try {
+      const response = await axios.post("http://localhost:3000/api/wishlist/add", { productId }, { withCredentials: true });
+      alert(response.data.message);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        alert("Login First");
+        navigate("/login");
+      } else {
+        console.error("Error adding to wishlist:", error);
+      }
+    }
+  };
   
 
   const handleLoadMore = () => {
@@ -263,6 +273,7 @@ export default function Men() {
                 <button className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                   Add to cart
                 </button>
+                <button onClick={() => handleAddToWishlist(product._id)} className="text-white bg-red-500 px-4 py-2 rounded-lg">❤️</button>
               </div>
             </div>
           </div>

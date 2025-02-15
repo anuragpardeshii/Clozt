@@ -123,7 +123,7 @@ export default function Navbar2({user, setUser}) {
                       >Logout</a>
                     ) : (
                       <a
-                        href="/Login"
+                        href="/login"
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                       >
                         Login
@@ -134,14 +134,18 @@ export default function Navbar2({user, setUser}) {
               </div>
 
               {/* heart */}
+              <Link to="/wishlist">
               <button className="hidden md:block text-gray-600 hover:text-gray-900 transition-colors">
                 <Heart size={"1.3rem"} />
               </button>
+              </Link>
 
               {/* bag */}
+              <Link to="/cart">
               <button className="hidden md:block text-gray-600 hover:text-gray-900 transition-colors">
                 <ShoppingCart size={"1.3rem"} />
               </button>
+              </Link>
           
             </div>
             {/* Mobile menu button */}
