@@ -18,7 +18,9 @@ const PORT = process.env.PORT || 3000;
 const cookieParser = require("cookie-parser");
 const MONGO_URI ="mongodb+srv://pardeshianurag22:qwertyuiop@clozt.bxmri.mongodb.net/?retryWrites=true&w=majority&appName=Clozt";
 const authRoutes = require("./routes/auth"); // Example auth routes
-const wishlistRoutes = require("./Routes/Wishlist"); // Import wishlist route
+const wishlistRoutes = require("./Routes/Wishlist"); // Import wishlist routeimport dotenv from "dotenv";
+
+dotenv.config();
 
 app.use(cookieParser());
 
@@ -167,7 +169,7 @@ app.post("/admin", async (req, res) => {
 
 // new file
 app.use("/api/products", productRoutes);
-
+app.use("/api/cart", cartRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/wishlist", wishlistRoutes); 
 
