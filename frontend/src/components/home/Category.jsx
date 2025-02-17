@@ -53,7 +53,8 @@ export default function Category() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {/* Tops Category */}
-            <a href="/men" className="group cursor-pointer">
+            <div className="group cursor-pointer">
+              <a href="/men">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
                   className="bg-[url('https://i.pinimg.com/736x/8b/b1/80/8bb1806f674cc13a0e636615c3712020.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
@@ -61,19 +62,22 @@ export default function Category() {
                 ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
               </div>
-              <h3 className="text-xl font-medium text-center">T-shirts</h3>
+              </a>
+              <a href="/men">
+              <h3 className="text-xl mx-auto w-100 font-medium text-center">T-shirts</h3>
+              </a>
               <div className="flex justify-center mt-2">
                 <a
-                  href=""
+                  href="/men"
                   className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
                 >
                   Shop Now {/*right arrow*/}{" "}
                   <i className="fa-solid fa-arrow-right"></i>
                 </a>
               </div>
-            </a>
+            </div>
 
-            <div className="group cursor-pointer">
+            <a href="/shirts" className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
                   className="bg-[url('https://i.pinimg.com/736x/c0/48/78/c04878e6254d3d0d166102fbf242904e.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
@@ -91,9 +95,9 @@ export default function Category() {
                   <i className="fa-solid fa-arrow-right"></i>
                 </a>
               </div>
-            </div>
+            </a>
 
-            <div className="group cursor-pointer">
+            <a href="/denim" className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
                   className="h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
@@ -111,9 +115,9 @@ export default function Category() {
                   <i className="fa-solid fa-arrow-right"></i>
                 </a>
               </div>
-            </div>
+            </a>
 
-            <div className="group cursor-pointer">
+            <a href="/winter-wear" className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
                   className="bg-[url('https://i.pinimg.com/736x/25/b3/d1/25b3d152aba0c3490240aa69fb3cc664.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
@@ -131,7 +135,7 @@ export default function Category() {
                   <i className="fa-solid fa-arrow-right"></i>
                 </a>
               </div>
-            </div>
+            </a>
           </div>
         </div>
       </section>

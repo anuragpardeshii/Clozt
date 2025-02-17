@@ -136,7 +136,7 @@ export default function MenFashion() {
           {/* Category */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {/* Tops Category */}
-            <div className="group cursor-pointer">
+            <a href="/men/tshirts" className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
                   className="bg-[url('https://i.pinimg.com/736x/dc/ae/b1/dcaeb15360561a657016a9003731d097.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
@@ -147,16 +147,16 @@ export default function MenFashion() {
               <h3 className="text-xl font-medium text-center">T-shirts</h3>
               <div className="flex justify-center mt-2">
                 <a
-                  href=""
+                  href="/men/tshirts"
                   className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
                 >
                   Shop Now {/*right arrow*/}{" "}
                   <i className="fa-solid fa-arrow-right"></i>
                 </a>
               </div>
-            </div>
+            </a>
 
-            <div className="group cursor-pointer">
+            <a href="/men/shirts" className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
                   className="bg-[url('https://images.pexels.com/photos/19461514/pexels-photo-19461514/free-photo-of-back-view-of-man-in-shirt-and-sunglasses.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
@@ -168,16 +168,16 @@ export default function MenFashion() {
               <h3 className="text-xl font-medium text-center">Shirts</h3>
               <div className="flex justify-center mt-2">
                 <a
-                  href=""
+                  href="/men/shirts"
                   className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
                 >
                   Shop Now {/*right arrow*/}{" "}
                   <i className="fa-solid fa-arrow-right"></i>
                 </a>
               </div>
-            </div>
+            </a>
 
-            <div className="group cursor-pointer">
+            <a href="/men/denim" className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
                   className="bg-[url('https://i.pinimg.com/736x/d1/03/93/d1039330aa936dcfe83a46da257f4c19.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
@@ -188,16 +188,16 @@ export default function MenFashion() {
               <h3 className="text-xl font-medium text-center">Denim</h3>
               <div className="flex justify-center mt-2">
                 <a
-                  href=""
+                  href="/men/demnim"
                   className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
                 >
                   Shop Now {/*right arrow*/}{" "}
                   <i className="fa-solid fa-arrow-right"></i>
                 </a>
               </div>
-            </div>
+            </a>
 
-            <div className="group cursor-pointer">
+            <a href="/men/winter-wear" className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
                   className="bg-[url('https://i.pinimg.com/736x/79/de/84/79de84bea14c182a521b437408355437.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
@@ -208,14 +208,14 @@ export default function MenFashion() {
               <h3 className="text-xl font-medium text-center">Winter Wear</h3>
               <div className="flex justify-center mt-2">
                 <a
-                  href=""
+                  href="/men/winter-wear"
                   className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
                 >
                   Shop Now {/*right arrow*/}{" "}
                   <i className="fa-solid fa-arrow-right"></i>
                 </a>
               </div>
-            </div>
+            </a>
           </div>
         </div>
       </section>
