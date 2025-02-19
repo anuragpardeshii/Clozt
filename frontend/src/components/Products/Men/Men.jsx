@@ -61,19 +61,30 @@ export default function Men() {
     fetchProducts();
   }, []);
   
-  const handleAddToWishlist = async (productId) => {
+  const handleAddToWishlist = async (product) => {
+    console.log("Product Data:", product); // ✅ Check if product exists
+    if (!product || !product._id) {
+      console.error("Invalid product data", product);
+      return;
+    }
+  
     try {
-      const response = await axios.post("http://localhost:3000/api/wishlist/add", { productId }, { withCredentials: true });
-      alert(response.data.message);
+      console.log("Sending request to add to wishlist with productId:", product._id);
+  
+      const response = await axios.post(
+        "http://localhost:3000/api/wishlist/add",
+        { productId: product._id }, // ✅ Ensure correct payload
+        { withCredentials: true }
+      );
+  
+      console.log("Added to wishlist:", response.data);
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        alert("Login First");
-        navigate("/login");
-      } else {
-        console.error("Error adding to wishlist:", error);
-      }
+      console.error("Error adding to wishlist:", error);
     }
   };
+  
+  
+  
   
 
   const handleLoadMore = () => {
@@ -273,7 +284,7 @@ export default function Men() {
                 <button className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                   Add to cart
                 </button>
-                <button onClick={() => handleAddToWishlist(product._id)} className="text-white bg-red-500 px-4 py-2 rounded-lg">❤️</button>
+                <button key={product._id} onClick={() => handleAddToWishlist(product)} className="text-white bg-red-500 px-4 py-2 rounded-lg">❤️</button>
               </div>
             </div>
           </div>
