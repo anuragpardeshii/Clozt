@@ -82,10 +82,6 @@ export default function Men() {
       console.error("Error adding to wishlist:", error);
     }
   };
-  
-  
-  
-  
 
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 10);

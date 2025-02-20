@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import React, { useState } from "react";
 import "./index.css";
 import Navbar from "./components/comman/Navbar/Navbar";
 import Footer from "./components/comman/Footer/Footer";
@@ -20,9 +21,8 @@ import Summary from "./components/comman/Summary/Summary";
 import Login from "./components/comman/Login/Login";
 import Signup from "./components/comman/Signup/Signup";
 import Navbar2 from "./components/comman/Navbar/Navbar2";
-
-import axios from "axios";
-import { useEffect, useState } from "react";
+// import axios from "axios";
+// import { useEffect, useState } from "react";
 import MainLayout from "./components/Layout/MainLayout";
 import "flowbite";
 import AdminDashboard from "./components/Admin/AdminDasbord";
@@ -30,27 +30,22 @@ import AdminLogin from "./components/Admin/AdminLogin";
 
 function App() {
   const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/user", { withCredentials: true })
-      .then((response) => setUser(response.data.user))
-      .catch(() => setUser(null));
-  }, []);
-
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
-  const isLogin = location.pathname.startsWith("/login");
-  const isSignup = location.pathname.startsWith("/signup");
+  const isLoginOrSignup =
+    location.pathname.startsWith("/login") || location.pathname.startsWith("/signup");
 
   return (
     <>
-      {isAdminRoute || isSignup || isLogin ? (
+      {isAdminRoute ? (
         <Routes>
           <Route path="/admin/*" element={<AdminDashboard />} />
           <Route path="/admin-login" element={<AdminLogin />} />
-          <Route path="/login" element={ <Login />} />
-          <Route path="/signup" element={<Signup/>} />
+        </Routes>
+      ) : isLoginOrSignup ? (
+        <Routes>
+          <Route path="/login" element={<Login setUser={setUser} />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       ) : (
         <MainLayout user={user} setUser={setUser}>

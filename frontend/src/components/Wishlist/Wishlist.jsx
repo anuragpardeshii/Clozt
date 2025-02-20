@@ -106,7 +106,7 @@ import axios from "axios";
 
 export default function Wishlist() {
   const [wishlist, setWishlist] = useState([]);
-
+  
   const fetchWishlist = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/wishlist", {
@@ -167,8 +167,8 @@ export default function Wishlist() {
             <div key={product._id || Math.random()} className="bg-white border border-gray-200 rounded-lg shadow">
               <img
                 className="p-4 rounded-t-lg w-full h-[350px] object-cover"
-                src={product.image} 
-                alt={product.title || "Product Image"} 
+                src={product.productId?.images?.[0]}  
+                alt={product.productId?.title || "Product Image"} 
                 // onError={(e) => (e.target.src = "/placeholder.png")} // ✅ Handle broken images
               />
               <div className="px-5 pb-5">

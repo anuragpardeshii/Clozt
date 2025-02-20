@@ -1,7 +1,5 @@
 const Cart = require("../Models/Cart");
 
-// Get cart items
-
 const getCart = async (req, res) => {
   try {
     console.log("User ID from request:", req.user?._id); // Log user ID
@@ -11,9 +9,14 @@ const getCart = async (req, res) => {
     }
 
     const userId = req.user._id;
-    const cart = await Cart.findOne({ userId }).populate("products.productId");
+    
+    // ✅ Ensure product images are included
+    const cart = await Cart.findOne({ userId }).populate({
+      path: "products.productId",
+      select: "title description price images", // ✅ Include images
+    });
 
-    console.log("Cart found in DB:", cart); // Log cart response
+    console.log("Cart found in DB:", cart); // Debugging log
 
     if (!cart) {
       return res.status(200).json({ products: [], total: 0 }); // Return empty cart if not found
@@ -26,9 +29,7 @@ const getCart = async (req, res) => {
   }
 };
 
-
-
-// Add item to cart
+// ✅ Add to Cart (Ensures product images are stored correctly)
 const addToCart = async (req, res) => {
   try {
     const userId = req.user._id; // Extract user ID
@@ -55,12 +56,20 @@ const addToCart = async (req, res) => {
     }
 
     await cart.save();
-    res.status(200).json(cart);
+
+    // ✅ Re-populate cart to include images
+    const updatedCart = await Cart.findOne({ userId }).populate({
+      path: "products.productId",
+      select: "title description price images",
+    });
+
+    res.status(200).json(updatedCart);
   } catch (error) {
     console.error("Error adding to cart:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // Update item quantity
 const updateQuantity = async (req, res) => {

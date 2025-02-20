@@ -3,7 +3,7 @@ import React from "react";
 export default function Signup() {
   return (
     <>
-      <form action="http://localhost:3000/create" method="POST" encType="application/x-www-form-urlencoded" className="max-w-sm p-5 mx-auto" style={{ marginTop: "6rem" }}>
+      <form action="http://localhost:3000/api/users/register" method="POST" encType="application/x-www-form-urlencoded" className="max-w-sm p-5 mx-auto" style={{ marginTop: "6rem" }}>
         <div className="mb-5">
           <label
             htmlFor="username"
@@ -69,7 +69,7 @@ export default function Signup() {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-16 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               pattern="[0-9]{10}"
               placeholder="8435304050"
-              maxlength="10"
+              maxLength="10"
               required
             />
           </div>

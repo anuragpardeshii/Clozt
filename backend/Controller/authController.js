@@ -1,53 +1,76 @@
-const User = require("../Models/User"); // Import User model
-const bcrypt = require("bcryptjs"); // Use bcryptjs for compatibility
+const User = require("../Models/User");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
-// User Login
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
 
+    // Find user by email
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
 
+    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    // Generate JWT Token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-    // Send token in response and set cookie
-    res
-      .cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production", path: "/" })
-      .json({ message: "Login successful", token });
+    // Send token in a cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
 
-  } catch (err) {
-    console.error("Login Error:", err);
-    res.status(500).json({ message: "Server error" });
+    res.status(200).json({ message: "Login successful", token, userId: user._id });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+exports.checkAuth = (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.json({ loggedIn: false });
 
-// User Registration
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) return res.json({ loggedIn: false });
+    res.json({ loggedIn: true, userId: decoded.userId });
+  });
+};
+
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { username, email, mobile, password } = req.body;
 
-    // Check if user already exists
+    // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword });
+
+    // Create new user
+    const newUser = new User({ username, email, mobile, password: hashedPassword });
     await newUser.save();
 
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (err) {
-    console.error("Registration Error:", err);
-    res.status(500).json({ message: "Server error" });
+    res.status(201).json({ message: "User registered successfully", user: newUser });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.logout= async (req, res) => {
+  try {
+    res.clearCookie("token", { httpOnly: true, sameSite: "None", secure: true }); // Clears JWT cookie
+    return res.json({ message: "Logged out successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Logout failed", error: error.message });
   }
 };

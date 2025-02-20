@@ -1,62 +1,29 @@
 const Product = require("../Models/Product");
-const cloudinary = require("../config/cloudinary");
+const { upload } = require("../config/cloudinary");
 
-const addProduct = async (req, res) => {
-  try {
-    const files = req.files; // Multer stores files in req.files
-    console.log(req.files); // Debugging output
-
-    if (!files || files.length === 0) {
-      return res.status(400).json({ error: "No files uploaded." });
-    }
-
-    // Upload images to Cloudinary using Promises
-    const uploadPromises = files.map((file) => {
-      return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          {
-            folder: "products",
-            resource_type: "image",
-          },
-          (error, result) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result.secure_url);
-            }
-          }
-        );
-
-        uploadStream.end(file.buffer); // Send the file buffer to Cloudinary
-      });
-    });
-
-    // Wait for all images to be uploaded
-    const uploadedImages = await Promise.all(uploadPromises);
-
-    // Prepare product data
-    const productData = {
-      ...req.body,
-      sizes: JSON.parse(req.body.sizes), // Ensure sizes is parsed correctly
-      images: uploadedImages, // Store Cloudinary URLs
-    };
-
-    // Save product to the database
-    const newProduct = await Product.create(productData);
-    res.status(201).json(newProduct);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-};
-
-const getProducts = async (req, res) => {
+exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
     res.status(200).json(products);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching products", error: error.message });
   }
 };
 
-module.exports = { addProduct, getProducts };
+exports.createProduct = async (req, res) => {
+  try {
+    const { title, description, price, color, gender, category, sizes } = req.body;
+
+    if (!title || !description || !price || !color || !gender || !category || !sizes) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const images = req.files.map((file) => file.path);
+    const newProduct = new Product({ title, description, price, color, gender, category, sizes, images });
+
+    await newProduct.save();
+    res.status(201).json({ message: "Product created successfully", product: newProduct });
+  } catch (error) {
+    res.status(500).json({ message: "Error creating product", error: error.message });
+  }
+};

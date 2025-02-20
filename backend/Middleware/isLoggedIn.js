@@ -1,26 +1,25 @@
 const jwt = require("jsonwebtoken");
-function isLoggedIn(req, res, next) {
-  console.log("Cookies received:", req.cookies); // ✅ Debugging
+const User = require("../Models/User");
 
-  const token = req.cookies.token;
-  if (!token) {
-    console.log("❌ No token received.");
-    return res.status(401).json({ message: "Login Again" });
-  }
-
+const isLoggedIn = async (req, res, next) => {
   try {
-    const data = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("✅ User ID from token:", data.id);
-
-    if (!data.id) {
-      return res.status(403).json({ message: "Invalid Token Data" });
+    const token = req.cookies.token; // Make sure frontend sends credentials
+    if (!token) {
+      return res.status(401).json({ loggedIn: false, message: "No token provided" });
     }
 
-    req.user = { id: data.id, email: data.email };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-password"); // Exclude password
+
+    if (!user) {
+      return res.status(401).json({ loggedIn: false, message: "User not found" });
+    }
+
+    req.user = user;
     next();
   } catch (error) {
-    return res.status(403).json({ message: "Invalid Token" });
+    return res.status(401).json({ loggedIn: false, message: "Invalid token" });
   }
-}
+};
 
 module.exports = isLoggedIn;

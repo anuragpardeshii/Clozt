@@ -7,19 +7,20 @@ export default function Login({ setUser }) {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(null); // Track auth status
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // ✅ Default to false
   const navigate = useNavigate();
 
-  // Check if user is already authenticated
+  // ✅ Check if the user is already logged in
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/auth-status", { withCredentials: true });
+        const res = await axios.get("http://localhost:3000/api/users/auth/check", {
+          withCredentials: true,
+        });
+
         if (res.data.loggedIn) {
           setIsLoggedIn(true);
-          navigate("/"); // Redirect if already logged in
-        } else {
-          setIsLoggedIn(false);
+          navigate("/"); // ✅ Redirect to home if already logged in
         }
       } catch (error) {
         setIsLoggedIn(false);
@@ -32,41 +33,34 @@ export default function Login({ setUser }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
+    setMessage(""); // ✅ Clear previous messages
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/login-user",
+      const res = await axios.post(
+        "http://localhost:3000/api/users/login",
         { email, password },
         { withCredentials: true }
       );
 
-      if (setUser) {
-        setUser(response.data.user);
+      if (res.status === 200) {
+        setMessage("Login successful!");
+        setUser(res.data.user); // ✅ Ensure backend sends a user object
+        navigate("/"); // ✅ Use navigate instead of window.location.href
       }
-
-      setMessage("Login successful!");
-      setEmail("");
-      setPassword("");
-
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
     } catch (error) {
-      if (error.response) {
-        setMessage(error.response.data.message || "Login failed");
-      } else if (error.request) {
-        setMessage("No response received. Please check your connection.");
-      } else {
-        setMessage("An unexpected error occurred. Please try again.");
-      }
+      setMessage(error.response?.data?.message || "Login failed");
     } finally {
-      setLoading(false);
+      setLoading(false); // ✅ Ensures loading resets even if login fails
     }
   };
 
-  if (isLoggedIn === null) {
-    return <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-white">Checking authentication...</div>;
+  // ✅ Show loading state while checking auth
+  if (isLoggedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-white">
+        Redirecting...
+      </div>
+    );
   }
 
   return (
@@ -81,9 +75,6 @@ export default function Login({ setUser }) {
           </p>
           <a href="/signup" className="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center">
             Sign up
-            <svg className="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
-            </svg>
           </a>
         </div>
         <div>
@@ -99,11 +90,9 @@ export default function Login({ setUser }) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   id="email"
-                  name="email"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                   placeholder="name@example.com"
                   required
-                  aria-label="Email"
                 />
               </div>
               <div className="mb-5">
@@ -115,16 +104,14 @@ export default function Login({ setUser }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   id="password"
-                  name="password"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                   required
-                  aria-label="Password"
                 />
               </div>
               <div className="text-center">
                 <button
                   type="submit"
-                  className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700"
                   style={{ width: "10rem" }}
                   disabled={loading}
                 >

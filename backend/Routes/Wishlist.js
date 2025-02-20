@@ -1,6 +1,7 @@
 const express = require("express");
 const isLoggedIn = require("../Middleware/isLoggedIn");
 const Wishlist = require("../Models/Wishlist");
+const Product = require("../Models/Product");
 
 const router = express.Router();
 
@@ -12,36 +13,26 @@ router.post("/add", isLoggedIn, async (req, res) => {
       return res.status(400).json({ message: "Product ID is required" });
     }
 
-    const userId = req.user.id; // ✅ Ensure user ID is extracted correctly
-
-    let wishlist = await Wishlist.findOne({ user: userId }).populate({
-      path: "products",
-      select: "title description price images", // ✅ Fix: Use 'images'
-    });
+    const userId = req.user.id;
+    let wishlist = await Wishlist.findOne({ user: userId });
 
     if (!wishlist) {
       wishlist = new Wishlist({ user: userId, products: [] });
     }
 
-    // ✅ Fix: Convert product._id to string before comparison
-    if (!wishlist.products.some((product) => product._id.toString() === productId)) {
+    // ✅ Prevent duplicate entries
+    if (!wishlist.products.some((p) => p.toString() === productId)) {
       wishlist.products.push(productId);
       await wishlist.save();
     }
 
-    // ✅ Re-populate after saving to include images
     wishlist = await Wishlist.findOne({ user: userId }).populate({
       path: "products",
+      model: "Product",
       select: "title description price images",
     });
 
-    // ✅ Map response to include the first image
-    wishlist.products = wishlist.products.map((product) => ({
-      ...product.toObject(),
-      image: product.images.length > 0 ? product.images[0] : "", // Use the first image
-    }));
-
-    res.status(200).json({ message: "Added to wishlist", wishlist });
+    res.status(200).json({ message: "Added to wishlist", wishlist: formatWishlist(wishlist) });
   } catch (error) {
     console.error("🔥 Error adding to wishlist:", error);
     res.status(500).json({ message: "Internal server error", error: error.message });
@@ -54,6 +45,7 @@ router.get("/", isLoggedIn, async (req, res) => {
     const userId = req.user.id;
     let wishlist = await Wishlist.findOne({ user: userId }).populate({
       path: "products",
+      model: "Product",
       select: "title description price images",
     });
 
@@ -61,13 +53,7 @@ router.get("/", isLoggedIn, async (req, res) => {
       return res.status(200).json({ wishlist: { products: [] } });
     }
 
-    // ✅ Map response to include the first image
-    wishlist.products = wishlist.products.map((product) => ({
-      ...product.toObject(),
-      image: product.images.length > 0 ? product.images[0] : "", // Use first image
-    }));
-
-    res.status(200).json({ wishlist });
+    res.status(200).json({ wishlist: formatWishlist(wishlist) });
   } catch (error) {
     console.error("🔥 Error fetching wishlist:", error);
     res.status(500).json({ error: "Server error" });
@@ -80,39 +66,39 @@ router.delete("/remove/:productId", isLoggedIn, async (req, res) => {
     const { productId } = req.params;
     const userId = req.user.id;
 
-    let wishlist = await Wishlist.findOne({ user: userId }).populate({
-      path: "products",
-      select: "title description price images",
-    });
+    let wishlist = await Wishlist.findOne({ user: userId });
 
     if (!wishlist) {
       return res.status(400).json({ message: "Wishlist not found" });
     }
 
-    // ✅ Convert ObjectIDs to strings before filtering
-    wishlist.products = wishlist.products.filter(
-      (product) => product._id.toString() !== productId
-    );
-
+    // ✅ Remove product
+    wishlist.products = wishlist.products.filter((p) => p.toString() !== productId);
     await wishlist.save();
 
-    // ✅ Re-populate after removing the item
     wishlist = await Wishlist.findOne({ user: userId }).populate({
       path: "products",
+      model: "Product",
       select: "title description price images",
     });
 
-    // ✅ Map response to include the first image
-    wishlist.products = wishlist.products.map((product) => ({
-      ...product.toObject(),
-      image: product.images.length > 0 ? product.images[0] : "",
-    }));
-
-    res.status(200).json({ message: "Removed from wishlist", wishlist });
+    res.status(200).json({ message: "Removed from wishlist", wishlist: formatWishlist(wishlist) });
   } catch (error) {
     console.error("🔥 Error removing from wishlist:", error);
     res.status(500).json({ error: "Server error" });
   }
+});
+
+// ✅ Format Wishlist Response
+const formatWishlist = (wishlist) => ({
+  ...wishlist.toObject(),
+  products: wishlist.products.map((product) => ({
+    _id: product._id,
+    title: product.title,
+    description: product.description,
+    price: product.price,
+    image: product.images?.[0] || "", // ✅ Ensures the first image URL is returned
+  })),
 });
 
 module.exports = router;
