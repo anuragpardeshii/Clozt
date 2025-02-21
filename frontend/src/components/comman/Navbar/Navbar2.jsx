@@ -44,7 +44,7 @@ export default function Navbar2({ user, setUser }) {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:3000/api/users/auth/logout", {}, { withCredentials: true });
+      await axios.post("http://localhost:3000/api/users/logout", {}, { withCredentials: true });
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       setIsLoggedIn(false);
       setUser(null);

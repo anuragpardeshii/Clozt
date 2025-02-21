@@ -52,7 +52,7 @@ export default function Men() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/products/products");
+        const response = await axios.get("http://localhost:3000/api/products");
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -62,26 +62,27 @@ export default function Men() {
   }, []);
   
   const handleAddToWishlist = async (product) => {
-    console.log("Product Data:", product); // ✅ Check if product exists
+    console.log("Product Data:", product); // ✅ Debugging
+  
     if (!product || !product._id) {
       console.error("Invalid product data", product);
       return;
     }
   
     try {
-      console.log("Sending request to add to wishlist with productId:", product._id);
+      console.log("Sending request with productId:", product._id);
   
       const response = await axios.post(
         "http://localhost:3000/api/wishlist/add",
-        { productId: product._id }, // ✅ Ensure correct payload
-        { withCredentials: true }
+        { productId: product._id },
+        { withCredentials: true } // ✅ Ensures cookies are sent
       );
   
       console.log("Added to wishlist:", response.data);
     } catch (error) {
-      console.error("Error adding to wishlist:", error);
+      console.error("Error adding to wishlist:", error.response?.data || error.message);
     }
-  };
+  };  
 
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 10);

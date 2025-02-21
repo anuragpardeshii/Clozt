@@ -1,89 +1,58 @@
-import React from 'react'
+import React from "react";
 
-function PriceDetails() {
+function PriceDetails({ cart }) {
+  if (!cart || cart.products.length === 0) return null;
+
+  // Calculate total price and total quantity
+  const totalPrice = cart.products.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const totalQty = cart.products.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
-    <div className='flex flex-wrap'>
-      
-
-<div class="relative mx-auto p-4 overflow-x-auto" style={{width: "100%"}}>
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+    <div className="flex flex-wrap">
+      <div className="relative mx-auto p-4 overflow-x-auto w-full">
+        <table className="w-full text-sm text-left text-gray-500 bg-white border rounded-lg shadow-md">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-100">
             <tr>
-                <th scope="col" class="px-6 py-3 rounded-s-lg">
-                    Price Details
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Qty
-                </th>
-                <th scope="col" class="px-6 py-3 rounded-e-lg">
-                    Price
-                </th>
+              <th scope="col" className="px-6 py-3 rounded-s-lg">Product</th>
+              <th scope="col" className="px-6 py-3">Qty</th>
+              <th scope="col" className="px-6 py-3 rounded-e-lg">Price</th>
             </tr>
-        </thead>
-        <tbody>
-            <tr class="bg-white dark:bg-gray-800">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Apple MacBook Pro 17"
+          </thead>
+          <tbody>
+            {cart.products.map((item) => (
+              <tr key={item.product._id} className="border-b">
+                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                  {item.product.title}
                 </th>
-                <td class="px-6 py-4">
-                    1
-                </td>
-                <td class="px-6 py-4">
-                    ₹2999
-                </td>
+                <td className="px-6 py-4">{item.quantity}</td>
+                <td className="px-6 py-4">₹{item.product.price * item.quantity}</td>
+              </tr>
+            ))}
+            <tr className="border-t">
+              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Shipping Fee</th>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Free</td>
             </tr>
-            <tr class="bg-white dark:bg-gray-800">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Microsoft Surface Pro
-                </th>
-                <td class="px-6 py-4">
-                    1
-                </td>
-                <td class="px-6 py-4">
-                    ₹1999
-                </td>
+          </tbody>
+          <tfoot>
+            <tr className="font-semibold text-gray-900 bg-gray-100">
+              <th scope="row" className="px-6 py-3 text-base">Total Amount</th>
+              <td className="px-6 py-3">{totalQty}</td>
+              <td className="px-6 py-3">₹{totalPrice}</td>
             </tr>
-            <tr class="bg-white dark:bg-gray-800">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Magic Mouse 2
-                </th>
-                <td class="px-6 py-4">
-                   1
-                </td>
-                <td class="px-6 py-4">
-                ₹99
-                </td>
-            </tr>
-            <tr class="bg-white dark:bg-gray-800">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Shipping Fee
-                </th>
-                <td class="px-6 py-4">
-                   
-                </td>
-                <td class="px-6 py-4">
-                ₹99
-                </td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr class="font-semibold text-gray-900 dark:text-white">
-                <th scope="row" class="px-6 py-3 text-base">Total Amount</th>
-                <td class="px-6 py-3">3</td>
-                <td class="px-6 py-3">21,099</td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
-<div>
-    <div className='text-md text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400'>
-    <p>By placing the order, you agree to Clozt's Terms of use and Privacy Policy</p>
-    </div>
-    <button>Place your Order</button>
-</div>
+          </tfoot>
+        </table>
+      </div>
 
+      <div className="w-full p-4 text-md text-gray-700 bg-gray-100 border-t">
+        <p>By placing the order, you agree to Clozt's Terms of Use and Privacy Policy.</p>
+      </div>
+
+      <button className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+        Place Your Order
+      </button>
     </div>
-  )
+  );
 }
 
-export default PriceDetails
+export default PriceDetails;
