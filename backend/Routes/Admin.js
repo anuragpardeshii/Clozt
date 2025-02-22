@@ -1,10 +1,12 @@
 const express = require("express");
-const { login, checkAuth, register, logout } = require("../Controller/adminController"); // Check path
+const { login, register, checkAuth, logout } = require("../Controller/adminController");
+
 const router = express.Router();
 
+// Public routes
 router.post("/login", login);
 router.post("/register", register);
-router.get("/auth/check", checkAuth);
 router.post("/logout", logout);
+router.get("/check", checkAuth);
 
 module.exports = router;

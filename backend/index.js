@@ -9,7 +9,7 @@ const productRoutes = require("./Routes/product");
 const cartRoutes = require("./Routes/Cart");
 const wishlistRoutes = require("./Routes/Wishlist");
 const userRoutes = require("./Routes/User");
-const authRoutes = require("./Routes/Auth");
+const adminRoutes = require("./Routes/Admin");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -39,7 +39,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 
 
 app.get("/", (req, res) => {

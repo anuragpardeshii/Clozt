@@ -4,71 +4,72 @@ import { useNavigate } from "react-router-dom";
 import { Lock, Mail } from "lucide-react";
 
 export default function AdminLogin() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(null); // Track auth status
-    const navigate = useNavigate();
-  
-    // Check if user is already authenticated
-    useEffect(() => {
-      const checkAuth = async () => {
-        try {
-          const res = await axios.get("http://localhost:3000/auth-status", { withCredentials: true });
-          if (res.data.loggedIn) {
-            setIsLoggedIn(true);
-            navigate("/"); // Redirect if already logged in
-          } else {
-            setIsLoggedIn(false);
-          }
-        } catch (error) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const navigate = useNavigate();
+
+  // Check if user is authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/admin/check", {
+          withCredentials: true,
+        });
+        if (res.data.loggedIn) {
+          setIsLoggedIn(true);
+          navigate("/admin/all-products"); // Redirect if already logged in
+        } else {
           setIsLoggedIn(false);
         }
-      };
-  
-      checkAuth();
-    }, [navigate]);
-  
-    const handleLogin = async (e) => {
-      e.preventDefault();
-      setLoading(true);
-      setMessage("");
-  
-      try {
-        const response = await axios.post(
-          "http://localhost:3000/login-user",
-          { email, password },
-          { withCredentials: true }
-        );
-  
-        if (setUser) {
-          setUser(response.data.user);
-        }
-  
-        setMessage("Login successful!");
-        setEmail("");
-        setPassword("");
-  
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
       } catch (error) {
-        if (error.response) {
-          setMessage(error.response.data.message || "Login failed");
-        } else if (error.request) {
-          setMessage("No response received. Please check your connection.");
-        } else {
-          setMessage("An unexpected error occurred. Please try again.");
-        }
-      } finally {
-        setLoading(false);
+        setIsLoggedIn(false);
       }
     };
-  
-    if (isLoggedIn === null) {
-      return <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-white">Checking authentication...</div>;
+    checkAuth();
+  }, [navigate]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/admin/login",
+        { email, password },
+        { withCredentials: true }
+      );
+
+      setMessage("Login successful!");
+      setEmail("");
+      setPassword("");
+
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    } catch (error) {
+      if (error.response) {
+        setMessage(error.response.data.message || "Login failed");
+      } else if (error.request) {
+        setMessage("No response received. Please check your connection.");
+      } else {
+        setMessage("An unexpected error occurred. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
+  };
+
+  if (isLoggedIn === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-white">
+        Checking authentication...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center p-4">
@@ -154,11 +155,21 @@ export default function AdminLogin() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
+            disabled={loading}
+            className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            Sign in
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
+
+        {/* Message */}
+        {message && (
+          <p className={`text-center mt-4 text-sm ${message.includes("success") ? "text-green-600" : "text-red-600"}`}>
+            {message}
+          </p>
+        )}
       </div>
     </div>
   );

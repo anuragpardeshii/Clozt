@@ -1,32 +1,12 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import React, { useState } from "react";
 import "./index.css";
-import Navbar from "./components/comman/Navbar/Navbar";
-import Footer from "./components/comman/Footer/Footer";
-import Home from "./components/home/Home";
-import Admin from "./components/Admin/Admin";
-import Help from "./components/Help/Help";
-import About from "./components/About/About";
-import Men from "./components/Products/Men/Men";
-import Sale from "./components/Products/Sale/Sale";
-import New from "./components/Products/New/New";
-import Women from "./components/Products/Women/Women";
-import Details from "./components/comman/Details/Details";
-import NewProduct from "./components/Admin/NewProduct";
-import AllProducts from "./components/Admin/AllProducts";
-import Cart from "./components/comman/Cart/Cart";
-import Wishlist from "./components/Wishlist/Wishlist";
-import Order from "./components/comman/Orders/Order";
-import Summary from "./components/comman/Summary/Summary";
-import Login from "./components/comman/Login/Login";
-import Signup from "./components/comman/Signup/Signup";
-import Navbar2 from "./components/comman/Navbar/Navbar2";
-// import axios from "axios";
-// import { useEffect, useState } from "react";
 import MainLayout from "./components/Layout/MainLayout";
-import "flowbite";
 import AdminDashboard from "./components/Admin/AdminDasbord";
 import AdminLogin from "./components/Admin/AdminLogin";
+import AdminProtectedRoute from "./components/Admin/AdminProtectedRoute";
+import "flowbite";
+import AdminRegister from "./components/Admin/AdminRegister";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -39,8 +19,16 @@ function App() {
     <>
       {isAdminRoute ? (
         <Routes>
-          <Route path="/admin/*" element={<AdminDashboard />} />
           <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-signup" element={<AdminRegister/>}></Route>
+          <Route
+            path="/admin/*"
+            element={
+              <AdminProtectedRoute> {/* 🔒 Protect All Admin Routes */}
+                <AdminDashboard />
+              </AdminProtectedRoute>
+            }
+          />
         </Routes>
       ) : isLoginOrSignup ? (
         <Routes>
