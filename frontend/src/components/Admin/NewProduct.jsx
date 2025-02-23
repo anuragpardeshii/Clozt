@@ -19,8 +19,9 @@ export default function NewProduct() {
       XL: 0,
       XXL: 0,
     },
-    image: [],
+    images: [],
   });
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -51,13 +52,13 @@ export default function NewProduct() {
     const files = Array.from(e.target.files);
     setFormData((prev) => ({
       ...prev,
-      images: files, // Store files in state
+      images: files,
     }));
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
+    e.preventDefault(); // Prevent page reload
+  
     const newFormData = new FormData();
     newFormData.append("title", formData.title);
     newFormData.append("description", formData.description);
@@ -67,29 +68,26 @@ export default function NewProduct() {
     newFormData.append("category", formData.category);
     newFormData.append("listings", JSON.stringify(formData.listings));
     newFormData.append("sizes", JSON.stringify(formData.sizes));
-
-    // Append each image file
+  
+    // Append images
     formData.images.forEach((image) => {
       newFormData.append("images", image);
     });
-
+  
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "http://localhost:3000/api/products/newproduct",
-        {
-          method: "POST",
-          body: newFormData,
-        }
+        newFormData, // ✅ Send newFormData, not formData
+        { withCredentials: true } // ✅ Ensures authentication cookies are sent
       );
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
-
-      console.log("Product added successfully:", data);
+  
+      console.log("Product added successfully:", response.data);
+      alert("Product added successfully!");
     } catch (error) {
-      console.error("Error adding product:", error.message);
+      console.error("Error adding product:", error.response?.data?.message || error.message);
+      alert(`Error: ${error.response?.data?.message || "Something went wrong"}`);
     }
-  };
+  };  
 
   return (
     <>

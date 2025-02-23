@@ -11,7 +11,7 @@ export default function AdminLogin() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const navigate = useNavigate();
 
-  // Check if user is authenticated
+  // Check if admin is authenticated
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -48,7 +48,7 @@ export default function AdminLogin() {
       setPassword("");
 
       setTimeout(() => {
-        navigate("/");
+        navigate("/admin/all-products");
       }, 1000);
     } catch (error) {
       if (error.response) {

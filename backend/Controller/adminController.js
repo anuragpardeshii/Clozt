@@ -16,7 +16,7 @@ exports.login = async (req, res) => {
 
     const admin = await Admin.findOne({ email });
     if (!admin) {
-      return res.status(401).json({ message: "Invalid credentials" }); // Prevents guessing email exists
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, admin.password);
@@ -33,11 +33,11 @@ exports.login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.status(200).json({ message: "Login successful", token });
+    return res.status(200).json({ message: "Login successful", token });
 
   } catch (error) {
     console.error("Login Error:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -46,19 +46,25 @@ exports.login = async (req, res) => {
  * @route GET /api/admin/check
  */
 exports.checkAuth = (req, res) => {
-  const token = req.cookies.adminToken;
+  try {
+    const token = req.cookies.adminToken;
 
-  if (!token) {
-    return res.json({ loggedIn: false });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
+    if (!token) {
       return res.json({ loggedIn: false });
     }
 
-    res.json({ loggedIn: true, userId: decoded.userId });
-  });
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        res.cookie("adminToken", "", { expires: new Date(0), httpOnly: true });
+        return res.json({ loggedIn: false });
+      }
+
+      return res.json({ loggedIn: true, userId: decoded.userId });
+    });
+  } catch (error) {
+    console.error("Auth Check Error:", error.message);
+    return res.status(500).json({ message: "Server error" });
+  }
 };
 
 /**
@@ -67,7 +73,7 @@ exports.checkAuth = (req, res) => {
  */
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { username, email, password } = req.body;
 
     // Check if the admin already exists
     const existingAdmin = await Admin.findOne({ email });
@@ -80,16 +86,17 @@ exports.register = async (req, res) => {
 
     // Create a new admin
     const newAdmin = new Admin({
-      name,
+      username,
       email,
       password: hashedPassword,
+      role: "admin", // ✅ Ensures admin access in middleware
     });
 
     await newAdmin.save();
-    res.status(201).json({ message: "Admin registered successfully" });
+    return res.status(201).json({ message: "Admin registered successfully" });
   } catch (error) {
     console.error("Registration Error:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -99,13 +106,7 @@ exports.register = async (req, res) => {
  */
 exports.logout = async (req, res) => {
   try {
-    res.cookie("adminToken", "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      expires: new Date(0), // Expire immediately
-    });
-
+    res.clearCookie("adminToken", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "Strict" });
     return res.json({ message: "Logged out successfully" });
   } catch (error) {
     return res.status(500).json({ message: "Logout failed", error: error.message });

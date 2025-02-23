@@ -1,5 +1,5 @@
 const express = require("express");
-const { login, checkAuth, register, logout } = require("../Controller/adminController"); // Check path
+const { login, checkAuth, register, logout } = require("../Controller/userController"); // Check path
 const router = express.Router();
 
 router.post("/login", login);

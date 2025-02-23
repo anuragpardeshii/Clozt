@@ -8,7 +8,7 @@ const ProductSchema = new mongoose.Schema(
     color: { type: String, required: true },
     gender: { type: String, required: true },
     category: { type: String, required: true },
-    sizes: [{ type: String, required: true }],
+    sizes: { type: Map, of: Number, required: true },
     images: [{ type: String, required: true }], // Cloudinary image URLs
   },
   { timestamps: true }

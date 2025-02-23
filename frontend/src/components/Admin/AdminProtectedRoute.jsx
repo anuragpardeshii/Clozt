@@ -11,6 +11,7 @@ const AdminProtectedRoute = ({ children }) => {
       try {
         const res = await axios.get("http://localhost:3000/api/admin/check", {
           withCredentials: true, // Important for authentication cookies
+          headers: { "Content-Type": "multipart/form-data" },
         });
 
         if (res.data.loggedIn) {

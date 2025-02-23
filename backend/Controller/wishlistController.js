@@ -1,48 +1,91 @@
 const Wishlist = require("../Models/Wishlist");
 const Product = require("../Models/Product");
 
-exports.getWishlist = async (req, res) => {
-  try {
-    const wishlist = await Wishlist.findOne({ user: req.user.id }).populate("products", "title price images");
-    res.status(200).json(wishlist || { products: [] });
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching wishlist", error: error.message });
-  }
-};
+/**
+ * @desc Format wishlist response
+ */
+const formatWishlist = (wishlist) => ({
+  ...wishlist.toObject(),
+  products: wishlist.products.map((product) => ({
+    _id: product._id,
+    title: product.title,
+    description: product.description,
+    price: product.price,
+    images: product.images || [],
+  })),
+});
 
+/**
+ * @desc Add a product to the wishlist
+ */
 exports.addToWishlist = async (req, res) => {
   try {
     const { productId } = req.body;
-    if (!productId) return res.status(400).json({ message: "Product ID is required" });
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID is required" });
+    }
 
     const userId = req.user.id;
-    let wishlist = await Wishlist.findOne({ user: userId });
+    const productExists = await Product.findById(productId);
+    if (!productExists) {
+      return res.status(404).json({ message: "Product not found" });
+    }
 
-    if (!wishlist) wishlist = new Wishlist({ user: userId, products: [] });
+    let wishlist = await Wishlist.findOne({ user: userId });
+    if (!wishlist) {
+      wishlist = new Wishlist({ user: userId, products: [] });
+    }
 
     if (!wishlist.products.includes(productId)) {
       wishlist.products.push(productId);
       await wishlist.save();
     }
 
-    wishlist = await Wishlist.findOne({ user: userId }).populate("products", "title price images");
-    res.status(200).json({ message: "Added to wishlist", wishlist });
+    wishlist = await Wishlist.findOne({ user: userId }).populate("products", "title description price images");
+
+    return res.status(200).json({ message: "Added to wishlist", wishlist: formatWishlist(wishlist) });
   } catch (error) {
-    res.status(500).json({ message: "Error adding to wishlist", error: error.message });
+    console.error("🔥 Error adding to wishlist:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
+/**
+ * @desc Get user's wishlist
+ */
+exports.getWishlist = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    let wishlist = await Wishlist.findOne({ user: userId }).populate("products", "title description price images");
+
+    return res.status(200).json({ wishlist: wishlist ? formatWishlist(wishlist) : { products: [] } });
+  } catch (error) {
+    console.error("🔥 Error fetching wishlist:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+/**
+ * @desc Remove a product from the wishlist
+ */
 exports.removeFromWishlist = async (req, res) => {
   try {
     const { productId } = req.params;
-    const wishlist = await Wishlist.findOneAndUpdate(
-      { user: req.user.id },
-      { $pull: { products: productId } },
-      { new: true }
-    ).populate("products", "title price images");
+    const userId = req.user.id;
+    
+    let wishlist = await Wishlist.findOne({ user: userId });
+    if (!wishlist) {
+      return res.status(404).json({ message: "Wishlist not found" });
+    }
 
-    res.status(200).json({ message: "Removed from wishlist", wishlist });
+    wishlist.products = wishlist.products.filter((p) => p.toString() !== productId);
+    await wishlist.save();
+
+    wishlist = await Wishlist.findOne({ user: userId }).populate("products", "title description price images");
+
+    return res.status(200).json({ message: "Removed from wishlist", wishlist: formatWishlist(wishlist) });
   } catch (error) {
-    res.status(500).json({ message: "Error removing from wishlist", error: error.message });
+    console.error("🔥 Error removing from wishlist:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
