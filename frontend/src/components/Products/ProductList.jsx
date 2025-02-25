@@ -1,129 +1,123 @@
+// import { useEffect, useState } from "react";
+// import { useParams } from "react-router-dom";
+// import axios from "axios";
+
+// const ProductList = () => {
+//   const { listing, category } = useParams(); // Get dynamic URL params
+//   const [products, setProducts] = useState([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const fetchProducts = async () => {
+//       try {
+//         const response = await axios.get(`http://localhost:3000/api/products/${listing}/${category}`);
+//         setProducts(response.data);
+//       } catch (error) {
+//         console.error("Error fetching products:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchProducts();
+//   }, [listing, category]); // Refetch when listing or category changes
+
+//   if (loading) return <p>Loading...</p>;
+//   if (products.length === 0) return <p>No products found.</p>;
+
+//   return (
+//     <div>
+//       <h2>{listing} - {category}</h2>
+//       <ul>
+//         {products.map((product) => (
+//           <li key={product._id}>
+//             <h3>{product.title}</h3>
+//             <p>{product.price} Rs</p>
+//             <p>{product.color}</p>
+//             <img src={product.images[0]} alt={product.title} width="100" />
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// };
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
-// // Import all product images
-// import img1 from "/src/assets/Products/Men/1.jpeg";
-// import img2 from "/src/assets/Products/Men/2.jpeg";
-// import img3 from "/src/assets/Products/Men/3.jpeg";
-// import img4 from "/src/assets/Products/Men/4.jpeg";
-// import img5 from "/src/assets/Products/Men/5.jpeg";
-// import img6 from "/src/assets/Products/Men/6.jpeg";
-// import img7 from "/src/assets/Products/Men/7.jpeg";
-// import img8 from "/src/assets/Products/Men/8.jpeg";
-// import img9 from "/src/assets/Products/Men/9.jpeg";
-// import img10 from "/src/assets/Products/Men/10.jpeg";
-// import img11 from "/src/assets/Products/Men/11.jpeg";
-// import img12 from "/src/assets/Products/Men/12.jpeg";
-// import img13 from "/src/assets/Products/Men/13.jpeg";
-// import img14 from "/src/assets/Products/Men/14.jpeg";
-// import img15 from "/src/assets/Products/Men/15.jpeg";
-// import img16 from "/src/assets/Products/Men/16.jpeg";
-// import img19 from "/src/assets/Products/Men/19.jpeg";
-// import img20 from "/src/assets/Products/Men/20.jpeg";
+import { useParams } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
-// Import video
-import menVideo from "/src/assets/Videos/men.mp4";
-
-export default function Men() {
-  // const products = [
-  //   { id: 1, title: "Black Oversized Butterfly Tee", price: 999, image: img1, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 2, title: "Black Oversized Butterfly Tee", price: 999, image: img2, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 3, title: "Black Oversized Butterfly Tee", price: 999, image: img3, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 4, title: "Black Oversized Butterfly Tee", price: 999, image: img4, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 5, title: "Black Oversized Butterfly Tee", price: 999, image: img5, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 6, title: "Black Oversized Butterfly Tee", price: 999, image: img6, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 7, title: "Black Oversized Butterfly Tee", price: 999, image: img7, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 8, title: "Black Oversized Butterfly Tee", price: 999, image: img8, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 9, title: "Black Oversized Butterfly Tee", price: 999, image: img9, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 10, title: "Black Oversized Butterfly Tee", price: 999, image: img10, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 11, title: "Black Oversized Butterfly Tee", price: 999, image: img11, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 12, title: "Black Oversized Butterfly Tee", price: 999, image: img12, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 13, title: "Black Oversized Butterfly Tee", price: 999, image: img13, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 14, title: "Black Oversized Butterfly Tee", price: 999, image: img14, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 15, title: "Black Oversized Butterfly Tee", price: 999, image: img15, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 16, title: "Black Oversized Butterfly Tee", price: 999, image: img16, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 19, title: "Black Oversized Butterfly Tee", price: 999, image: img19, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 20, title: "Black Oversized Butterfly Tee", price: 999, image: img20, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  // ];
-  const navigate = useNavigate();
+export default function ProductList() {
+  const { listing, category } = useParams(); // Get dynamic URL params
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(10);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/products/");
+        const response = await axios.get(
+          `http://localhost:3000/api/products/${listing}/${category}`
+        );
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchProducts();
-  }, []);
-  
+  }, [listing, category]); // Refetch when listing or category changes
+
+  if (loading) return <p>Loading...</p>;
+  if (products.length === 0) return <p>No products found.</p>;
+
   const handleAddToWishlist = async (product) => {
     console.log("Product Data:", product); // ✅ Debugging
-  
+
     if (!product || !product._id) {
       console.error("Invalid product data", product);
       return;
     }
-  
+
     try {
       console.log("Sending request with productId:", product._id);
-  
+
       const response = await axios.post(
         "http://localhost:3000/api/wishlist/add",
         { productId: product._id },
         { withCredentials: true } // ✅ Ensures cookies are sent
       );
-  
+
       console.log("Added to wishlist:", response.data);
     } catch (error) {
-      console.error("Error adding to wishlist:", error.response?.data || error.message);
+      console.error(
+        "Error adding to wishlist:",
+        error.response?.data || error.message
+      );
     }
-  };  
+  };
+
+  const handleAddToCart = async (productId) => {
+    try {
+      await axios.post(
+        "http://localhost:3000/api/cart/add",
+        { productId, quantity: 1 },
+        { withCredentials: true }
+      );
+      console.log("Added to cart");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
 
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 10);
   };
 
   return (
-    <div className="mx-auto px-8" style={{ maxWidth: "90rem" }}>
-      {/* Video Section */}
-      <div
-        className="relative rounded-lg mx-auto"
-        style={{
-          marginTop: "6rem",
-          height: "22rem",
-          marginBottom: "1.5rem",
-          overflow: "hidden",
-        }}
-      >
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute top-0 left-0 w-full h-full object-cover"
-        >
-          <source src={menVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <div
-          className="relative z-10 flex flex-col gap-8 justify-center"
-          style={{ height: "22rem" }}
-        >
-          <h1 className="mb-4 font-extrabold text-white text-3xl text-center lg:text-6xl">
-            Men's Fashion
-          </h1>
-        </div>
-        <div
-          className="absolute top-0 left-0 w-full h-full bg-black opacity-50"
-          style={{ zIndex: 5 }}
-        ></div>
-      </div>
-
+    <div className="mx-auto mt-24 px-8">
       {/* Product Categories */}
       <div className="flex justify-between flex-wrap items-center pb-4 mb-4 border-b-2 border-gray-100">
         <div>
@@ -164,11 +158,33 @@ export default function Men() {
                     />
                   </svg>
                   <Link
-                    to="/Men"
+                    to={`/${listing}`}
                     className="ms-1 capitalize text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white"
                   >
-                    Men
+                    {listing}
                   </Link>
+                </div>
+              </li>
+              <li aria-current="page">
+                <div className="flex items-center">
+                  <svg
+                    className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 6 10"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 9 4-4-4-4"
+                    />
+                  </svg>
+                  <span className="ms-1 capitalize text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">
+                  {category}
+                  </span>
                 </div>
               </li>
             </ol>
@@ -268,34 +284,34 @@ export default function Men() {
             >
               <li>
                 <a
-                  href="/men/top"
+                  href="#"
                   className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
-                  Tshirt
+                  Men
                 </a>
               </li>
               <li>
                 <a
-                  href="/men/shirt"
+                  href="#"
                   className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
-                  Shirt
+                  Women
                 </a>
               </li>
               <li>
                 <a
-                  href="/men/denim"
+                  href="#"
                   className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
-                  Denim
+                  Earnings
                 </a>
               </li>
               <li>
                 <a
-                  href="/men/winter"
+                  href="#"
                   className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
-                  Winter Wear
+                  Sign out
                 </a>
               </li>
             </ul>

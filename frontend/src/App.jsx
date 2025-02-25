@@ -25,6 +25,7 @@ import Signup from "./components/comman/Signup/Signup";
 // import Navbar2 from "./components/comman/Navbar/Navbar2";
 import "flowbite";
 import AdminRegister from "./components/Admin/Login/Signup/AdminRegister";
+import ProductList from "./components/Products/ProductList";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -63,6 +64,7 @@ function App() {
             <Route path="/women" element={<Women />} />
             <Route path="/new-arrival" element={<New />} />
             <Route path="/sale" element={<Sale />} />
+            <Route path="/:listing/:category" element={<ProductList/>} />
             <Route path="/details" element={<Details />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/order-summary" element={<Summary />} />
