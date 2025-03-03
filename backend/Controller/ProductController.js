@@ -13,28 +13,27 @@ exports.getFilteredProducts = async (req, res) => {
   try {
     const { listing, category } = req.params;
 
-    // Building the query object
-    let query = {};
+    const formattedListing = listing.charAt(0).toUpperCase() + listing.slice(1);
+    const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1);
 
-    if (listing) {
-      query.listings = listing.charAt(0).toUpperCase() + listing.slice(1); // Capitalizing first letter to match DB values
-    }
+    const products = await Product.find({
+      listings: { $in: [formattedListing] },
+      category: formattedCategory,
+    });
 
-    if (category) {
-      query.category = category.charAt(0).toUpperCase() + category.slice(1); // Capitalizing first letter
-    }
-
-    const products = await Product.find(query);
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: "Error fetching products", error: error.message });
   }
 };
 
+
 exports.listings = async (req, res) => {
   try {
     const { listing } = req.params;
-    const products = await Product.find({ listings: listing }); // Filter by listing
+    const products = await Product.find({
+      listings: { $in: [new RegExp("^" + listing + "$", "i")] }, // Case-insensitive search
+    });
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: "Error fetching products", error: error.message });
