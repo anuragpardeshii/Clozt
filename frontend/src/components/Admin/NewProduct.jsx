@@ -7,6 +7,7 @@ export default function NewProduct() {
     title: "",
     description: "",
     price: "",
+    newPrice: "",
     color: "",
     gender: "",
     category: "",
@@ -22,43 +23,62 @@ export default function NewProduct() {
     images: [],
   });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-
-    if (type === "checkbox") {
-      setFormData((prev) => ({
-        ...prev,
-        listings: checked
-          ? [...prev.listings, name]
-          : prev.listings.filter((item) => item !== name),
-      }));
-    } else if (["XS", "S", "M", "L", "XL", "XXL"].includes(name)) {
-      setFormData((prev) => ({
-        ...prev,
-        sizes: {
-          ...prev.sizes,
-          [name]: Number(value),
-        },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+  const config = {
+    headers: { "Content-Type": "multipart/form-data" },
+    withCredentials: true,
   };
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
+  
+  const [checkedItems, setCheckedItems] = useState({
+    "New Arrivals": false,
+    Sale: false,
+    Men: false,
+    Women: false,
+  });
+
+  const handleCheckboxChange = (event) => {
+    const { name, checked } = event.target;
+    setCheckedItems((prev) => ({ ...prev, [name]: checked }));
+
+    setFormData((prev) => {
+      const updatedListings = checked
+        ? [...prev.listings, name]
+        : prev.listings.filter((item) => item !== name);
+      return { ...prev, listings: updatedListings };
+    });
+  };
+
+  const handleSizeChange = (event) => {
+    const { name, value } = event.target;
     setFormData((prev) => ({
       ...prev,
-      images: files,
+      sizes: { ...prev.sizes, [name]: Number(value) },
     }));
+  };
+
+  const [prices, setPrices] = useState({
+    previousPrice: "",
+    currentPrice: "",
+  });
+
+  const handleChange = (event) => {
+    const { name, checked } = event.target;
+    setCheckedItems((prev) => ({ ...prev, [name]: checked }));
+  };
+
+  const calculateDiscount = () => {
+    const { previousPrice, currentPrice } = prices;
+    if (previousPrice > currentPrice) {
+      return (((previousPrice - currentPrice) / previousPrice) * 100).toFixed(
+        2
+      );
+    }
+    return 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent page reload
-  
+
     const newFormData = new FormData();
     newFormData.append("title", formData.title);
     newFormData.append("description", formData.description);
@@ -68,26 +88,53 @@ export default function NewProduct() {
     newFormData.append("category", formData.category);
     newFormData.append("listings", JSON.stringify(formData.listings));
     newFormData.append("sizes", JSON.stringify(formData.sizes));
-  
+
     // Append images
     formData.images.forEach((image) => {
       newFormData.append("images", image);
     });
-  
+
     try {
       const response = await axios.post(
         "http://localhost:3000/api/products/newproduct",
         newFormData, // ✅ Send newFormData, not formData
         { withCredentials: true } // ✅ Ensures authentication cookies are sent
+        , newFormData, config
       );
-  
+
       console.log("Product added successfully:", response.data);
       alert("Product added successfully!");
     } catch (error) {
-      console.error("Error adding product:", error.response?.data?.message || error.message);
-      alert(`Error: ${error.response?.data?.message || "Something went wrong"}`);
+      console.error(
+        "Error adding product:",
+        error.response?.data?.message || error.message
+      );
+      alert(
+        `Error: ${error.response?.data?.message || "Something went wrong"}`
+      );
     }
-  };  
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => {
+      if (name === "price" && checkedItems.Sale) {
+        return { ...prev, price: Number(value), newPrice: prev.newPrice || "" };
+      }
+      return {
+        ...prev,
+        [name]: name === "price" || name === "newPrice" ? Number(value) : value,
+      };
+    });
+  };
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setFormData((prev) => ({
+      ...prev,
+      images: files,
+    }));
+  };
 
   return (
     <>
@@ -135,39 +182,6 @@ export default function NewProduct() {
             <div className="grid md:grid-cols-2 md:gap-6">
               <div className="mb-5">
                 <label
-                  htmlFor="price"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Price
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                  required
-                />
-              </div>
-              <div className="mb-5">
-                <label
-                  htmlFor="color"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Color
-                </label>
-                <input
-                  type="text"
-                  name="color"
-                  onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 md:gap-6">
-              <div className="mb-5">
-                <label
                   htmlFor="gender"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
@@ -210,28 +224,118 @@ export default function NewProduct() {
                 Listings:
               </h3>
               <ul className="grid w-full mb-5 gap-6 md:grid-cols-4">
-                {["New Arrivals", "Sale", "Men", "Women"].map((listing) => (
+                {Object.keys(checkedItems).map((listing) => (
                   <li key={listing}>
-                    <input
-                      type="checkbox"
-                      id={listing}
-                      name={listing}
-                      onChange={handleChange}
-                      className="hidden peer"
-                    />
-                    <label
-                      htmlFor={listing}
-                      className="inline-flex items-center w-full p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 hover:text-gray-600"
-                    >
-                      <div className="block">
-                        <div className="w-full text-sm font-semibold">
-                          {listing}
-                        </div>
-                      </div>
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name={listing}
+                        checked={checkedItems[listing]}
+                        onChange={handleCheckboxChange}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <span className="text-sm font-semibold text-gray-900">
+                        {listing}
+                      </span>
                     </label>
                   </li>
                 ))}
               </ul>
+
+              {/* Main Input Fields */}
+              <div className="grid md:grid-cols-2 md:gap-6">
+                {/* Price Field (Used as Previous Price when Sale is checked) */}
+                <div className="mb-5">
+                  <label
+                    htmlFor="price"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Price
+                  </label>
+                  <input
+                    type="number"
+                    name="price"
+                    value={formData.price || ""}
+                    onChange={handleInputChange}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                    required
+                  />
+                </div>
+
+                {/* Color Field */}
+                <div className="mb-5">
+                  <label
+                    htmlFor="color"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Color
+                  </label>
+                  <input
+                    type="text"
+                    name="color"
+                    value={formData.color}
+                    onChange={handleInputChange}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Show Sale Price and Discount Calculation if "Sale" is checked */}
+              {checkedItems.Sale && (
+                <div className="p-4 border rounded-lg bg-gray-100">
+                  <h4 className="text-lg font-medium text-gray-900">
+                    Sale Details
+                  </h4>
+
+                  <div className="grid md:grid-cols-2 md:gap-6">
+                    {/* Previous Price (Linked to Price Input) */}
+                    <div className="mb-5">
+                      <label
+                        htmlFor="previousPrice"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Previous Price
+                      </label>
+                      <input
+                        type="number"
+                        name="previousPrice"
+                        value={formData.price} // Linked to Price
+                        disabled
+                        className="shadow-sm bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light cursor-not-allowed"
+                      />
+                    </div>
+
+                    {/* New Price Input */}
+                    <div className="mb-5">
+                      <label
+                        htmlFor="newPrice"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        New Price
+                      </label>
+                      <input
+                        type="number"
+                        name="newPrice"
+                        value={formData.newPrice || ""}
+                        onChange={handleInputChange}
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Discount Percentage Display */}
+                  {formData.price && formData.newPrice && (
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Discount:</span>{" "}
+                      <span className="text-red-500">
+                        {calculateDiscount()}%
+                      </span>
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="mb-5">
@@ -250,7 +354,8 @@ export default function NewProduct() {
                     <input
                       type="number"
                       name={size}
-                      onChange={handleChange}
+                      value={formData.sizes[size]}
+                      onChange={handleSizeChange}
                       className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                       required
                     />
