@@ -1,53 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-// // Import all product images
-// import img1 from "/src/assets/Products/Men/1.jpeg";
-// import img2 from "/src/assets/Products/Men/2.jpeg";
-// import img3 from "/src/assets/Products/Men/3.jpeg";
-// import img4 from "/src/assets/Products/Men/4.jpeg";
-// import img5 from "/src/assets/Products/Men/5.jpeg";
-// import img6 from "/src/assets/Products/Men/6.jpeg";
-// import img7 from "/src/assets/Products/Men/7.jpeg";
-// import img8 from "/src/assets/Products/Men/8.jpeg";
-// import img9 from "/src/assets/Products/Men/9.jpeg";
-// import img10 from "/src/assets/Products/Men/10.jpeg";
-// import img11 from "/src/assets/Products/Men/11.jpeg";
-// import img12 from "/src/assets/Products/Men/12.jpeg";
-// import img13 from "/src/assets/Products/Men/13.jpeg";
-// import img14 from "/src/assets/Products/Men/14.jpeg";
-// import img15 from "/src/assets/Products/Men/15.jpeg";
-// import img16 from "/src/assets/Products/Men/16.jpeg";
-// import img19 from "/src/assets/Products/Men/19.jpeg";
-// import img20 from "/src/assets/Products/Men/20.jpeg";
-
-// Import video
 import menVideo from "/src/assets/Videos/men.mp4";
 
 export default function Men() {
-  // const products = [
-  //   { id: 1, title: "Black Oversized Butterfly Tee", price: 999, image: img1, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 2, title: "Black Oversized Butterfly Tee", price: 999, image: img2, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 3, title: "Black Oversized Butterfly Tee", price: 999, image: img3, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 4, title: "Black Oversized Butterfly Tee", price: 999, image: img4, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 5, title: "Black Oversized Butterfly Tee", price: 999, image: img5, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 6, title: "Black Oversized Butterfly Tee", price: 999, image: img6, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 7, title: "Black Oversized Butterfly Tee", price: 999, image: img7, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 8, title: "Black Oversized Butterfly Tee", price: 999, image: img8, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 9, title: "Black Oversized Butterfly Tee", price: 999, image: img9, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 10, title: "Black Oversized Butterfly Tee", price: 999, image: img10, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 11, title: "Black Oversized Butterfly Tee", price: 999, image: img11, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 12, title: "Black Oversized Butterfly Tee", price: 999, image: img12, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 13, title: "Black Oversized Butterfly Tee", price: 999, image: img13, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 14, title: "Black Oversized Butterfly Tee", price: 999, image: img14, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 15, title: "Black Oversized Butterfly Tee", price: 999, image: img15, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 16, title: "Black Oversized Butterfly Tee", price: 999, image: img16, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 19, title: "Black Oversized Butterfly Tee", price: 999, image: img19, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  //   { id: 20, title: "Black Oversized Butterfly Tee", price: 999, image: img20, description: "A stylish oversized tee with a butterfly design.", rating: 5.0 },
-  // ];
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [visibleCount, setVisibleCount] = useState(10);
+
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -60,29 +23,32 @@ export default function Men() {
     };
     fetchProducts();
   }, []);
-  
+
   const handleAddToWishlist = async (product) => {
     console.log("Product Data:", product); // ✅ Debugging
-  
+
     if (!product || !product._id) {
       console.error("Invalid product data", product);
       return;
     }
-  
+
     try {
       console.log("Sending request with productId:", product._id);
-  
+
       const response = await axios.post(
         "http://localhost:3000/api/wishlist/add",
         { productId: product._id },
         { withCredentials: true } // ✅ Ensures cookies are sent
       );
-  
+
       console.log("Added to wishlist:", response.data);
     } catch (error) {
-      console.error("Error adding to wishlist:", error.response?.data || error.message);
+      console.error(
+        "Error adding to wishlist:",
+        error.response?.data || error.message
+      );
     }
-  };  
+  };
 
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 10);
@@ -310,6 +276,7 @@ export default function Men() {
         {products.slice(0, visibleCount).map((product) => (
           <div
             key={product._id}
+            onClick={() => handleProductClick(product._id)}
             className="bg-white border border-gray-200 rounded-lg items-around justify-between shadow dark:bg-gray-800 dark:border-gray-700"
             style={{ display: "flex", flexDirection: "column" }}
           >

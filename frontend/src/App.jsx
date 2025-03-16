@@ -65,7 +65,7 @@ function App() {
             <Route path="/new-arrival" element={<New />} />
             <Route path="/sale" element={<Sale />} />
             <Route path="/:listing/:category" element={<ProductList/>} />
-            <Route path="/details" element={<Details />} />
+            <Route path="/product/:id" element={<Details />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/order-summary" element={<Summary />} />
             <Route path="/orders" element={<Order />} />
