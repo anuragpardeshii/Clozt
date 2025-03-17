@@ -1,7 +1,177 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Admin from "./Admin";
+import axios from "axios";
 
 export default function AllProducts() {
+  const [products, setProducts] = useState([]);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [updatedProduct, setUpdatedProduct] = useState({
+    title: "",
+    description: "",
+    price: "",
+    newPrice: "",
+    discount: "",
+    color: "",
+    category: "",
+    gender: "",
+    listing: [],
+    sizes: { XS: 0, S: 0, M: 0, L: 0, XL: 0, XXL: 0 },
+    images: [],
+  });
+  const [imagePreview, setImagePreview] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/products", {
+          withCredentials: true,
+        });
+        setProducts(response.data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Open Modal with Pre-Filled Data
+  const handleEditClick = (product) => {
+    if (!product || !product._id) {
+      console.error("Error: Invalid product selected for editing", product);
+      return;
+    }
+
+    setEditingProduct(product); // Store full product object
+    setUpdatedProduct({
+      title: product.title,
+      description: product.description || "",
+      price: product.price,
+      newPrice: product.newPrice || "",
+      discount: product.discount || "",
+      color: product.color,
+      category: product.category,
+      gender: product.gender,
+      listing: product.listing || [],
+      sizes: product.sizes || { XS: 0, S: 0, M: 0, L: 0, XL: 0, XXL: 0 },
+      images: product.images || [],
+    });
+    setImagePreview(product.images || []);
+  };
+
+  // Handle Checkbox for Listings
+  const handleListingChange = (e) => {
+    const { value, checked } = e.target;
+    let updatedListings = updatedProduct.listings || []; // Ensure it's always an array
+  
+    if (checked) {
+      // Add value if checkbox is checked
+      if (!updatedListings.includes(value)) {
+        updatedListings.push(value);
+      }
+    } else {
+      // Remove value if unchecked
+      updatedListings = updatedListings.filter((item) => item !== value);
+    }
+  
+    // If listings become empty, set "N/A"
+    if (updatedListings.length === 0) {
+      updatedListings = ["N/A"];
+    } else {
+      updatedListings = updatedListings.filter((item) => item !== "N/A"); // Remove "N/A" if items exist
+    }
+  
+    setUpdatedProduct((prev) => ({
+      ...prev,
+      listings: updatedListings,
+    }));
+  };
+    
+
+  // Handle Size Quantity Change
+  const handleSizeChange = (size, value) => {
+    setUpdatedProduct((prev) => ({
+      ...prev,
+      sizes: { ...prev.sizes, [size]: value },
+    }));
+  };
+
+  // Handle Image Upload
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
+
+    setUpdatedProduct((prev) => ({
+      ...prev,
+      images: [...prev.images, ...files], // Keep old images + new ones
+    }));
+    setImagePreview((prev) => [...prev, ...imageUrls]);
+  };
+
+  // Update Product
+  const handleUpdateProduct = async () => {
+    try {
+      if (!editingProduct || !editingProduct._id) {
+        alert("Product ID is missing. Cannot update.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("title", updatedProduct.title);
+      formData.append("description", updatedProduct.description);
+      formData.append("price", updatedProduct.price);
+      formData.append("color", updatedProduct.color);
+      formData.append("category", updatedProduct.category);
+      formData.append("gender", updatedProduct.gender);
+      formData.append("listing", JSON.stringify(updatedProduct.listing));
+      formData.append("sizes", JSON.stringify(updatedProduct.sizes));
+
+      if (updatedProduct.listing.includes("Sales")) {
+        formData.append("newPrice", updatedProduct.newPrice);
+        formData.append("discount", updatedProduct.discount);
+      }
+
+      // Separate new images from existing ones
+      const newImages = updatedProduct.images.filter(
+        (img) => img instanceof File
+      );
+      const existingImages = updatedProduct.images.filter(
+        (img) => !(img instanceof File)
+      );
+
+      formData.append("existingImages", JSON.stringify(existingImages)); // Send as JSON
+      newImages.forEach((image) => formData.append("images", image));
+
+      const response = await fetch(
+        `http://localhost:3000/api/products/${editingProduct._id}`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Error:", await response.text());
+        alert(`Error updating product: ${response.status}`);
+        return;
+      }
+
+      const data = await response.json();
+
+      setProducts((prev) =>
+        prev.map((product) =>
+          product._id === editingProduct._id ? data : product
+        )
+      );
+
+      alert("Product updated successfully!");
+      setEditingProduct(null);
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
+  };
+
+
   return (
     <>
       <div className="p-4 sm:ml-64">
@@ -86,7 +256,6 @@ export default function AllProducts() {
                           name="filter-radio"
                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                         />
-                        F
                         <label
                           htmlFor="filter-radio-example-2"
                           className="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
@@ -180,7 +349,10 @@ export default function AllProducts() {
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-6 py-3">
-                    Product name
+                    Image
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Title
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Color
@@ -203,135 +375,159 @@ export default function AllProducts() {
                 </tr>
               </thead>
               <tbody>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                {products.map((product) => (
+                  <tr
+                    key={product._id}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                   >
-                    Black Oversided Butterfly Tshirt
-                  </th>
-                  <td className="px-6 py-4">Silver</td>
-                  <td className="px-6 py-4">Male</td>
-                  <td className="px-6 py-4">New Arrivals</td>
-                  <td className="px-6 py-4">Laptop</td>
-                  <td className="px-6 py-4">$2999</td>
-                  <td className="px-6 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
-                    Black Oversided Butterfly Tshirt
-                  </th>
-                  <td className="px-6 py-4">Silver</td>
-                  <td className="px-6 py-4">Male</td>
-                  <td className="px-6 py-4">New Arrivals</td>
-                  <td className="px-6 py-4">Laptop</td>
-                  <td className="px-6 py-4">$2999</td>
-                  <td className="px-6 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
-                    Black Oversided Butterfly Tshirt
-                  </th>
-                  <td className="px-6 py-4">Silver</td>
-                  <td className="px-6 py-4">Male</td>
-                  <td className="px-6 py-4">New Arrivals</td>
-                  <td className="px-6 py-4">Laptop</td>
-                  <td className="px-6 py-4">$2999</td>
-                  <td className="px-6 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
-                    Black Oversided Butterfly Tshirt
-                  </th>
-                  <td className="px-6 py-4">Silver</td>
-                  <td className="px-6 py-4">Male</td>
-                  <td className="px-6 py-4">New Arrivals</td>
-                  <td className="px-6 py-4">Laptop</td>
-                  <td className="px-6 py-4">$2999</td>
-                  <td className="px-6 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
-                    Black Oversided Butterfly Tshirt
-                  </th>
-                  <td className="px-6 py-4">Silver</td>
-                  <td className="px-6 py-4">Male</td>
-                  <td className="px-6 py-4">New Arrivals</td>
-                  <td className="px-6 py-4">Laptop</td>
-                  <td className="px-6 py-4">$2999</td>
-                  <td className="px-6 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
-                    Black Oversided Butterfly Tshirt
-                  </th>
-                  <td className="px-6 py-4">Silver</td>
-                  <td className="px-6 py-4">Male</td>
-                  <td className="px-6 py-4">New Arrivals</td>
-                  <td className="px-6 py-4">Laptop</td>
-                  <td className="px-6 py-4">$2999</td>
-                  <td className="px-6 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Edit
-                    </a>
-                  </td>
-                </tr>
+                      <img src={product.images[0]} alt="" className="w-12" />
+                    </th>
+                    <td className="px-6 py-4">{product.title}</td>
+                    <td className="px-6 py-4">{product.color}</td>
+                    <td className="px-6 py-4">{product.gender}</td>
+                    <td className="px-6 py-4">{product.category}</td>
+                    <td className="px-6 py-4">
+                      {Array.isArray(product.listings)
+                        ? product.listings.join(", ")
+                        : "N/A"}
+                    </td>
+                    <td className="px-6 py-4">${product.price}</td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => handleEditClick(product)}
+                        className="text-blue-600 hover:underline"
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
+
+          {/* Modal */}
+          {editingProduct && (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+              style={{ zIndex: "1000" }}
+            >
+              <div className="bg-white p-6 rounded-lg w-96">
+                <h2 className="text-lg font-bold mb-4">Edit Product</h2>
+                <input
+                  type="text"
+                  value={updatedProduct.title}
+                  onChange={(e) =>
+                    setUpdatedProduct({
+                      ...updatedProduct,
+                      title: e.target.value,
+                    })
+                  }
+                  className="block w-full p-2 mb-2 border rounded"
+                  placeholder="Title"
+                />
+                <textarea
+                  value={updatedProduct.description}
+                  onChange={(e) =>
+                    setUpdatedProduct({
+                      ...updatedProduct,
+                      description: e.target.value,
+                    })
+                  }
+                  className="block w-full p-2 mb-2 border rounded"
+                  placeholder="Description"
+                ></textarea>
+                <input
+                  type="text"
+                  value={updatedProduct.price}
+                  onChange={(e) =>
+                    setUpdatedProduct({
+                      ...updatedProduct,
+                      price: e.target.value,
+                    })
+                  }
+                  className="block w-full p-2 mb-2 border rounded"
+                  placeholder="Price"
+                />
+
+                {/* Listing Checkboxes */}
+                <div className="mb-2">
+                  <label>
+                    <input
+                      type="checkbox"
+                      value="New Arrivals"
+                      checked={updatedProduct.listing.includes("New Arrivals")}
+                      onChange={handleListingChange}
+                    />{" "}
+                    New Arrivals
+                  </label>
+                  <label className="ml-4">
+                    <input
+                      type="checkbox"
+                      value="Sales"
+                      checked={updatedProduct.listing.includes("Sales")}
+                      onChange={handleListingChange}
+                    />{" "}
+                    Sales
+                  </label>
+                </div>
+
+                {/* Sales Fields */}
+                {updatedProduct.listing.includes("Sales") && (
+                  <>
+                    <input
+                      type="text"
+                      value={updatedProduct.newPrice || ""}
+                      onChange={(e) =>
+                        setUpdatedProduct({
+                          ...updatedProduct,
+                          newPrice: e.target.value,
+                        })
+                      }
+                      className="block w-full p-2 mb-2 border rounded"
+                      placeholder="New Price"
+                    />
+                    <input
+                      type="text"
+                      value={updatedProduct.discount || ""}
+                      onChange={(e) =>
+                        setUpdatedProduct({
+                          ...updatedProduct,
+                          discount: e.target.value,
+                        })
+                      }
+                      className="block w-full p-2 mb-2 border rounded"
+                      placeholder="Discount %"
+                    />
+                  </>
+                )}
+
+
+                {/* Sizes */}
+                {Object.keys(updatedProduct.sizes).map((size) => (
+                  <input
+                    key={size}
+                    type="text"
+                    value={updatedProduct.sizes[size]}
+                    onChange={(e) => handleSizeChange(size, e.target.value)}
+                    className="block w-full p-2 mb-2 border rounded"
+                    placeholder={`${size} Quantity`}
+                  />
+                ))}
+
+                <button
+                  onClick={handleUpdateProduct}
+                  className="bg-blue-600 text-white px-4 py-2 rounded mt-2"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
