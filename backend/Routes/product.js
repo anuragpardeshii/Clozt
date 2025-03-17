@@ -9,5 +9,6 @@ router.post("/newproduct", isAdminLoggedIn, upload.array("images", 4), productCo
 router.get("/:listing/:category", productController.getFilteredProducts);
 router.get("/:listing", productController.listings); // This should come after the more specific route
 router.get("/", productController.getAllProducts);
+router.put("/:id", productController.updateProduct);
 
 module.exports = router;
