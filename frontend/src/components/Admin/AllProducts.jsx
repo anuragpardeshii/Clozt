@@ -4,17 +4,18 @@ import axios from "axios";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [editingProduct, setEditingProduct] = useState(null);
   const [updatedProduct, setUpdatedProduct] = useState({
     title: "",
     description: "",
     price: "",
-    newPrice: "",
+    salePrice: "", // Changed from newPrice
     discount: "",
     color: "",
     category: "",
     gender: "",
-    listing: [],
+    listings: [], // Changed from listing
     sizes: { XS: 0, S: 0, M: 0, L: 0, XL: 0, XXL: 0 },
     images: [],
   });
@@ -42,17 +43,17 @@ export default function AllProducts() {
       return;
     }
 
-    setEditingProduct(product); // Store full product object
+    setEditingProduct(product);
     setUpdatedProduct({
       title: product.title,
       description: product.description || "",
       price: product.price,
-      newPrice: product.newPrice || "",
+      salePrice: product.salePrice || "", // Changed from newPrice
       discount: product.discount || "",
       color: product.color,
       category: product.category,
       gender: product.gender,
-      listing: product.listing || [],
+      listings: product.listings || [], // Changed from listing
       sizes: product.sizes || { XS: 0, S: 0, M: 0, L: 0, XL: 0, XXL: 0 },
       images: product.images || [],
     });
@@ -63,7 +64,7 @@ export default function AllProducts() {
   const handleListingChange = (e) => {
     const { value, checked } = e.target;
     let updatedListings = updatedProduct.listings || []; // Ensure it's always an array
-  
+
     if (checked) {
       // Add value if checkbox is checked
       if (!updatedListings.includes(value)) {
@@ -73,20 +74,19 @@ export default function AllProducts() {
       // Remove value if unchecked
       updatedListings = updatedListings.filter((item) => item !== value);
     }
-  
+
     // If listings become empty, set "N/A"
     if (updatedListings.length === 0) {
       updatedListings = ["N/A"];
     } else {
       updatedListings = updatedListings.filter((item) => item !== "N/A"); // Remove "N/A" if items exist
     }
-  
+
     setUpdatedProduct((prev) => ({
       ...prev,
       listings: updatedListings,
     }));
   };
-    
 
   // Handle Size Quantity Change
   const handleSizeChange = (size, value) => {
@@ -123,11 +123,12 @@ export default function AllProducts() {
       formData.append("color", updatedProduct.color);
       formData.append("category", updatedProduct.category);
       formData.append("gender", updatedProduct.gender);
-      formData.append("listing", JSON.stringify(updatedProduct.listing));
+      formData.append("listings", JSON.stringify(updatedProduct.listings)); // Changed from listing
       formData.append("sizes", JSON.stringify(updatedProduct.sizes));
 
-      if (updatedProduct.listing.includes("Sales")) {
-        formData.append("newPrice", updatedProduct.newPrice);
+      if (updatedProduct.listings.includes("Sale")) {
+        // Changed from Sales to Sale
+        formData.append("salePrice", updatedProduct.salePrice); // Changed from newPrice
         formData.append("discount", updatedProduct.discount);
       }
 
@@ -170,7 +171,6 @@ export default function AllProducts() {
       console.error("Error updating product:", error);
     }
   };
-
 
   return (
     <>
@@ -342,6 +342,8 @@ export default function AllProducts() {
                   id="table-search"
                   className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Search for products"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
@@ -370,164 +372,264 @@ export default function AllProducts() {
                     Price
                   </th>
                   <th scope="col" className="px-6 py-3">
+                    Sale Price
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Discount
+                  </th>
+                  <th scope="col" className="px-6 py-3">
                     Action
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
-                  <tr
-                    key={product._id}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  >
-                    <th
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                {products
+                  .filter((product) =>
+                    product.title
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  )
+                  .map((product) => (
+                    <tr
+                      key={product._id}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
-                      <img src={product.images[0]} alt="" className="w-12" />
-                    </th>
-                    <td className="px-6 py-4">{product.title}</td>
-                    <td className="px-6 py-4">{product.color}</td>
-                    <td className="px-6 py-4">{product.gender}</td>
-                    <td className="px-6 py-4">{product.category}</td>
-                    <td className="px-6 py-4">
-                      {Array.isArray(product.listings)
-                        ? product.listings.join(", ")
-                        : "N/A"}
-                    </td>
-                    <td className="px-6 py-4">${product.price}</td>
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => handleEditClick(product)}
-                        className="text-blue-600 hover:underline"
-                      >
-                        Edit
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="px-6 py-4">
+                        <img src={product.images[0]} alt="" className="w-12" />
+                      </td>
+                      <td className="px-6 py-4">{product.title}</td>
+                      <td className="px-6 py-4">{product.color}</td>
+                      <td className="px-6 py-4">{product.gender}</td>
+                      <td className="px-6 py-4">{product.category}</td>
+                      <td className="px-6 py-4">
+                        {Array.isArray(product.listings)
+                          ? product.listings.join(", ")
+                          : "N/A"}
+                      </td>
+                      <td className="px-6 py-4">${product.price}</td>
+                      <td className="px-6 py-4">
+                        {product.salePrice ? `$${product.salePrice}` : "-"}
+                      </td>
+                      <td className="px-6 py-4">
+                        {product.discount ? `${product.discount}%` : "-"}
+                      </td>
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => handleEditClick(product)}
+                          className="text-blue-600 hover:underline"
+                        >
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
-          </div>
+            {editingProduct && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="bg-white p-6 rounded-lg max-w-xl z-[10000] max-h-[85vh]  overflow-y-auto shadow-lg">
+                  <h2 className="text-2xl font-semibold mb-4">Edit Product</h2>
 
-          {/* Modal */}
-          {editingProduct && (
-            <div
-              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-              style={{ zIndex: "1000" }}
-            >
-              <div className="bg-white p-6 rounded-lg w-96">
-                <h2 className="text-lg font-bold mb-4">Edit Product</h2>
-                <input
-                  type="text"
-                  value={updatedProduct.title}
-                  onChange={(e) =>
-                    setUpdatedProduct({
-                      ...updatedProduct,
-                      title: e.target.value,
-                    })
-                  }
-                  className="block w-full p-2 mb-2 border rounded"
-                  placeholder="Title"
-                />
-                <textarea
-                  value={updatedProduct.description}
-                  onChange={(e) =>
-                    setUpdatedProduct({
-                      ...updatedProduct,
-                      description: e.target.value,
-                    })
-                  }
-                  className="block w-full p-2 mb-2 border rounded"
-                  placeholder="Description"
-                ></textarea>
-                <input
-                  type="text"
-                  value={updatedProduct.price}
-                  onChange={(e) =>
-                    setUpdatedProduct({
-                      ...updatedProduct,
-                      price: e.target.value,
-                    })
-                  }
-                  className="block w-full p-2 mb-2 border rounded"
-                  placeholder="Price"
-                />
-
-                {/* Listing Checkboxes */}
-                <div className="mb-2">
-                  <label>
-                    <input
-                      type="checkbox"
-                      value="New Arrivals"
-                      checked={updatedProduct.listing.includes("New Arrivals")}
-                      onChange={handleListingChange}
-                    />{" "}
-                    New Arrivals
-                  </label>
-                  <label className="ml-4">
-                    <input
-                      type="checkbox"
-                      value="Sales"
-                      checked={updatedProduct.listing.includes("Sales")}
-                      onChange={handleListingChange}
-                    />{" "}
-                    Sales
-                  </label>
-                </div>
-
-                {/* Sales Fields */}
-                {updatedProduct.listing.includes("Sales") && (
-                  <>
-                    <input
-                      type="text"
-                      value={updatedProduct.newPrice || ""}
-                      onChange={(e) =>
-                        setUpdatedProduct({
-                          ...updatedProduct,
-                          newPrice: e.target.value,
-                        })
-                      }
-                      className="block w-full p-2 mb-2 border rounded"
-                      placeholder="New Price"
-                    />
-                    <input
-                      type="text"
-                      value={updatedProduct.discount || ""}
-                      onChange={(e) =>
-                        setUpdatedProduct({
-                          ...updatedProduct,
-                          discount: e.target.value,
-                        })
-                      }
-                      className="block w-full p-2 mb-2 border rounded"
-                      placeholder="Discount %"
-                    />
-                  </>
-                )}
-
-
-                {/* Sizes */}
-                {Object.keys(updatedProduct.sizes).map((size) => (
+                  {/* Title Input */}
                   <input
-                    key={size}
                     type="text"
-                    value={updatedProduct.sizes[size]}
-                    onChange={(e) => handleSizeChange(size, e.target.value)}
-                    className="block w-full p-2 mb-2 border rounded"
-                    placeholder={`${size} Quantity`}
+                    value={updatedProduct.title}
+                    onChange={(e) =>
+                      setUpdatedProduct({
+                        ...updatedProduct,
+                        title: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 mb-3 border rounded focus:ring focus:ring-blue-300"
+                    placeholder="Title"
                   />
-                ))}
 
-                <button
-                  onClick={handleUpdateProduct}
-                  className="bg-blue-600 text-white px-4 py-2 rounded mt-2"
-                >
-                  Save
-                </button>
+                  {/* Description Input */}
+                  <textarea
+                    value={updatedProduct.description}
+                    onChange={(e) =>
+                      setUpdatedProduct({
+                        ...updatedProduct,
+                        description: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 mb-3 border rounded focus:ring focus:ring-blue-300"
+                    placeholder="Description"
+                  />
+
+                  {/* Gender Selection */}
+                  <select
+                    value={updatedProduct.gender}
+                    onChange={(e) =>
+                      setUpdatedProduct({
+                        ...updatedProduct,
+                        gender: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 mb-3 border rounded focus:ring focus:ring-blue-300"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+
+                  {/* Category Selection */}
+                  <select
+                    value={updatedProduct.category}
+                    onChange={(e) =>
+                      setUpdatedProduct({
+                        ...updatedProduct,
+                        category: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 mb-3 border rounded focus:ring focus:ring-blue-300"
+                  >
+                    <option value="">Select Category</option>
+                    <option value="Top">Top</option>
+                    <option value="Shirts">Shirts</option>
+                    <option value="Denim">Denim</option>
+                    <option value="Winter Wear">Winter Wear</option>
+                  </select>
+
+                  {/* Color Input */}
+                  <input
+                    type="text"
+                    value={updatedProduct.color}
+                    onChange={(e) =>
+                      setUpdatedProduct({
+                        ...updatedProduct,
+                        color: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 mb-3 border rounded focus:ring focus:ring-blue-300"
+                    placeholder="Color"
+                  />
+
+                  {/* Price Input */}
+                  <input
+                    type="number"
+                    value={updatedProduct.price}
+                    onChange={(e) =>
+                      setUpdatedProduct({
+                        ...updatedProduct,
+                        price: Number(e.target.value),
+                      })
+                    }
+                    className="w-full p-2 mb-3 border rounded focus:ring focus:ring-blue-300"
+                    placeholder="Price"
+                  />
+
+                  {/* Listings */}
+                  <div className="mb-4">
+                    <label className="block mb-2 font-semibold">Listings</label>
+                    <div className="flex gap-4">
+                      {["New Arrivals", "Sale"].map((listing) => (
+                        <label
+                          key={listing}
+                          className="flex items-center gap-2"
+                        >
+                          <input
+                            type="checkbox"
+                            value={listing}
+                            checked={updatedProduct.listings.includes(listing)}
+                            onChange={handleListingChange}
+                            className="accent-blue-500"
+                          />
+                          {listing}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Sale Price */}
+                  {updatedProduct.listings.includes("Sale") && (
+                    <input
+                      type="number"
+                      value={updatedProduct.salePrice}
+                      onChange={(e) => {
+                        const salePrice = Number(e.target.value);
+                        const discount = Math.round(
+                          ((updatedProduct.price - salePrice) /
+                            updatedProduct.price) *
+                            100
+                        );
+                        setUpdatedProduct({
+                          ...updatedProduct,
+                          salePrice,
+                          discount,
+                        });
+                      }}
+                      className="w-full p-2 mb-3 border rounded focus:ring focus:ring-blue-300"
+                      placeholder="Sale Price"
+                      max={updatedProduct.price}
+                    />
+                  )}
+
+                  {/* Sizes */}
+                  <div className="mb-4">
+                    <label className="block mb-2 font-semibold">Sizes</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {Object.entries(updatedProduct.sizes).map(
+                        ([size, quantity]) => (
+                          <div key={size}>
+                            <label className="block text-sm font-medium">
+                              {size}
+                            </label>
+                            <input
+                              type="number"
+                              value={quantity}
+                              onChange={(e) =>
+                                handleSizeChange(size, Number(e.target.value))
+                              }
+                              className="w-full p-2 border rounded focus:ring focus:ring-blue-300"
+                              min="0"
+                            />
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Image Upload */}
+                  <div className="mb-4">
+                    <label className="block mb-2 font-semibold">Images</label>
+                    <input
+                      type="file"
+                      multiple
+                      onChange={handleImageUpload}
+                      className="w-full p-2 mb-2 border rounded"
+                    />
+                    <div className="grid grid-cols-3 gap-2">
+                      {imagePreview.map((url, index) => (
+                        <img
+                          key={index}
+                          src={url}
+                          alt="Preview"
+                          className="w-full h-20 object-cover rounded shadow-md"
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex justify-end gap-2">
+                    <button
+                      onClick={() => setEditingProduct(null)}
+                      className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleUpdateProduct}
+                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </>

@@ -7,8 +7,9 @@ const router = express.Router();
 
 router.post("/newproduct", isAdminLoggedIn, upload.array("images", 4), productController.createProduct);
 router.get("/:listing/:category", productController.getFilteredProducts);
-router.get("/:listing", productController.listings); // This should come after the more specific route
+router.get("/:listing", productController.listings);
 router.get("/", productController.getAllProducts);
-router.put("/:id", productController.updateProduct);
+router.put("/:id", isAdminLoggedIn, upload.array("images", 4), productController.updateProduct);
+router.delete("/:id", isAdminLoggedIn, productController.deleteProduct);
 
 module.exports = router;

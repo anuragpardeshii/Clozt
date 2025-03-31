@@ -93,9 +93,6 @@ exports.listings = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
-    // console.log("Request Body:", req.body);
-    // console.log("Uploaded Files:", req.files);
-
     const {
       title,
       description,
@@ -105,6 +102,8 @@ exports.createProduct = async (req, res) => {
       category,
       sizes,
       listings,
+      salePrice,
+      discount,
     } = req.body;
 
     // Validate required fields
@@ -126,18 +125,11 @@ exports.createProduct = async (req, res) => {
       return res.status(400).json({ message: "No images uploaded" });
     }
 
-    // Convert uploaded images to array of Cloudinary URLs
     const images = req.files.map((file) => file.path);
-
-    // console.log("Received sizes:", sizes);
-    // console.log("Received listings:", listings);
-
-    // Ensure sizes and listings are properly parsed
     const parsedSizes = typeof sizes === "string" ? JSON.parse(sizes) : sizes;
-    const parsedListings =
-      typeof listings === "string" ? JSON.parse(listings) : listings;
+    const parsedListings = typeof listings === "string" ? JSON.parse(listings) : listings;
 
-    // Create a new product instance
+    // Create a new product instance with optional sale fields
     const newProduct = new Product({
       title,
       description,
@@ -145,23 +137,25 @@ exports.createProduct = async (req, res) => {
       color,
       gender,
       category,
-      listings: parsedListings, // Ensure listings is an array
-      sizes: parsedSizes, // Ensure sizes is an object
+      listings: parsedListings,
+      sizes: parsedSizes,
       images,
+      ...(salePrice && { salePrice: Number(salePrice) }),
+      ...(discount && { discount: Number(discount) }),
     });
 
-    // Save product to database
     await newProduct.save();
 
-    res
-      .status(201)
-      .json({ message: "Product created successfully", product: newProduct });
+    res.status(201).json({ 
+      message: "Product created successfully", 
+      product: newProduct 
+    });
   } catch (error) {
     console.error("Error creating product:", error);
     res.status(500).json({
       message: "Error creating product",
       error: error.message,
-      stack: error.stack, // For debugging
+      stack: error.stack,
     });
   }
 };
