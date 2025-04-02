@@ -1,9 +1,9 @@
 export default function About() {
   return (
     <>
-      <div className="mx-auto px-8" style={{ maxWidth: "90rem", marginTop: "6rem" }}>
+      <div className="mx-auto px-8" style={{ maxWidth: "90rem" }}>
         <div
-          className="rounded-lg mx-auto"
+          className="rounded-lg mx-auto my-8"
           style={{
             backgroundImage: `url("/src/assets/Images/about.jpg")`,
             backgroundSize: "cover", // Optional: To ensure the image covers the div

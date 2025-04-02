@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 export default function Details() {
   const [isInWishlist, setIsInWishlist] = useState(false);
@@ -12,6 +13,11 @@ export default function Details() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user] = useState(null);
+
+  if(!user){
+    return <Navigate to="/login" />;
+  }
 
   useEffect(() => {
     const fetchProduct = async () => {

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import React, { useState } from "react";
+import React from "react";
 import "./index.css";
 import MainLayout from "./components/Layout/MainLayout";
 import AdminDashboard from "./components/Admin/AdminDasbord";
@@ -22,13 +22,13 @@ import Order from "./components/comman/Orders/Order";
 import Summary from "./components/comman/Summary/Summary";
 import Login from "./components/comman/Login/Login";
 import Signup from "./components/comman/Signup/Signup";
-// import Navbar2 from "./components/comman/Navbar/Navbar2";
 import "flowbite";
 import AdminRegister from "./components/Admin/Login/Signup/AdminRegister";
 import ProductList from "./components/Products/ProductList";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
 function App() {
-  const [user, setUser] = useState(null);
+  const { user, login, logout, loading } = useAuth();
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isLoginOrSignup =
@@ -43,7 +43,7 @@ function App() {
           <Route
             path="/admin/*"
             element={
-              <AdminProtectedRoute> {/* 🔒 Protect All Admin Routes */}
+              <AdminProtectedRoute>
                 <AdminDashboard />
               </AdminProtectedRoute>
             }
@@ -51,11 +51,11 @@ function App() {
         </Routes>
       ) : isLoginOrSignup ? (
         <Routes>
-          <Route path="/login" element={<Login setUser={setUser} />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
       ) : (
-        <MainLayout user={user} setUser={setUser}>
+        <MainLayout>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/customer-care" element={<Help />} />
@@ -80,7 +80,9 @@ function App() {
 function AppWrapper() {
   return (
     <BrowserRouter>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

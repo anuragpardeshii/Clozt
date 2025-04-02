@@ -2,10 +2,21 @@ import PriceDetails from "./PriceDetails";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 function Cart() {
   const [cart, setCart] = useState({ products: [], total: 0 });
   const [loading, setLoading] = useState(true);
+  const {user} = useAuth();
+
+  if (!cart || !cart.products) {
+    return <p>Loading...</p>;   
+  }
+
+  if(!user){
+    return <Navigate to="/login" />;
+  }
 
   useEffect(() => {
     const fetchCart = async () => {

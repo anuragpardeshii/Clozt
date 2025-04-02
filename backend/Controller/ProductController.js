@@ -37,43 +37,70 @@ exports.getFilteredProducts = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   try {
-    upload(req, res, async (err) => {
-      if (err) {
-        return res.status(500).json({ message: "File upload error", error: err });
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "Product ID is required" });
+    }
+
+    let updatedData = { ...req.body };
+
+    // Parse JSON fields if they exist
+    if (updatedData.listings) {
+      try {
+        updatedData.listings = JSON.parse(updatedData.listings);
+      } catch (e) {
+        return res.status(400).json({ message: "Invalid listings format" });
       }
-
-      const { id } = req.params;
-      if (!id) {
-        return res.status(400).json({ message: "Product ID is required" });
+    }
+    if (updatedData.sizes) {
+      try {
+        updatedData.sizes = JSON.parse(updatedData.sizes);
+      } catch (e) {
+        return res.status(400).json({ message: "Invalid sizes format" });
       }
+    }
+    if (updatedData.existingImages) {
+      try {
+        updatedData.existingImages = JSON.parse(updatedData.existingImages);
+      } catch (e) {
+        return res.status(400).json({ message: "Invalid existingImages format" });
+      }
+    }
 
-      let updatedData = req.body;
-
-      // Parse JSON fields
-      if (updatedData.listing) updatedData.listing = JSON.parse(updatedData.listing);
-      if (updatedData.sizes) updatedData.sizes = JSON.parse(updatedData.sizes);
-      if (updatedData.existingImages) updatedData.existingImages = JSON.parse(updatedData.existingImages);
-
-      // Extract uploaded images
-      const newImages = req.files.map((file) => file.filename); // Store filenames or upload to Cloudinary
+    // Handle new images if any were uploaded
+    if (req.files && req.files.length > 0) {
+      const newImages = req.files.map(file => file.path || file.secure_url);
       updatedData.images = [...(updatedData.existingImages || []), ...newImages];
+    }
 
-      // Remove unnecessary fields
-      delete updatedData.existingImages;
+    // Handle sale price and discount
+    if (updatedData.listings && updatedData.listings.includes("Sale")) {
+      // Convert sale price and discount to numbers
+      updatedData.salePrice = updatedData.salePrice ? Number(updatedData.salePrice) : null;
+      updatedData.discount = updatedData.discount ? Number(updatedData.discount) : null;
+    } else {
+      // If not on sale, remove sale price and discount
+      updatedData.salePrice = null;
+      updatedData.discount = null;
+    }
 
-      const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, {
-        new: true,
-        runValidators: true,
-      });
+    // Remove unnecessary fields
+    delete updatedData.existingImages;
 
-      if (!updatedProduct) {
-        return res.status(404).json({ message: "Product not found" });
-      }
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      updatedData,
+      { new: true, runValidators: true }
+    );
 
-      res.status(200).json(updatedProduct);
-    });
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json(updatedProduct);
   } catch (error) {
-    res.status(500).json({ message: "Error updating product", error });
+    console.error("Error updating product:", error);
+    res.status(500).json({ message: "Error updating product", error: error.message });
   }
 };
 

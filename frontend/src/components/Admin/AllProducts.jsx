@@ -63,7 +63,7 @@ export default function AllProducts() {
   // Handle Checkbox for Listings
   const handleListingChange = (e) => {
     const { value, checked } = e.target;
-    let updatedListings = updatedProduct.listings || []; // Ensure it's always an array
+    let updatedListings = [...(updatedProduct.listings || [])];
 
     if (checked) {
       // Add value if checkbox is checked
@@ -79,7 +79,8 @@ export default function AllProducts() {
     if (updatedListings.length === 0) {
       updatedListings = ["N/A"];
     } else {
-      updatedListings = updatedListings.filter((item) => item !== "N/A"); // Remove "N/A" if items exist
+      // Remove "N/A" if other items exist
+      updatedListings = updatedListings.filter((item) => item !== "N/A");
     }
 
     setUpdatedProduct((prev) => ({
@@ -123,13 +124,23 @@ export default function AllProducts() {
       formData.append("color", updatedProduct.color);
       formData.append("category", updatedProduct.category);
       formData.append("gender", updatedProduct.gender);
-      formData.append("listings", JSON.stringify(updatedProduct.listings)); // Changed from listing
+
+      // Ensure listings is always an array and properly formatted
+      const listingsArray = Array.isArray(updatedProduct.listings)
+        ? updatedProduct.listings
+        : ["N/A"];
+      formData.append("listings", JSON.stringify(listingsArray));
+
       formData.append("sizes", JSON.stringify(updatedProduct.sizes));
 
-      if (updatedProduct.listings.includes("Sale")) {
-        // Changed from Sales to Sale
-        formData.append("salePrice", updatedProduct.salePrice); // Changed from newPrice
-        formData.append("discount", updatedProduct.discount);
+      // Handle sale price and discount
+      if (listingsArray.includes("Sale")) {
+        formData.append("salePrice", updatedProduct.salePrice || "");
+        formData.append("discount", updatedProduct.discount || "");
+      } else {
+        // If Sale is not selected, remove sale price and discount
+        formData.append("salePrice", "");
+        formData.append("discount", "");
       }
 
       // Separate new images from existing ones
@@ -140,28 +151,23 @@ export default function AllProducts() {
         (img) => !(img instanceof File)
       );
 
-      formData.append("existingImages", JSON.stringify(existingImages)); // Send as JSON
+      formData.append("existingImages", JSON.stringify(existingImages));
       newImages.forEach((image) => formData.append("images", image));
 
-      const response = await fetch(
+      const response = await axios.put(
         `http://localhost:3000/api/products/${editingProduct._id}`,
+        formData,
         {
-          method: "PUT",
-          body: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
         }
       );
 
-      if (!response.ok) {
-        console.error("Error:", await response.text());
-        alert(`Error updating product: ${response.status}`);
-        return;
-      }
-
-      const data = await response.json();
-
       setProducts((prev) =>
         prev.map((product) =>
-          product._id === editingProduct._id ? data : product
+          product._id === editingProduct._id ? response.data : product
         )
       );
 
@@ -169,6 +175,11 @@ export default function AllProducts() {
       setEditingProduct(null);
     } catch (error) {
       console.error("Error updating product:", error);
+      alert(
+        `Error updating product: ${
+          error.response?.data?.message || error.message
+        }`
+      );
     }
   };
 
@@ -229,7 +240,7 @@ export default function AllProducts() {
                     className="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200"
                     aria-labelledby="dropdownRadioButton"
                   >
-                    <li>
+                    <li key="filter-day">
                       <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                         <input
                           id="filter-radio-example-1"
@@ -246,7 +257,7 @@ export default function AllProducts() {
                         </label>
                       </div>
                     </li>
-                    <li>
+                    <li key="filter-7days">
                       <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                         <input
                           defaultChecked
@@ -264,7 +275,7 @@ export default function AllProducts() {
                         </label>
                       </div>
                     </li>
-                    <li>
+                    <li key="filter-30days">
                       <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                         <input
                           id="filter-radio-example-3"
@@ -281,7 +292,7 @@ export default function AllProducts() {
                         </label>
                       </div>
                     </li>
-                    <li>
+                    <li key="filter-month">
                       <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                         <input
                           id="filter-radio-example-4"
@@ -298,7 +309,7 @@ export default function AllProducts() {
                         </label>
                       </div>
                     </li>
-                    <li>
+                    <li key="filter-year">
                       <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                         <input
                           id="filter-radio-example-5"
@@ -350,34 +361,34 @@ export default function AllProducts() {
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col" className="px-6 py-3">
+                  <th key="th-image" scope="col" className="px-6 py-3">
                     Image
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th key="th-title" scope="col" className="px-6 py-3">
                     Title
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th key="th-color" scope="col" className="px-6 py-3">
                     Color
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th key="th-gender" scope="col" className="px-6 py-3">
                     Gender
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th key="th-category" scope="col" className="px-6 py-3">
                     Category
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th key="th-listing" scope="col" className="px-6 py-3">
                     Listing
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th key="th-price" scope="col" className="px-6 py-3">
                     Price
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th key="th-saleprice" scope="col" className="px-6 py-3">
                     Sale Price
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th key="th-discount" scope="col" className="px-6 py-3">
                     Discount
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th key="th-action" scope="col" className="px-6 py-3">
                     Action
                   </th>
                 </tr>
@@ -389,9 +400,9 @@ export default function AllProducts() {
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase())
                   )
-                  .map((product) => (
+                  .map((product, index) => (
                     <tr
-                      key={product._id}
+                      key={product._id || product.id || `product-${index}`}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
                       <td className="px-6 py-4">
@@ -525,7 +536,7 @@ export default function AllProducts() {
                     <div className="flex gap-4">
                       {["New Arrivals", "Sale"].map((listing) => (
                         <label
-                          key={listing}
+                          key={`listing-${listing}`}
                           className="flex items-center gap-2"
                         >
                           <input
@@ -571,7 +582,7 @@ export default function AllProducts() {
                     <div className="grid grid-cols-3 gap-2">
                       {Object.entries(updatedProduct.sizes).map(
                         ([size, quantity]) => (
-                          <div key={size}>
+                          <div key={`size-${size}`}>
                             <label className="block text-sm font-medium">
                               {size}
                             </label>
@@ -602,9 +613,9 @@ export default function AllProducts() {
                     <div className="grid grid-cols-3 gap-2">
                       {imagePreview.map((url, index) => (
                         <img
-                          key={index}
+                          key={`image-preview-${index}`}
                           src={url}
-                          alt="Preview"
+                          alt={`Preview ${index + 1}`}
                           className="w-full h-20 object-cover rounded shadow-md"
                         />
                       ))}

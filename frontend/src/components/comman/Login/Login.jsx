@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
-export default function Login({ setUser }) {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // ✅ Default to false
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  // ✅ Check if the user is already logged in
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -20,7 +21,8 @@ export default function Login({ setUser }) {
 
         if (res.data.loggedIn) {
           setIsLoggedIn(true);
-          navigate("/"); // ✅ Redirect to home if already logged in
+          login(res.data.user);
+          navigate("/");
         }
       } catch (error) {
         setIsLoggedIn(false);
@@ -28,12 +30,12 @@ export default function Login({ setUser }) {
     };
 
     checkAuth();
-  }, [navigate]);
+  }, [navigate, login]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(""); // ✅ Clear previous messages
+    setMessage("");
 
     try {
       const res = await axios.post(
@@ -44,17 +46,16 @@ export default function Login({ setUser }) {
 
       if (res.status === 200) {
         setMessage("Login successful!");
-        setUser(res.data.user); // ✅ Ensure backend sends a user object
-        navigate("/"); // ✅ Use navigate instead of window.location.href
+        login(res.data.user);
+        navigate("/");
       }
     } catch (error) {
       setMessage(error.response?.data?.message || "Login failed");
     } finally {
-      setLoading(false); // ✅ Ensures loading resets even if login fails
+      setLoading(false);
     }
   };
 
-  // ✅ Show loading state while checking auth
   if (isLoggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-white">

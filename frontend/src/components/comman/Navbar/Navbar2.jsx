@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Search, User, Heart, ShoppingCart, Menu } from "lucide-react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
-export default function Navbar2({ user, setUser }) {
+export default function Navbar2({ user }) {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const toggleMobileMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
   const toggleProfileDropdown = (e) => {
@@ -47,7 +49,7 @@ export default function Navbar2({ user, setUser }) {
       await axios.post("http://localhost:3000/api/users/logout", {}, { withCredentials: true });
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       setIsLoggedIn(false);
-      setUser(null);
+      logout();
       navigate("/");
       window.location.reload();
     } catch (error) {
@@ -56,7 +58,7 @@ export default function Navbar2({ user, setUser }) {
   };
 
   return (
-    <section className="w-full bg-white fixed top-0 z-50 shadow-sm">
+    <section className="w-full bg-white sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4">
         <nav className="flex max-w-8xl mx-auto items-center justify-between h-16 md:h-20">
           {/* Logo */}

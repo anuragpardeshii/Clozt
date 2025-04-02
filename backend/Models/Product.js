@@ -8,8 +8,9 @@ const ProductSchema = new mongoose.Schema(
     color: { type: String, required: true },
     gender: { type: String, required: true },
     category: { type: String, required: true },
-    listing: { type: String, required: true },
-    discount: { type: Number, default: 0 },
+    listings: { type: [String], required: true, default: ["N/A"] },
+    salePrice: { type: Number, default: null },
+    discount: { type: Number, default: null },
     sizes: { type: Map, of: Number, required: true },
     images: [{ type: String, required: true }], // Cloudinary image URLs
   },
