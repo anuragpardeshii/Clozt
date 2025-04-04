@@ -45,7 +45,7 @@ export default function sale() {
     const fetchProducts = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get("http://localhost:3000/api/products");
+        const response = await axios.get("https://clozt-backend.vercel.app/api/products");
         const saleProducts = response.data.filter((product) => product.listings.includes("Sale"));
         setProducts(saleProducts);
         setFilteredProducts(saleProducts);
@@ -122,7 +122,7 @@ export default function sale() {
     
     try {
       await axios.post(
-        "http://localhost:3000/api/wishlist/add",
+        "https://clozt-backend.vercel.app/api/wishlist/add",
         { productId: product._id },
         { withCredentials: true }
       );
@@ -143,7 +143,7 @@ export default function sale() {
     
     try {
       await axios.post(
-        "http://localhost:3000/api/cart/add",
+        "https://clozt-backend.vercel.app/api/cart/add",
         { productId },
         { withCredentials: true }
       );

@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const { data, status } = await axios.get('http://localhost:3000/api/users/auth/check', {
+        const { data, status } = await axios.get('https://clozt-backend.vercel.app/api/users/auth/check', {
           withCredentials: true,
         });
 
@@ -45,7 +45,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     handleLogout();
     try {
-      await axios.post('http://localhost:3000/api/users/logout', {}, { withCredentials: true });
+      await axios.post('https://clozt-backend.vercel.app/api/users/logout', {}, { withCredentials: true });
     } catch (error) {
       console.error('Error during logout:', error);
     }

@@ -12,7 +12,7 @@ function PriceDetails({ cart }) {
     try {
       // Step 1: Create an order on your backend
       const orderResponse = await axios.post(
-        "http://localhost:3000/api/payment/create-order",
+        "https://clozt-backend.vercel.app/api/payment/create-order",
         {
           amount: totalPrice * 100, // Razorpay expects amount in paise
           currency: "INR",
@@ -31,7 +31,7 @@ function PriceDetails({ cart }) {
           // Handle successful payment
           try {
             const paymentVerification = await axios.post(
-              "http://localhost:3000/api/payment/verify",
+              "https://clozt-backend.vercel.app/api/payment/verify",
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
@@ -43,7 +43,7 @@ function PriceDetails({ cart }) {
             if (paymentVerification.data.success) {
               // Create the order in your database
               await axios.post(
-                "http://localhost:3000/api/orders/create",
+                "https://clozt-backend.vercel.app/api/orders/create",
                 { paymentId: response.razorpay_payment_id },
                 { withCredentials: true }
               );

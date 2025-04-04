@@ -24,7 +24,7 @@ export default function AllProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/products", {
+        const response = await axios.get("https://clozt-backend.vercel.app/api/products", {
           withCredentials: true,
         });
         setProducts(response.data);
@@ -155,7 +155,7 @@ export default function AllProducts() {
       newImages.forEach((image) => formData.append("images", image));
 
       const response = await axios.put(
-        `http://localhost:3000/api/products/${editingProduct._id}`,
+        `https://clozt-backend.vercel.app/api/products/${editingProduct._id}`,
         formData,
         {
           headers: {

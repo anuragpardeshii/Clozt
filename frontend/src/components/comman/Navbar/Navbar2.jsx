@@ -20,7 +20,7 @@ export default function Navbar2({ user }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/users/auth/check", { withCredentials: true });
+        const res = await axios.get("https://clozt-backend.vercel.app/api/users/auth/check", { withCredentials: true });
         if (res.data.loggedIn) {
           setIsLoggedIn(true);
         } else {
@@ -46,7 +46,7 @@ export default function Navbar2({ user }) {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:3000/api/users/logout", {}, { withCredentials: true });
+      await axios.post("https://clozt-backend.vercel.app/api/users/logout", {}, { withCredentials: true });
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       setIsLoggedIn(false);
       logout();

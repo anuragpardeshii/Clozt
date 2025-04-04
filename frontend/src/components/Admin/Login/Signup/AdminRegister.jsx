@@ -34,7 +34,7 @@ export default function AdminRegister() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/admin/register",
+        "https://clozt-backend.vercel.app/api/admin/register",
         { name: formData.name, email: formData.email, password: formData.password },
         { withCredentials: true }
       );

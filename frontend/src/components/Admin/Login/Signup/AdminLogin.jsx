@@ -15,7 +15,7 @@ export default function AdminLogin() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/admin/check", {
+        const res = await axios.get("https://clozt-backend.vercel.app/api/admin/check", {
           withCredentials: true,
         });
         if (res.data.loggedIn) {
@@ -38,7 +38,7 @@ export default function AdminLogin() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/admin/login",
+        "https://clozt-backend.vercel.app/api/admin/login",
         { email, password },
         { withCredentials: true }
       );

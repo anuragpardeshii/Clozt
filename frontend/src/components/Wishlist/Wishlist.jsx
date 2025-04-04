@@ -17,7 +17,7 @@ if (!isAuthenticated) {
 
   const fetchWishlist = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/wishlist", {
+      const response = await axios.get("https://clozt-backend.vercel.app/api/wishlist", {
         withCredentials: true,
       });
 
@@ -58,7 +58,7 @@ if (!isAuthenticated) {
   const handleRemoveFromWishlist = async (productId) => {
     try {
       await axios.delete(
-        `http://localhost:3000/api/wishlist/remove/${productId}`,
+        `https://clozt-backend.vercel.app/api/wishlist/remove/${productId}`,
         {
           withCredentials: true,
         }
@@ -72,7 +72,7 @@ if (!isAuthenticated) {
   const handleAddToCart = async (productId) => {
     try {
       await axios.post(
-        "http://localhost:3000/api/cart/add",
+        "https://clozt-backend.vercel.app/api/cart/add",
         { productId, quantity: 1 },
         { withCredentials: true }
       );

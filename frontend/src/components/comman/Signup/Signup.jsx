@@ -3,7 +3,7 @@ import React from "react";
 export default function Signup() {
   return (
     <>
-      <form action="http://localhost:3000/api/users/register" method="POST" encType="application/x-www-form-urlencoded" className="max-w-sm p-5 mx-auto" style={{ marginTop: "6rem" }}>
+      <form action="https://clozt-backend.vercel.app/api/users/register" method="POST" encType="application/x-www-form-urlencoded" className="max-w-sm p-5 mx-auto" style={{ marginTop: "6rem" }}>
         <div className="mb-5">
           <label
             htmlFor="username"

@@ -22,7 +22,7 @@ export default function Details() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/products");
+        const response = await axios.get("https://clozt-backend.vercel.app/api/products");
         const foundProduct = response.data.find((item) => item._id === id);
 
         if (foundProduct) {

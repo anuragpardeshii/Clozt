@@ -19,7 +19,7 @@ export default function Admin() {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:3000/api/admin/logout",
+        "https://clozt-backend.vercel.app/api/admin/logout",
         {},
         { withCredentials: true }
       );

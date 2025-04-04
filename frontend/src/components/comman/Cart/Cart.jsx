@@ -21,7 +21,7 @@ function Cart() {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/cart", {
+        const response = await axios.get("https://clozt-backend.vercel.app/api/cart", {
           withCredentials: true,
         });
         setCart(response.data || { products: [], total: 0 });
@@ -47,21 +47,21 @@ function Cart() {
     try {
       if (quantity === 0) {
         await axios.delete(
-          `http://localhost:3000/api/cart/remove/${productId}`,
+          `https://clozt-backend.vercel.app/api/cart/remove/${productId}`,
           {
             withCredentials: true,
           }
         );
       } else {
         await axios.put(
-          `http://localhost:3000/api/cart/update/${productId}`,
+          `https://clozt-backend.vercel.app/api/cart/update/${productId}`,
           { quantity },
           {
             withCredentials: true,
           }
         );
       }
-      const response = await axios.get("http://localhost:3000/api/cart", {
+      const response = await axios.get("https://clozt-backend.vercel.app/api/cart", {
         withCredentials: true,
       });
       setCart(response.data);
@@ -72,7 +72,7 @@ function Cart() {
 
   const removeItem = async (productId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/cart/remove/${productId}`, {
+      await axios.delete(`https://clozt-backend.vercel.app/api/cart/remove/${productId}`, {
         withCredentials: true,
       });
       setCart((prevCart) => ({

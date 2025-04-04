@@ -31,6 +31,10 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.send("Hello, App is working");
+});
+
 // MongoDB Connection
 mongoose
   .connect(MONGO_URI)

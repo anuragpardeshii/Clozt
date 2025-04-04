@@ -15,7 +15,7 @@ export default function Login() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/users/auth/check", {
+        const res = await axios.get("https://clozt-backend.vercel.app/api/users/auth/check", {
           withCredentials: true,
         });
 
@@ -39,7 +39,7 @@ export default function Login() {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/users/login",
+        "https://clozt-backend.vercel.app/api/users/login",
         { email, password },
         { withCredentials: true }
       );

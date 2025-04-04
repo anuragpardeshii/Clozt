@@ -9,7 +9,7 @@ const AdminProtectedRoute = ({ children }) => {
   useEffect(() => {
     const checkAdminAuth = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/admin/check", {
+        const res = await axios.get("https://clozt-backend.vercel.app/api/admin/check", {
           withCredentials: true, // Important for authentication cookies
           headers: { "Content-Type": "multipart/form-data" },
         });

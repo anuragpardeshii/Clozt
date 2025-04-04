@@ -56,7 +56,7 @@ export default function NewProduct() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/products/newproduct",
+        "https://clozt-backend.vercel.app/api/products/newproduct",
         newFormData,
         {
           headers: { "Content-Type": "multipart/form-data" },

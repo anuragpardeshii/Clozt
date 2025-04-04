@@ -10,7 +10,7 @@
 //   useEffect(() => {
 //     const fetchProducts = async () => {
 //       try {
-//         const response = await axios.get(`http://localhost:3000/api/products/${listing}/${category}`);
+//         const response = await axios.get(`https://clozt-backend.vercel.app/api/products/${listing}/${category}`);
 //         setProducts(response.data);
 //       } catch (error) {
 //         console.error("Error fetching products:", error);
@@ -57,7 +57,7 @@ export default function ProductList() {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/products/${listing}/${category}`
+          `https://clozt-backend.vercel.app/api/products/${listing}/${category}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -85,7 +85,7 @@ export default function ProductList() {
       console.log("Sending request with productId:", product._id);
 
       const response = await axios.post(
-        "http://localhost:3000/api/wishlist/add",
+        "https://clozt-backend.vercel.app/api/wishlist/add",
         { productId: product._id },
         { withCredentials: true } // ✅ Ensures cookies are sent
       );
@@ -102,7 +102,7 @@ export default function ProductList() {
   const handleAddToCart = async (productId) => {
     try {
       await axios.post(
-        "http://localhost:3000/api/cart/add",
+        "https://clozt-backend.vercel.app/api/cart/add",
         { productId, quantity: 1 },
         { withCredentials: true }
       );
