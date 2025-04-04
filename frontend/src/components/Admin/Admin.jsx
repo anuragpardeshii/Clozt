@@ -129,8 +129,8 @@ export default function Admin() {
             {[
               { name: "All Products", link: "/admin/all-products" },
               { name: "Add New Product", link: "/admin/add-new-products" },
-              { name: "All Orders", link: "/admin/allOrders" },
               { name: "Subscribers", link: "/admin/subscribers" },
+              { name: "All Orders", link: "/admin/allOrders" },
               { name: "Earnings", link: "/admin/sales" },
               { name: "Home", link: "/" },
             ].map((item, index) => (

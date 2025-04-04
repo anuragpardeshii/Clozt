@@ -198,7 +198,7 @@ export default function Sale() {
             </div>
           </div>
             <div className="text-center mt-12">
-              <a href="" className="inline-flex items-center gap-2 bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transition-colors">View All Sale Items</a>
+              <a href="/sale" className="inline-flex items-center gap-2 bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transition-colors">View All Sale Items</a>
             </div>
         </div>
       </div>

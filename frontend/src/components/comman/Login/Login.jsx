@@ -50,7 +50,12 @@ export default function Login() {
         navigate("/");
       }
     } catch (error) {
-      setMessage(error.response?.data?.message || "Login failed");
+      console.error("Login error:", error);
+      if (error.response?.status === 401) {
+        setMessage("Invalid email or password. Please try again.");
+      } else {
+        setMessage(error.response?.data?.message || "Login failed. Please try again later.");
+      }
     } finally {
       setLoading(false);
     }

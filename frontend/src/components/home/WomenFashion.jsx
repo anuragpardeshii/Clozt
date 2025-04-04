@@ -110,7 +110,7 @@ export default function WomenFashion() {
                   Discover our latest summer styles
                 </p>
                 <a
-                  href="/women/summer"
+                  href="/women"
                   className="inline-flex items-center gap-2 bg-white text-black px-6 py-2 rounded-full hover:bg-black hover:text-white transition-colors"
                 >
                   Shop Now
@@ -127,7 +127,7 @@ export default function WomenFashion() {
                     Trending Now
                   </h3>
                   <a
-                    href="/women/trending"
+                    href="/women"
                     className="text-white hover:text-gray-200 transition-colors flex items-center gap-2"
                   >
                     Explore
@@ -142,7 +142,7 @@ export default function WomenFashion() {
                     Trending Now
                   </h3>
                   <a
-                    href="/women/trending"
+                    href="/women"
                     className="text-white hover:text-gray-200 transition-colors flex items-center gap-2"
                   >
                     Explore
@@ -164,7 +164,7 @@ export default function WomenFashion() {
               <h3 className="text-xl font-medium text-center">T-shirts</h3>
               <div className="flex justify-center mt-2">
                 <a
-                  href=""
+                  href="/women"
                   className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
                 >
                   Shop Now {/*right arrow*/}{" "}
@@ -173,6 +173,7 @@ export default function WomenFashion() {
               </div>
             </div>
 
+            <a href="/women">
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
@@ -184,7 +185,7 @@ export default function WomenFashion() {
               <h3 className="text-xl font-medium text-center">Shirts</h3>
               <div className="flex justify-center mt-2">
                 <a
-                  href=""
+                  href="/women"
                   className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
                 >
                   Shop Now {/*right arrow*/}{" "}
@@ -192,7 +193,9 @@ export default function WomenFashion() {
                 </a>
               </div>
             </div>
+            </a>
 
+<a href="/women">
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
@@ -204,7 +207,7 @@ export default function WomenFashion() {
               <h3 className="text-xl font-medium text-center">Denim</h3>
               <div className="flex justify-center mt-2">
                 <a
-                  href=""
+                  href="/women"
                   className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
                 >
                   Shop Now {/*right arrow*/}{" "}
@@ -212,7 +215,8 @@ export default function WomenFashion() {
                 </a>
               </div>
             </div>
-
+            </a>
+            <a href="/women">
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg mb-3">
                 <div
@@ -224,7 +228,7 @@ export default function WomenFashion() {
               <h3 className="text-xl font-medium text-center">Winter Wear</h3>
               <div className="flex justify-center mt-2">
                 <a
-                  href=""
+                  href="/women"
                   className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
                 >
                   Shop Now {/*right arrow*/}{" "}
@@ -232,6 +236,7 @@ export default function WomenFashion() {
                 </a>
               </div>
             </div>
+            </a>
           </div>
         </div>
       </section>

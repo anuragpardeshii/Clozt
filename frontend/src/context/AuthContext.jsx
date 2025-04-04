@@ -1,48 +1,68 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [admin, setAdmin] = useState(null);
 
+  // Check auth status on mount
   useEffect(() => {
-    // Check if user is logged in (you can add your own logic here)
-    const storedUser = localStorage.getItem('user');
-    const storedAdmin = localStorage.getItem('admin');
+    const checkAuthStatus = async () => {
+      try {
+        const { data, status } = await axios.get('http://localhost:3000/api/users/auth/check', {
+          withCredentials: true,
+        });
 
-    if (storedAdmin) {
-      setAdmin(JSON.parse(storedAdmin));
-    }
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
+        if (status === 200 && data?.user) {
+          setUser(data.user);
+          localStorage.setItem('user', JSON.stringify(data.user));
+        } else {
+          handleLogout();
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        handleLogout();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuthStatus();
   }, []);
 
   const login = (userData) => {
     setUser(userData);
-    setAdmin(userData);
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
-  const logout = () => {
+  const handleLogout = () => {
     setUser(null);
-    setAdmin(null);
     localStorage.removeItem('user');
   };
 
-  const value = {
-    user,
-    login,
-    logout,
-    admin,
-    loading
+  const logout = async () => {
+    handleLogout();
+    try {
+      await axios.post('http://localhost:3000/api/users/logout', {}, { withCredentials: true });
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
+  const isAuthenticated = !!user;
+
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        loading,
+        isAuthenticated,
+      }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );
@@ -50,8 +70,8 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-} 
+}

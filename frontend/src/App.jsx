@@ -22,6 +22,7 @@ import Order from "./components/comman/Orders/Order";
 import Summary from "./components/comman/Summary/Summary";
 import Login from "./components/comman/Login/Login";
 import Signup from "./components/comman/Signup/Signup";
+import PageNotFound from "./components/comman/PageNotFound";
 import "flowbite";
 import AdminRegister from "./components/Admin/Login/Signup/AdminRegister";
 import ProductList from "./components/Products/ProductList";
@@ -48,11 +49,13 @@ function App() {
               </AdminProtectedRoute>
             }
           />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       ) : isLoginOrSignup ? (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       ) : (
         <MainLayout>
@@ -70,6 +73,7 @@ function App() {
             <Route path="/order-summary" element={<Summary />} />
             <Route path="/orders" element={<Order />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </MainLayout>
       )}
