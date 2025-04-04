@@ -43,22 +43,35 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Validate input
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email and password are required" });
     }
 
+    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid email or password" });
     }
 
+    // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    // Create JWT token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
+    // Send cookie with token
     res.cookie("userToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -66,11 +79,22 @@ exports.login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    return res.status(200).json({ message: "Login successful", token });
+    // Optional: send user info (excluding password)
+    const { password: _, ...userWithoutPassword } = user.toObject();
 
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: userWithoutPassword,
+    });
   } catch (error) {
     console.error("User Login Error:", error);
-    return res.status(500).json({ message: "Server error", error: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 
@@ -78,7 +102,7 @@ exports.login = async (req, res) => {
  * @desc Check if User is Logged In
  * @route GET /api/users/check
  */
-exports.checkAuth = (req, res) => {
+exports.checkAuth = async (req, res) => {
   try {
     const token = req.cookies.userToken;
 
@@ -86,13 +110,19 @@ exports.checkAuth = (req, res) => {
       return res.json({ loggedIn: false });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
       if (err) {
         res.cookie("userToken", "", { expires: new Date(0), httpOnly: true });
         return res.json({ loggedIn: false });
       }
 
-      return res.json({ loggedIn: true, userId: decoded.userId });
+      const user = await User.findById(decoded.userId).select("-password"); // exclude password
+
+      if (!user) {
+        return res.json({ loggedIn: false });
+      }
+
+      return res.json({ loggedIn: true, user }); // 👈 this is what your AuthContext expects
     });
   } catch (error) {
     console.error("User Auth Check Error:", error.message);
@@ -106,9 +136,15 @@ exports.checkAuth = (req, res) => {
  */
 exports.logout = async (req, res) => {
   try {
-    res.clearCookie("userToken", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "Strict" });
+    res.clearCookie("userToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    });
     return res.json({ message: "Logged out successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "Logout failed", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Logout failed", error: error.message });
   }
 };

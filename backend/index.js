@@ -10,6 +10,9 @@ const cartRoutes = require("./Routes/Cart");
 const wishlistRoutes = require("./Routes/Wishlist");
 const userRoutes = require("./Routes/User");
 const adminRoutes = require("./Routes/Admin");
+const paymentRoutes = require('./Routes/paymentRoutes');
+const orderRoutes = require('./Routes/orderRoutes');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -39,6 +42,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/users", userRoutes);
+app.use('/api/payment', paymentRoutes);
+app.use('/api/orders', orderRoutes);
 app.use("/api/admin", adminRoutes);
 
 
