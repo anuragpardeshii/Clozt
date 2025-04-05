@@ -1,41 +1,38 @@
 const multer = require("multer");
-const path = require("path");
 const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
-// Determine if we're in production (Vercel)
-const isProduction = process.env.VERCEL === '1';
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-let storage;
-
-if (isProduction) {
-  // Configure Cloudinary
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-  });
-
-  // Use Cloudinary storage for production
-  storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-      folder: "clozt-uploads",
-      allowed_formats: ["jpg", "jpeg", "png", "gif"]
-    }
-  });
-} else {
-  // For development, use disk storage
-  storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "uploads/"); // Ensure this directory exists
-    },
-    filename: (req, file, cb) => {
-      cb(null, Date.now() + path.extname(file.originalname));
-    },
-  });
-}
-
+// Always use memory storage
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-module.exports = upload;
+// Helper function to upload buffer to Cloudinary
+const uploadToCloudinary = (fileBuffer, folder = "clozt-uploads") => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "auto",
+        folder,
+      },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary upload error:", error);
+          reject(error);
+        } else {
+          console.log("Uploaded to Cloudinary:", result.secure_url);
+          resolve(result);
+        }
+      }
+    );
+
+    uploadStream.end(fileBuffer);
+  });
+};
+
+module.exports = { upload, uploadToCloudinary, cloudinary };
