@@ -10,7 +10,23 @@ cloudinary.config({
 
 // Always use memory storage
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+
+// Configure file size limits and file filtering if needed
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept images and other specific file types
+    if (file.mimetype.startsWith('image/') || 
+        file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Unsupported file type'), false);
+    }
+  }
+});
 
 // Helper function to upload buffer to Cloudinary
 const uploadToCloudinary = (fileBuffer, folder = "clozt-uploads") => {
