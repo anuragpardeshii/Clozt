@@ -1,6 +1,5 @@
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 // Configure cloudinary with environment variables
 cloudinary.config({
@@ -9,15 +8,43 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Create storage engine for multer
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "products",
-    allowedFormats: ["jpg", "jpeg", "png"],
+// Use memory storage instead of CloudinaryStorage
+const storage = multer.memoryStorage();
+
+const upload = multer({ 
+  storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
   },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/') && 
+        ['jpg', 'jpeg', 'png'].includes(file.mimetype.split('/')[1])) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only JPG, JPEG and PNG formats are allowed'), false);
+    }
+  }
 });
 
-const upload = multer({ storage });
+// Helper function to upload to Cloudinary
+const uploadToCloudinary = (fileBuffer, folder = "products") => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "auto",
+        folder,
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
 
-module.exports = { upload, cloudinary };
+    uploadStream.end(fileBuffer);
+  });
+};
+
+module.exports = { upload, uploadToCloudinary, cloudinary };
