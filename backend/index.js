@@ -46,7 +46,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/users", userRoutes);
-app.use('/api/payment', paymentRoutes);
+// app.use('/api/payment', paymentRoutes);
 app.use('/api/orders', orderRoutes);
 app.use("/api/admin", adminRoutes);
 
@@ -58,4 +58,20 @@ app.get("/", (req, res) => {
 // Start Server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+
+// Add this near the top of your index.js file
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  // Application specific logging, throwing an error, or other logic here
+});
+
+// Also ensure you have error handling middleware at the end of your Express app
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'production' ? {} : err
+  });
 });

@@ -1,6 +1,12 @@
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
 
+// Add validation to ensure environment variables are present
+if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+  console.error('Missing Cloudinary environment variables');
+  // You might want to throw an error here or set default values
+}
+
 // Configure cloudinary with environment variables
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
