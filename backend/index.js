@@ -10,9 +10,7 @@ const cartRoutes = require("./Routes/Cart");
 const wishlistRoutes = require("./Routes/Wishlist");
 const userRoutes = require("./Routes/User");
 const adminRoutes = require("./Routes/Admin");
-const paymentRoutes = require('./Routes/paymentRoutes');
-const orderRoutes = require('./Routes/orderRoutes');
-
+const orderRoutes = require("./Routes/orderRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,8 +29,9 @@ app.use(
   })
 );
 
+// Root route
 app.get("/", (req, res) => {
-  res.send("Hello, App is working");
+  res.send("Backend is working");
 });
 
 // MongoDB Connection
@@ -47,31 +46,25 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/users", userRoutes);
 // app.use('/api/payment', paymentRoutes);
-app.use('/api/orders', orderRoutes);
+app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 
+// Error handling for unhandled promise rejections
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  // Application specific logging, throwing an error, or other logic here
+});
 
-app.get("/", (req, res) => {
-  res.send("Hello, App is working");
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    message: "Something went wrong!",
+    error: process.env.NODE_ENV === "production" ? {} : err,
+  });
 });
 
 // Start Server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
-});
-
-
-// Add this near the top of your index.js file
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  // Application specific logging, throwing an error, or other logic here
-});
-
-// Also ensure you have error handling middleware at the end of your Express app
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'production' ? {} : err
-  });
 });
