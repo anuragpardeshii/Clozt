@@ -19,15 +19,14 @@ exports.register = async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user
-    const newUser = new User({
+    // Create a new user using create method for better atomicity
+    await User.create({
       username,
       email,
       mobile,
       password: hashedPassword,
     });
 
-    await newUser.save();
     return res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("User Registration Error:", error);
@@ -67,26 +66,30 @@ exports.login = async (req, res) => {
     }
 
     // Create JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { userId: user._id }, 
+      process.env.JWT_SECRET, 
+      {
+        expiresIn: "7d",
+      }
+    );
 
     // Send cookie with token
     res.cookie("userToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      sameSite: "strict", // Changed from "Strict" to lowercase "strict"
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    // Optional: send user info (excluding password)
-    const { password: _, ...userWithoutPassword } = user.toObject();
+    // Use mongoose's lean() for better performance and exclude password
+    const userInfo = await User.findById(user._id).select("-password").lean();
 
     return res.status(200).json({
       success: true,
       message: "Login successful",
       token,
-      user: userWithoutPassword,
+      user: userInfo,
     });
   } catch (error) {
     console.error("User Login Error:", error);
@@ -110,20 +113,25 @@ exports.checkAuth = async (req, res) => {
       return res.json({ loggedIn: false });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-      if (err) {
-        res.cookie("userToken", "", { expires: new Date(0), httpOnly: true });
-        return res.json({ loggedIn: false });
-      }
-
-      const user = await User.findById(decoded.userId).select("-password"); // exclude password
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.userId).select("-password").lean();
 
       if (!user) {
         return res.json({ loggedIn: false });
       }
 
-      return res.json({ loggedIn: true, user }); // 👈 this is what your AuthContext expects
-    });
+      return res.json({ loggedIn: true, user });
+    } catch (jwtError) {
+      // Token is invalid or expired
+      res.cookie("userToken", "", { 
+        expires: new Date(0), 
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict" // Changed from "Strict" to lowercase "strict"
+      });
+      return res.json({ loggedIn: false });
+    }
   } catch (error) {
     console.error("User Auth Check Error:", error.message);
     return res.status(500).json({ message: "Server error" });
@@ -139,10 +147,11 @@ exports.logout = async (req, res) => {
     res.clearCookie("userToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      sameSite: "strict", // Changed from "Strict" to lowercase "strict"
     });
     return res.json({ message: "Logged out successfully" });
   } catch (error) {
+    console.error("User Logout Error:", error);
     return res
       .status(500)
       .json({ message: "Logout failed", error: error.message });

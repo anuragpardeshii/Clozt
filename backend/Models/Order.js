@@ -19,29 +19,57 @@ const OrderSchema = new mongoose.Schema({
     },
     price: {
       type: Number,
-      required: true
+      required: true,
+      min: 0
+    },
+    name: {
+      type: String
+    },
+    image: {
+      type: String
     }
   }],
   totalAmount: {
     type: Number,
-    required: true
+    required: true,
+    min: 0
   },
   paymentId: {
     type: String,
-    required: true
+    required: function() {
+      return this.status !== 'Pending';
+    }
   },
   status: {
     type: String,
-    enum: ['Pending', 'Paid', 'Shipped', 'Delivered', 'Cancelled'],
+    enum: ['Pending', 'Paid', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Refunded'],
     default: 'Pending'
   },
   shippingAddress: {
-    address: String,
-    city: String,
-    state: String,
-    postalCode: String,
-    country: String
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    postalCode: { type: String, required: true },
+    country: { type: String, required: true }
+  },
+  paymentMethod: {
+    type: String,
+    required: true,
+    enum: ['Credit Card', 'PayPal', 'Stripe', 'Cash on Delivery', 'Other']
+  },
+  deliveryNotes: {
+    type: String
+  },
+  trackingNumber: {
+    type: String
+  },
+  estimatedDelivery: {
+    type: Date
   }
 }, { timestamps: true });
+
+// Add index for better query performance
+OrderSchema.index({ user: 1, createdAt: -1 });
+OrderSchema.index({ status: 1 });
 
 module.exports = mongoose.model('Order', OrderSchema);

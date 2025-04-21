@@ -1,13 +1,27 @@
 const Product = require("../Models/Product");
 const multer = require("multer");
-const upload = multer().any(); // Allows handling multiple files
 
+// Modern approach: Define storage and file filter separately
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function(req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+}).array('images', 10); // Allow up to 10 images
 
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().lean();
     res.status(200).json(products);
   } catch (error) {
+    console.error("Error fetching products:", error);
     res
       .status(500)
       .json({ message: "Error fetching products", error: error.message });
@@ -25,10 +39,11 @@ exports.getFilteredProducts = async (req, res) => {
     const products = await Product.find({
       listings: { $in: [formattedListing] },
       category: formattedCategory,
-    });
+    }).lean();
 
     res.status(200).json(products);
   } catch (error) {
+    console.error("Error fetching filtered products:", error);
     res
       .status(500)
       .json({ message: "Error fetching products", error: error.message });
@@ -91,7 +106,7 @@ exports.updateProduct = async (req, res) => {
       id,
       updatedData,
       { new: true, runValidators: true }
-    );
+    ).lean();
 
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
@@ -109,9 +124,10 @@ exports.listings = async (req, res) => {
     const { listing } = req.params;
     const products = await Product.find({
       listings: { $in: [new RegExp("^" + listing + "$", "i")] }, // Case-insensitive search
-    });
+    }).lean();
     res.status(200).json(products);
   } catch (error) {
+    console.error("Error fetching listings:", error);
     res
       .status(500)
       .json({ message: "Error fetching products", error: error.message });
@@ -198,6 +214,7 @@ exports.deleteProduct = async (req, res) => {
 
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
+    console.error("Error deleting product:", error);
     res
       .status(500)
       .json({ message: "Error deleting product", error: error.message });

@@ -5,6 +5,8 @@ const morgan = require("morgan");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+
+// Route imports
 const productRoutes = require("./Routes/product");
 const cartRoutes = require("./Routes/Cart");
 const wishlistRoutes = require("./Routes/Wishlist");
@@ -17,40 +19,34 @@ const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
 
 // Middleware
+app.use(morgan("dev"));
+app.use(cors({
+  origin: "http://localhost:5173", // Update for production accordingly
+  credentials: true,
+}));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(morgan("dev"));
-app.use(
-  cors({
-    origin: `http://localhost:5173`, // Replace with your frontend URL
-    credentials: true, // Allow cookies
-  })
-);
 
-// Root route
+// Test route
 app.get("/", (req, res) => {
   res.send("Backend is working");
 });
 
-// MongoDB Connection
-mongoose
-  .connect(MONGO_URI)
-  .then(() => console.log("MongoDB Connected Successfully"))
-  .catch((err) => console.error("MongoDB Connection Error:", err.message));
+// MongoDB connection
+mongoose.connect(MONGO_URI)
+.then(() => console.log("MongoDB Connected Successfully"))
+.catch((err) => console.error("MongoDB Connection Error:", err.message));
 
-// Routes
+// API Routes
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/users", userRoutes);
-// app.use('/api/payment', paymentRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 
-// Start Server
+// Start server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-

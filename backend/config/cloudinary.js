@@ -4,7 +4,7 @@ const multer = require("multer");
 // Add validation to ensure environment variables are present
 if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
   console.error('Missing Cloudinary environment variables');
-  // You might want to throw an error here or set default values
+  throw new Error('Missing required Cloudinary environment variables');
 }
 
 // Configure cloudinary with environment variables
@@ -12,6 +12,7 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true // Ensure HTTPS is used
 });
 
 // Use memory storage instead of CloudinaryStorage
@@ -33,24 +34,28 @@ const upload = multer({
 });
 
 // Helper function to upload to Cloudinary
-const uploadToCloudinary = (fileBuffer, folder = "products") => {
-  return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        resource_type: "auto",
-        folder,
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
-      }
-    );
-
-    uploadStream.end(fileBuffer);
-  });
+const uploadToCloudinary = async (fileBuffer, folder = "products") => {
+  try {
+    // Convert buffer to base64 string for Cloudinary
+    const base64String = fileBuffer.toString('base64');
+    const dataURI = `data:image/jpeg;base64,${base64String}`;
+    
+    // Use the modern promise-based approach with additional options
+    const result = await cloudinary.uploader.upload(dataURI, {
+      resource_type: "auto",
+      folder,
+      quality: "auto", // Automatic quality optimization
+      fetch_format: "auto", // Automatic format selection based on browser
+      transformation: [
+        { width: 1000, crop: "limit" } // Resize large images
+      ]
+    });
+    
+    return result;
+  } catch (error) {
+    console.error("Cloudinary upload error:", error);
+    throw error;
+  }
 };
 
 module.exports = { upload, uploadToCloudinary, cloudinary };

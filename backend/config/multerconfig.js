@@ -6,6 +6,7 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true // Ensure HTTPS is used
 });
 
 // Always use memory storage
@@ -29,26 +30,44 @@ const upload = multer({
 });
 
 // Helper function to upload buffer to Cloudinary
-const uploadToCloudinary = (fileBuffer, folder = "clozt-uploads") => {
-  return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        resource_type: "auto",
-        folder,
-      },
-      (error, result) => {
-        if (error) {
-          console.error("Cloudinary upload error:", error);
-          reject(error);
-        } else {
-          console.log("Uploaded to Cloudinary:", result.secure_url);
-          resolve(result);
-        }
-      }
-    );
-
-    uploadStream.end(fileBuffer);
-  });
+const uploadToCloudinary = async (fileBuffer, folder = "clozt-uploads", options = {}) => {
+  try {
+    // Convert buffer to base64 string for Cloudinary
+    const base64String = fileBuffer.toString('base64');
+    const fileType = options.fileType || 'image/jpeg';
+    const dataURI = `data:${fileType};base64,${base64String}`;
+    
+    // Use the modern promise-based approach with enhanced options
+    const result = await cloudinary.uploader.upload(dataURI, {
+      resource_type: "auto",
+      folder,
+      quality: "auto", // Automatic quality optimization
+      fetch_format: "auto", // Automatic format selection based on browser
+      ...options // Allow passing additional options
+    });
+    
+    console.log("Uploaded to Cloudinary:", result.secure_url);
+    return result;
+  } catch (error) {
+    console.error("Cloudinary upload error:", error);
+    throw error;
+  }
 };
 
-module.exports = { upload, uploadToCloudinary, cloudinary };
+// Create middleware for single file upload
+const uploadSingle = (fieldName) => upload.single(fieldName);
+
+// Create middleware for multiple files upload
+const uploadMultiple = (fieldName, maxCount = 5) => upload.array(fieldName, maxCount);
+
+// Create middleware for multiple fields with files
+const uploadFields = (fields) => upload.fields(fields);
+
+module.exports = { 
+  upload, 
+  uploadToCloudinary, 
+  cloudinary,
+  uploadSingle,
+  uploadMultiple,
+  uploadFields
+};

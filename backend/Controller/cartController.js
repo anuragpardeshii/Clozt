@@ -12,10 +12,12 @@ const getCart = async (req, res) => {
     const userId = req.user._id;
     
     // ✅ Ensure product images are included
-    const cart = await Cart.findOne({ user: userId }).populate({
-      path: "products.product",
-      select: "title description price images",
-    });
+    const cart = await Cart.findOne({ user: userId })
+      .populate({
+        path: "products.product",
+        select: "title description price images",
+      })
+      .lean(); // Use lean() for better performance
 
     console.log("Cart found in DB:", cart); // Debugging log
 
@@ -40,27 +42,38 @@ const addToCart = async (req, res) => {
     const userId = req.user._id;
     const { productId, quantity } = req.body;
 
-    let cart = await Cart.findOne({ user: userId });
-
-    if (!cart) {
-      cart = new Cart({ user: userId, products: [] });
-    }
+    // Use findOneAndUpdate for atomic operation
+    const cart = await Cart.findOneAndUpdate(
+      { user: userId },
+      {},
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
 
     const productIndex = cart.products.findIndex((p) => p.product.toString() === productId);
     
     if (productIndex > -1) {
-      cart.products[productIndex].quantity += quantity;
+      // Update existing product quantity
+      await Cart.findOneAndUpdate(
+        { user: userId, "products.product": productId },
+        { $inc: { "products.$.quantity": quantity } },
+        { new: true }
+      );
     } else {
-      cart.products.push({ product: productId, quantity });
+      // Add new product to cart
+      await Cart.findOneAndUpdate(
+        { user: userId },
+        { $push: { products: { product: productId, quantity } } },
+        { new: true }
+      );
     }
 
-    await cart.save();
-
     // ✅ Re-populate cart to include images
-    const updatedCart = await Cart.findOne({ user: userId }).populate({
-      path: "products.product",
-      select: "title description price images",
-    });
+    const updatedCart = await Cart.findOne({ user: userId })
+      .populate({
+        path: "products.product",
+        select: "title description price images",
+      })
+      .lean();
 
     res.status(200).json(updatedCart);
   } catch (error) {
@@ -74,26 +87,44 @@ const updateQuantity = async (req, res) => {
   try {
     const { productId } = req.params;
     const { quantity } = req.body;
+    
     if (!req.user || !req.user._id) {
       return res.status(401).json({ message: "Unauthorized: Login first" });
     }
+    
     const userId = req.user._id;
-    const cart = await Cart.findOne({ user: userId });
-    if (!cart) return res.status(404).json({ message: "Cart not found" });
-    const productIndex = cart.products.findIndex((p) => p.product.toString() === productId);
-    if (productIndex === -1) return res.status(404).json({ message: "Product not found in cart" });
+    
     if (quantity === 0) {
-      cart.products.splice(productIndex, 1);
+      // Remove the product if quantity is 0
+      await Cart.findOneAndUpdate(
+        { user: userId },
+        { $pull: { products: { product: productId } } },
+        { new: true }
+      );
     } else {
-      cart.products[productIndex].quantity = quantity;
+      // Update the quantity
+      await Cart.findOneAndUpdate(
+        { user: userId, "products.product": productId },
+        { $set: { "products.$.quantity": quantity } },
+        { new: true }
+      );
     }
-    await cart.save();
-    res.status(200).json(cart);
+    
+    const updatedCart = await Cart.findOne({ user: userId })
+      .populate({
+        path: "products.product",
+        select: "title description price images",
+      })
+      .lean();
+      
+    if (!updatedCart) return res.status(404).json({ message: "Cart not found" });
+    
+    res.status(200).json(updatedCart);
   } catch (error) {
+    console.error("Error updating quantity:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
 
 // ✅ Remove Item from Cart Correctly
 const removeFromCart = async (req, res) => {
@@ -105,16 +136,24 @@ const removeFromCart = async (req, res) => {
     }
 
     const userId = req.user._id;
-    const cart = await Cart.findOne({ user: userId });
+    
+    // Use atomic operation to remove item
+    const updatedCart = await Cart.findOneAndUpdate(
+      { user: userId },
+      { $pull: { products: { product: productId } } },
+      { new: true }
+    )
+    .populate({
+      path: "products.product",
+      select: "title description price images",
+    })
+    .lean();
 
-    if (!cart) {
+    if (!updatedCart) {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    cart.products = cart.products.filter((p) => p.product.toString() !== productId);
-    await cart.save();
-
-    res.status(200).json({ message: "Item removed", cart });
+    res.status(200).json({ message: "Item removed", cart: updatedCart });
   } catch (error) {
     console.error("Error removing item:", error);
     res.status(500).json({ message: "Server error", error: error.message });

@@ -8,7 +8,7 @@ exports.createOrder = async (req, res) => {
     const { paymentId } = req.body;
     
     // Get user's cart
-    const cart = await Cart.findOne({ user: userId }).populate('products.product');
+    const cart = await Cart.findOne({ user: userId }).populate('products.product').lean();
     
     if (!cart || cart.products.length === 0) {
       return res.status(400).json({ message: 'Cart is empty' });
@@ -38,9 +38,12 @@ exports.createOrder = async (req, res) => {
     
     await newOrder.save();
     
-    // Clear the user's cart
-    cart.products = [];
-    await cart.save();
+    // Clear the user's cart - using findOneAndUpdate for atomic operation
+    await Cart.findOneAndUpdate(
+      { user: userId },
+      { $set: { products: [] } },
+      { new: true }
+    );
     
     res.status(201).json({ 
       success: true, 
@@ -59,8 +62,12 @@ exports.getUserOrders = async (req, res) => {
     const userId = req.user._id;
     
     const orders = await Order.find({ user: userId })
-      .populate('items.product')
-      .sort({ createdAt: -1 });
+      .populate({
+        path: 'items.product',
+        select: 'title price images' // Select only needed fields
+      })
+      .sort({ createdAt: -1 })
+      .lean(); // Use lean() for better performance
     
     res.status(200).json({ orders });
   } catch (error) {

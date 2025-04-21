@@ -1,6 +1,6 @@
 const Admin = require("../Models/Admin");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 /**
  * @desc Admin Login
@@ -24,12 +24,16 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ userId: admin._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign(
+      { userId: admin._id }, 
+      process.env.JWT_SECRET, 
+      { expiresIn: "7d" }
+    );
 
     res.cookie("adminToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      sameSite: "strict", // lowercase is the modern approach
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
@@ -45,7 +49,7 @@ exports.login = async (req, res) => {
  * @desc Check if Admin is Logged In
  * @route GET /api/admin/check
  */
-exports.checkAuth = (req, res) => {
+exports.checkAuth = async (req, res) => {
   try {
     const token = req.cookies.adminToken;
 
@@ -53,14 +57,18 @@ exports.checkAuth = (req, res) => {
       return res.json({ loggedIn: false });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-        res.cookie("adminToken", "", { expires: new Date(0), httpOnly: true });
-        return res.json({ loggedIn: false });
-      }
-
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       return res.json({ loggedIn: true, userId: decoded.userId });
-    });
+    } catch (err) {
+      res.cookie("adminToken", "", { 
+        expires: new Date(0), 
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict"
+      });
+      return res.json({ loggedIn: false });
+    }
   } catch (error) {
     console.error("Auth Check Error:", error.message);
     return res.status(500).json({ message: "Server error" });
@@ -106,9 +114,14 @@ exports.register = async (req, res) => {
  */
 exports.logout = async (req, res) => {
   try {
-    res.clearCookie("adminToken", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "Strict" });
+    res.clearCookie("adminToken", { 
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === "production", 
+      sameSite: "strict" 
+    });
     return res.json({ message: "Logged out successfully" });
   } catch (error) {
+    console.error("Logout Error:", error);
     return res.status(500).json({ message: "Logout failed", error: error.message });
   }
 };
