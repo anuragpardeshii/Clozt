@@ -1,73 +1,72 @@
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 
-// Configure Cloudinary
+// Validate Cloudinary ENV variables
+if (
+  !process.env.CLOUDINARY_CLOUD_NAME ||
+  !process.env.CLOUDINARY_API_KEY ||
+  !process.env.CLOUDINARY_API_SECRET
+) {
+  throw new Error("Cloudinary environment variables are not properly set");
+}
+
+// Cloudinary configuration
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true // Ensure HTTPS is used
+  secure: true, // Force HTTPS
 });
 
-// Always use memory storage
+// Multer setup using memory storage
 const storage = multer.memoryStorage();
 
-// Configure file size limits and file filtering if needed
 const upload = multer({
   storage,
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
-  },
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max file size
   fileFilter: (req, file, cb) => {
-    // Accept images and other specific file types
-    if (file.mimetype.startsWith('image/') || 
-        file.mimetype === 'application/pdf') {
+    const allowedTypes = ['image/', 'application/pdf'];
+    if (allowedTypes.some(type => file.mimetype.startsWith(type))) {
       cb(null, true);
     } else {
       cb(new Error('Unsupported file type'), false);
     }
-  }
+  },
 });
 
-// Helper function to upload buffer to Cloudinary
-const uploadToCloudinary = async (fileBuffer, folder = "clozt-uploads", options = {}) => {
+// Upload buffer to Cloudinary
+const uploadToCloudinary = async (fileBuffer, mimetype, folder = "clozt-uploads", options = {}) => {
   try {
-    // Convert buffer to base64 string for Cloudinary
     const base64String = fileBuffer.toString('base64');
-    const fileType = options.fileType || 'image/jpeg';
-    const dataURI = `data:${fileType};base64,${base64String}`;
-    
-    // Use the modern promise-based approach with enhanced options
+    const dataURI = `data:${mimetype};base64,${base64String}`;
+
     const result = await cloudinary.uploader.upload(dataURI, {
       resource_type: "auto",
       folder,
-      quality: "auto", // Automatic quality optimization
-      fetch_format: "auto", // Automatic format selection based on browser
-      ...options // Allow passing additional options
+      quality: "auto",
+      fetch_format: "auto",
+      ...options,
     });
-    
+
     console.log("Uploaded to Cloudinary:", result.secure_url);
     return result;
   } catch (error) {
-    console.error("Cloudinary upload error:", error);
+    console.error("Cloudinary upload failed:", error);
     throw error;
   }
 };
 
-// Create middleware for single file upload
+// Middleware generators
 const uploadSingle = (fieldName) => upload.single(fieldName);
-
-// Create middleware for multiple files upload
 const uploadMultiple = (fieldName, maxCount = 5) => upload.array(fieldName, maxCount);
-
-// Create middleware for multiple fields with files
 const uploadFields = (fields) => upload.fields(fields);
 
-module.exports = { 
-  upload, 
-  uploadToCloudinary, 
+// Exports
+module.exports = {
+  upload,
+  uploadToCloudinary,
   cloudinary,
   uploadSingle,
   uploadMultiple,
-  uploadFields
+  uploadFields,
 };
