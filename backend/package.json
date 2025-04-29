@@ -42,11 +42,11 @@
     "semver": "^7.7.1"
   },
   "overrides": {
-  "glob": "^11.0.2",
-  "rimraf": "^6.0.1", 
-  "inflight": "^2.0.0",
-  "gauge": "^4.0.4",
-  "are-we-there-yet": "^3.0.0",
-  "npmlog": "^6.0.0"
-}
+    "glob": "^11.0.2",
+    "inflight": "^1.0.6",
+    "rimraf": "^6.0.1",
+    "gauge": "^4.0.4",
+    "are-we-there-yet": "^3.0.0",
+    "npmlog": "^6.0.0"
+  }
 }
