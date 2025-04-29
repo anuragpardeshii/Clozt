@@ -1,7 +1,6 @@
 const Product = require("../Models/Product");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 // Configure Cloudinary
 cloudinary.config({
@@ -10,20 +9,47 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Setup Cloudinary storage
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'clozt_products',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
-    transformation: [{ width: 1000, height: 1000, crop: 'limit' }]
-  }
-});
+// Use memory storage instead of disk storage
+const storage = multer.memoryStorage();
 
 const upload = multer({ 
   storage: storage,
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 }).array('images', 10); // Allow up to 10 images
+
+// Helper function to upload buffer to Cloudinary
+const uploadToCloudinary = async (buffer) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: 'clozt_products' },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result.secure_url);
+      }
+    );
+    
+    uploadStream.end(buffer);
+  });
+};
+
+// Middleware to handle file uploads
+exports.handleProductUpload = (req, res, next) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ message: "Error uploading files", error: err.message });
+    }
+    
+    try {
+      if (req.files && req.files.length > 0) {
+        const uploadPromises = req.files.map(file => uploadToCloudinary(file.buffer));
+        req.fileUrls = await Promise.all(uploadPromises);
+      }
+      next();
+    } catch (error) {
+      return res.status(500).json({ message: "Error processing uploads", error: error.message });
+    }
+  });
+};
 
 exports.getAllProducts = async (req, res) => {
   try {
@@ -92,9 +118,8 @@ exports.updateProduct = async (req, res) => {
     }
 
     // Handle new images if any were uploaded
-    if (req.files && req.files.length > 0) {
-      const newImages = req.files.map(file => file.path);
-      updatedData.images = [...(updatedData.existingImages || []), ...newImages];
+    if (req.fileUrls && req.fileUrls.length > 0) {
+      updatedData.images = [...(updatedData.existingImages || []), ...req.fileUrls];
     }
 
     // Handle sale price and discount
@@ -173,11 +198,11 @@ exports.createProduct = async (req, res) => {
     }
 
     // Check if images are uploaded
-    if (!req.files || req.files.length === 0) {
+    if (!req.fileUrls || req.fileUrls.length === 0) {
       return res.status(400).json({ message: "No images uploaded" });
     }
 
-    const images = req.files.map((file) => file.path);
+    const images = req.fileUrls;
     const parsedSizes = typeof sizes === "string" ? JSON.parse(sizes) : sizes;
     const parsedListings = typeof listings === "string" ? JSON.parse(listings) : listings;
 
