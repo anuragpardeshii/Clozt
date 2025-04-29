@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@mapbox/node-pre-gyp": "^2.0.0",
+    "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^2.2.0",
     "cloudinary": "^2.6.0",
@@ -23,15 +24,29 @@
     "debug": "^4.4.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "inflight": "^1.0.6",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.15.0",
     "mongoose": "^8.13.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.2",
-    "serverless-http": "^3.2.0"
+    "serverless-http": "^3.2.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "depcheck": "^1.4.7",
-    "nodemon": "^3.1.9"
-  }
+    "glob": "^11.0.2",
+    "nodemon": "^3.1.9",
+    "npm-force-resolutions": "^0.0.10",
+    "rimraf": "^6.0.1",
+    "semver": "^7.7.1"
+  },
+  "overrides": {
+  "glob": "^11.0.2",
+  "rimraf": "^6.0.1", 
+  "inflight": "^2.0.0",
+  "gauge": "^4.0.4",
+  "are-we-there-yet": "^3.0.0",
+  "npmlog": "^6.0.0"
+}
 }
