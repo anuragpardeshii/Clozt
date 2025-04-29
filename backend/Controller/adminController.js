@@ -1,6 +1,7 @@
 const Admin = require("../Models/Admin");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+// Replace bcrypt with bcryptjs
+const bcrypt = require("bcryptjs");
 
 /**
  * @desc Admin Login
