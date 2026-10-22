@@ -1,139 +1,61 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Heart, ShoppingBag, X } from 'lucide-react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { notifyShoppingChange } from '../utils/shoppingEvents';
+import AccountPageHeader from '../utils/AccountPageHeader';
+import CloztLoader from '../CloztLoader';
+
+const formatPrice = (price) => `₹${new Intl.NumberFormat('en-IN').format(price)}`;
 
 export default function Wishlist() {
-  const [wishlist, setWishlist] = useState([]);
-  const { user, isAuthenticated, loading } = useAuth();
-
-if (loading) {
-  return <p className="text-center">Checking authentication...</p>;
-}
-
-if (!isAuthenticated) {
-  return <Navigate to="/login" />;
-}
-
-  const fetchWishlist = async () => {
-    try {
-      const response = await axios.get("https://clozt-backend.vercel.app/api/wishlist", {
-        withCredentials: true,
-      });
-
-      console.log("Fetched wishlist response:", response.data); // Debug API response
-
-      // Ensure response structure is correct
-      if (
-        !response.data ||
-        !response.data.wishlist ||
-        !response.data.wishlist.products
-      ) {
-        console.error("Invalid wishlist response structure:", response.data);
-        setWishlist([]); // Set wishlist to an empty array to prevent errors
-        return;
-      }
-
-      // Extract products and ensure images exist
-      const updatedWishlist = response.data.wishlist.products.map(
-        (product) => ({
-          ...product,
-          image: product.images?.[0] || "", // Handle missing images
-        })
-      );
-
-      setWishlist(updatedWishlist);
-    } catch (error) {
-      console.error(
-        "Error fetching wishlist:",
-        error.response ? error.response.data : error.message
-      );
-    }
-  };
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [busyId, setBusyId] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchWishlist();
-  }, []);
+    if (!isAuthenticated) return undefined;
+    let active = true;
+    axios.get('/api/wishlist', { withCredentials: true })
+      .then(({ data }) => { if (active) setProducts(Array.isArray(data.wishlist?.products) ? data.wishlist.products : []); })
+      .catch(() => { if (active) setError('Could not load your wishlist. Please try again.'); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [isAuthenticated]);
 
-  const handleRemoveFromWishlist = async (productId) => {
+  if (!isAuthenticated) return <Navigate to="/login" state={{ from: '/wishlist' }} replace />;
+
+  const removeProduct = async (productId) => {
+    setBusyId(productId);
+    setError('');
     try {
-      await axios.delete(
-        `https://clozt-backend.vercel.app/api/wishlist/remove/${productId}`,
-        {
-          withCredentials: true,
-        }
-      );
-      fetchWishlist(); // Refresh wishlist after removal
-    } catch (error) {
-      console.error("Error removing from wishlist:", error);
+      const { data } = await axios.delete(`/api/wishlist/remove/${productId}`, { withCredentials: true });
+      setProducts(Array.isArray(data.wishlist?.products) ? data.wishlist.products : []);
+      notifyShoppingChange();
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || 'Could not remove this item.');
+    } finally {
+      setBusyId(null);
     }
   };
 
-  const handleAddToCart = async (productId) => {
-    try {
-      await axios.post(
-        "https://clozt-backend.vercel.app/api/cart/add",
-        { productId, quantity: 1 },
-        { withCredentials: true }
-      );
-      console.log("Added to cart");
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-    }
-  };
-
-  return (
-    <div className="mx-auto px-8">
-      {/* <h1 className="text-3xl font-bold text-center my-6">Your Wishlist</h1> */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-        {wishlist.length > 0 ? (
-          wishlist.map((product) => (
-            <div
-              key={product._id}
-              className="bg-white text-center border border-gray-200 rounded-lg shadow"
-            >
-              <img
-                className="p-4 rounded-t-lg w-full h-[350px] object-cover"
-                src={product.image}
-                alt={product.title || "Product Image"}
-              />
-              <div className="px-5 pb-5 text-center">
-                <h5 className="text-md font-semibold">{product.title}</h5>
-                {/* <p className="text-gray-600 text-sm">{product.description}</p> */}
-                <p className="text-lg font-bold">₹{product.price}</p>
-                <div className="flex justify-around space-x-2 mt-3">
-                  <button
-                    onClick={() => handleAddToCart(product._id)}
-                    className="text-white bg-gray-800 px-4 py-2 rounded-lg"
-                  >
-                    Add to Cart
-                  </button>
-                  <button
-                    onClick={() => handleRemoveFromWishlist(product._id)}
-                    className="text-white bg-red-500 px-4 py-2 rounded-lg"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="col-span-full flex flex-col items-center justify-center py-12">
-            <div className="w-32 h-32 border-4 border-gray-200 rounded-full flex items-center justify-center mb-6">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-gray-200" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">Wishlist is empty.</h2>
-            <p className="text-gray-500 mb-2">You don't have any products in your wishlist yet.</p>
-            <p className="text-gray-500 mb-6">You will find many interesting products on the "Shopping" page.</p>
-            <a href="/" className="bg-red-600 text-white px-8 py-3 uppercase font-medium hover:bg-red-700 rounded-lg transition-colors">
-              Return to shop
-            </a>
-          </div>
-        )}
-      </div>
+  return <main className="min-h-screen bg-[#f7f7f4] text-[#202320]">
+    <AccountPageHeader eyebrow="Clozt / Your collection" title="Your wishlist" description="Keep the pieces you love close until you are ready." badge={`${products.length} saved ${products.length === 1 ? 'piece' : 'pieces'}`} />
+    <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
+      <section aria-label="Saved products">
+        <div className="mb-5 flex items-end justify-between gap-4"><div><p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">Your selection</p><h2 className="mt-1 text-xl font-semibold">Saved pieces</h2></div><Link to="/cart" className="inline-flex items-center gap-2 text-xs font-medium text-stone-600 hover:text-[#202320]"><ShoppingBag size={16} aria-hidden="true" /> View bag</Link></div>
+        {error && <p role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">{error}</p>}
+        {loading ? <CloztLoader label="Loading wishlist" /> : products.length ? <div className="space-y-4">{products.map((product, index) => <article key={product._id} className="relative flex gap-4 rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-stone-300 sm:gap-6 sm:p-5">
+          <Link to={`/product/${product._id}`} className="h-40 w-28 shrink-0 overflow-hidden rounded-md bg-[#f4f4f1] sm:h-44 sm:w-32">{product.images?.[0] ? <img src={product.images[0]} alt={product.title} className="h-full w-full object-contain" /> : <span className="flex h-full items-center justify-center text-xs text-stone-400">No image</span>}</Link>
+          <div className="min-w-0 flex-1 pr-6"><p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-400">Saved piece {String(index + 1).padStart(2, '0')}</p><Link to={`/product/${product._id}`} className="mt-1 block line-clamp-2 text-sm font-semibold hover:underline">{product.title}</Link><p className="mt-3 text-sm font-semibold">{formatPrice(product.price)}</p><p className="mt-2 text-xs text-stone-500">Choose your size on the product page before adding to bag.</p><button type="button" onClick={() => navigate(`/product/${product._id}`, { state: { promptForSize: true } })} className="mt-5 inline-flex rounded-full bg-[#202320] px-5 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-stone-700">Select size</button></div>
+          <button type="button" onClick={() => removeProduct(product._id)} disabled={busyId === product._id} aria-label={`Remove ${product.title} from wishlist`} className="absolute right-4 top-4 rounded-full p-1.5 text-stone-500 hover:bg-stone-100 hover:text-[#202320] disabled:opacity-50"><X size={17} aria-hidden="true" /></button>
+        </article>)}</div> : <div className="rounded-xl border border-stone-200 bg-white px-6 py-16 text-center"><Heart size={36} className="mx-auto text-stone-400" aria-hidden="true" /><h2 className="mt-4 text-lg font-semibold">Your wishlist is empty</h2><p className="mt-2 text-sm text-stone-500">Explore the collection and save what catches your eye.</p><Link to="/" className="mt-6 inline-flex rounded-full bg-[#202320] px-6 py-3 text-xs font-semibold text-white hover:bg-stone-700">Continue shopping</Link></div>}
+      </section>
+      <aside className="h-fit rounded-xl border border-stone-200 bg-white p-6"><p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">A little reminder</p><h2 className="mt-3 text-lg font-semibold">Ready when you are.</h2><p className="mt-2 text-sm leading-6 text-stone-600">Saved pieces stay here until you remove them. Select an available size to add one to your bag.</p><Link to="/cart" className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#202320] px-5 py-3 text-xs font-semibold hover:bg-[#202320] hover:text-white"><ShoppingBag size={15} aria-hidden="true" /> Go to your bag</Link></aside>
     </div>
-  );
+  </main>;
 }

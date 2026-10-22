@@ -1,55 +1,5 @@
-import React from "react";
+import { Link } from 'react-router-dom';
 
 export default function NewsLetter() {
-  return (
-    <>
-      <section id="newsletter" className="py-16 bg-black text-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="mb-8">
-              {/* fa-regular fa-envelope text-4xl mb-4 envelope */}
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Subscribe to our Newsletter
-              </h2>
-              <p className="text-gray-400 mb-8">
-                Stay updated with our latest trends, style tips and exclusive
-                offers.
-              </p>
-            </div>
-            <form className="max-w-md mx-auto">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <input
-                    type="email"
-                    placeholder="Enter your email address"
-                    className="w-full px-6 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:border-white transition-colors"
-                    required
-                    fdprocessedid="xn4o5s"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  fdprocessedid="eko5f7"
-                  className="px-8 py-3 bg-white text-black rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
-                >
-                  Subscribe
-                  {/* <i className='fa-solid fa-arrow-right'></i> */}
-                </button>
-              </div>
-            </form>
-            <div className="mt-8 text-sm text-gray-400">
-              <p>By subscribing you agree to our
-                <a href="/privacy" className="underline hover:text-white"></a> </p>
-            </div>
-            <div className="mt-12 flex justify-center space-x-6">
-                <a href="" className="text-gray-400 hover:text-white transition-colors">i </a>
-                <a href="" className="text-gray-400 hover:text-white transition-colors">f </a>
-                <a href="" className="text-gray-400 hover:text-white transition-colors">X </a>
-                <a href="" className="text-gray-400 hover:text-white transition-colors">P </a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
-  );
+  return <section className="bg-[#202320] px-4 py-16 text-white"><div className="mx-auto max-w-3xl text-center"><p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-400">Stay close to style</p><h2 className="mt-3 text-3xl font-semibold">Find your next favorite piece.</h2><p className="mt-4 text-sm leading-6 text-stone-300">Explore new arrivals and considered everyday essentials, curated for the way you dress.</p><div className="mt-7 flex flex-wrap justify-center gap-3"><Link to="/new-arrival" className="rounded-full bg-white px-6 py-3 text-xs font-semibold text-[#202320] hover:bg-stone-200">Shop new arrivals</Link><Link to="/about" className="rounded-full border border-white/40 px-6 py-3 text-xs font-semibold hover:bg-white/10">About Clozt</Link></div></div></section>;
 }

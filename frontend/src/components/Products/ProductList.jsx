@@ -1,378 +1,64 @@
-// import { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import axios from "axios";
+import { useEffect, useMemo, useState } from 'react';
+import axios from 'axios';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import HomeProductCard from '../home/HomeProductCard';
+import useProductActions from './useProductActions';
+import CloztLoader from '../CloztLoader';
 
-// const ProductList = () => {
-//   const { listing, category } = useParams(); // Get dynamic URL params
-//   const [products, setProducts] = useState([]);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchProducts = async () => {
-//       try {
-//         const response = await axios.get(`https://clozt-backend.vercel.app/api/products/${listing}/${category}`);
-//         setProducts(response.data);
-//       } catch (error) {
-//         console.error("Error fetching products:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchProducts();
-//   }, [listing, category]); // Refetch when listing or category changes
-
-//   if (loading) return <p>Loading...</p>;
-//   if (products.length === 0) return <p>No products found.</p>;
-
-//   return (
-//     <div>
-//       <h2>{listing} - {category}</h2>
-//       <ul>
-//         {products.map((product) => (
-//           <li key={product._id}>
-//             <h3>{product.title}</h3>
-//             <p>{product.price} Rs</p>
-//             <p>{product.color}</p>
-//             <img src={product.images[0]} alt={product.title} width="100" />
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
+const categories = [
+  { slug: 'top', label: 'T-shirts' },
+  { slug: 'shirts', label: 'Shirts' },
+  { slug: 'denim', label: 'Denim' },
+  { slug: 'winter-wear', label: 'Winter wear' },
+];
+const collections = [
+  { slug: 'all', label: 'All' },
+  { slug: 'men', label: 'Men' },
+  { slug: 'women', label: 'Women' },
+  { slug: 'new-arrival', label: 'New arrivals' },
+  { slug: 'sale', label: 'Sale' },
+];
 
 export default function ProductList() {
-  const { listing, category } = useParams(); // Get dynamic URL params
+  const { listing, category } = useParams();
+  const navigate = useNavigate();
+  const actions = useProductActions();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(10);
+  const [error, setError] = useState('');
+  const [sortOrder, setSortOrder] = useState('featured');
+  const [visibleCount, setVisibleCount] = useState(12);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(
-          `https://clozt-backend.vercel.app/api/products/${listing}/${category}`
-        );
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const controller = new AbortController();
+    setLoading(true);
+    setError('');
+    setProducts([]);
+    setVisibleCount(12);
+    axios.get(`/api/products/${encodeURIComponent(listing)}/${encodeURIComponent(category)}`, { signal: controller.signal })
+      .then(({ data }) => setProducts(Array.isArray(data) ? data : []))
+      .catch((requestError) => { if (!axios.isCancel(requestError)) setError(requestError.response?.data?.message || 'Could not load this collection.'); })
+      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    return () => controller.abort();
+  }, [listing, category]);
 
-    fetchProducts();
-  }, [listing, category]); // Refetch when listing or category changes
+  const sortedProducts = useMemo(() => {
+    const result = [...products];
+    const price = (product) => product.listings?.includes('Sale') && product.salePrice != null ? product.salePrice : product.price;
+    if (sortOrder === 'price-asc') result.sort((first, second) => price(first) - price(second));
+    if (sortOrder === 'price-desc') result.sort((first, second) => price(second) - price(first));
+    if (sortOrder === 'newest') result.sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));
+    return result;
+  }, [products, sortOrder]);
 
-  if (loading) return <p>Loading...</p>;
-  if (products.length === 0) return <p>No products found.</p>;
+  const categoryName = categories.find((item) => item.slug === category)?.label || category;
+  const collectionName = collections.find((item) => item.slug === listing)?.label || listing;
 
-  const handleAddToWishlist = async (product) => {
-    console.log("Product Data:", product); // ✅ Debugging
-
-    if (!product || !product._id) {
-      console.error("Invalid product data", product);
-      return;
-    }
-
-    try {
-      console.log("Sending request with productId:", product._id);
-
-      const response = await axios.post(
-        "https://clozt-backend.vercel.app/api/wishlist/add",
-        { productId: product._id },
-        { withCredentials: true } // ✅ Ensures cookies are sent
-      );
-
-      console.log("Added to wishlist:", response.data);
-    } catch (error) {
-      console.error(
-        "Error adding to wishlist:",
-        error.response?.data || error.message
-      );
-    }
-  };
-
-  const handleAddToCart = async (productId) => {
-    try {
-      await axios.post(
-        "https://clozt-backend.vercel.app/api/cart/add",
-        { productId, quantity: 1 },
-        { withCredentials: true }
-      );
-      console.log("Added to cart");
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-    }
-  };
-
-  const handleLoadMore = () => {
-    setVisibleCount((prevCount) => prevCount + 10);
-  };
-
-  return (
-    <div className="mx-auto mt-24 px-8">
-      {/* Product Categories */}
-      <div className="flex justify-between flex-wrap items-center pb-4 mb-4 border-b-2 border-gray-100">
-        <div>
-          <nav className="flex" aria-label="Breadcrumb">
-            <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-              <li className="inline-flex items-center">
-                <Link
-                  to="/"
-                  className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
-                >
-                  <svg
-                    className="w-3 h-3 me-2.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
-                  </svg>
-                  Home
-                </Link>
-              </li>
-              <li>
-                <div className="flex items-center">
-                  <svg
-                    className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                  <Link
-                    to={`/${listing}`}
-                    className="ms-1 capitalize text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white"
-                  >
-                    {listing}
-                  </Link>
-                </div>
-              </li>
-              <li aria-current="page">
-                <div className="flex items-center">
-                  <svg
-                    className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                  <span className="ms-1 capitalize text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">
-                  {category}
-                  </span>
-                </div>
-              </li>
-            </ol>
-          </nav>
-        </div>
-        <div className="flex justify-center flex-wrap gap-2">
-          {/* First Dropdown */}
-          <button
-            id="dropdownDelayButton"
-            data-dropdown-toggle="dropdownDelay"
-            data-dropdown-delay="500"
-            data-dropdown-trigger="hover"
-            className="text-white bg-black hover:bg-zinc-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            type="button"
-          >
-            Sort by
-            <svg
-              className="w-2.5 h-2.5 ms-3"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 10 6"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m1 1 4 4 4-4"
-              />
-            </svg>
-          </button>
-
-          {/* Dropdown menu */}
-          <div
-            id="dropdownDelay"
-            className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700"
-          >
-            <ul
-              className="py-2 text-sm text-gray-700 dark:text-gray-200"
-              aria-labelledby="dropdownDelayButton"
-            >
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Low to High
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  High to low
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Second Dropdown */}
-          <button
-            id="dropdownDelayButton1"
-            data-dropdown-toggle="dropdownDelay1"
-            data-dropdown-delay="500"
-            data-dropdown-trigger="hover"
-            className="text-white bg-black hover:bg-zinc-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            type="button"
-          >
-            Category
-            <svg
-              className="w-2.5 h-2.5 ms-3"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 10 6"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m1 1 4 4 4-4"
-              />
-            </svg>
-          </button>
-
-          {/* Dropdown menu */}
-          <div
-            id="dropdownDelay1"
-            className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700"
-          >
-            <ul
-              className="py-2 text-sm text-gray-700 dark:text-gray-200"
-              aria-labelledby="dropdownDelayButton1"
-            >
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Men
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Women
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Earnings
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Sign out
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        {/* 
-        <hr className="my-4" /> */}
-      </div>
-
-      {/* Product Cards */}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 mb-8">
-        {products.slice(0, visibleCount).map((product) => (
-          <div
-            key={product._id}
-            className="bg-white border border-gray-200 rounded-lg items-around justify-between shadow dark:bg-gray-800 dark:border-gray-700"
-            style={{ display: "flex", flexDirection: "column" }}
-          >
-            <img
-              className="p-4 rounded-t-lg w-full  h-[350px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-              src={product.images?.[0] || "https://via.placeholder.com/300"}
-              alt={product.title}
-            />
-            <div className="px-5 pb-5 flex flex-col justify-around items-center">
-              <h5 className="text-md text-center font-semibold text-gray-900 dark:text-white">
-                {product.title}
-              </h5>
-              <div className="flex items-center mt-2.5">{/* Rating */}</div>
-              <p className="text-lg text-center font-bold text-gray-900 dark:text-white">
-                ₹{product.price}
-              </p>
-              <div className="flex gap-4 mt-4 justify-around flex-wrap">
-                <button
-                  onClick={() => handleAddToCart(product._id)}
-                  className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  Add to cart
-                </button>
-                <button
-                  key={product._id}
-                  onClick={() => handleAddToWishlist(product)}
-                  className="text-white bg-red-500 px-4 py-2 rounded-lg"
-                >
-                  Wishlist
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Load More Button */}
-      {visibleCount < products.length && (
-        <div className="text-center p-8">
-          <button
-            onClick={handleLoadMore}
-            className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            Load More
-          </button>
-        </div>
-      )}
+  return <main className="min-h-screen bg-[#f7f7f4] text-[#202320]">
+    <div className="mx-auto max-w-7xl px-4 py-10">
+      <nav className="mb-7 flex flex-wrap items-center gap-2 text-xs text-stone-500" aria-label="Breadcrumb"><Link to="/" className="hover:text-[#202320]">Home</Link><span aria-hidden="true">/</span><Link to={listing === 'all' ? '/' : `/${listing}`} className="hover:text-[#202320]">{collectionName}</Link><span aria-hidden="true">/</span><span className="font-semibold text-[#202320]">{categoryName}</span></nav>
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-5 border-b border-stone-200 pb-6"><div><p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">Clozt / Collection</p><h1 className="mt-2 text-3xl font-semibold">{collectionName} · {categoryName}</h1><p className="mt-2 text-sm text-stone-500">{loading ? 'Finding pieces…' : `${sortedProducts.length} ${sortedProducts.length === 1 ? 'piece' : 'pieces'}`}</p></div><div className="flex flex-wrap gap-3"><label className="grid gap-1 text-[11px] font-semibold uppercase tracking-wide text-stone-500">Collection<select value={listing} onChange={(event) => navigate(`/${event.target.value}/${category}`)} className="min-w-32 rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-medium text-[#202320] focus:border-[#202320] focus:outline-none">{collections.map((item) => <option key={item.slug} value={item.slug}>{item.label}</option>)}</select></label><label className="grid gap-1 text-[11px] font-semibold uppercase tracking-wide text-stone-500">Category<select value={category} onChange={(event) => navigate(`/${listing}/${event.target.value}`)} className="min-w-32 rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-medium text-[#202320] focus:border-[#202320] focus:outline-none">{categories.map((item) => <option key={item.slug} value={item.slug}>{item.label}</option>)}</select></label><label className="grid gap-1 text-[11px] font-semibold uppercase tracking-wide text-stone-500">Sort by<select value={sortOrder} onChange={(event) => { setSortOrder(event.target.value); setVisibleCount(12); }} className="min-w-40 rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-medium text-[#202320] focus:border-[#202320] focus:outline-none"><option value="featured">Featured</option><option value="newest">Newest</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option></select></label></div></div>
+      {loading ? <CloztLoader label="Loading products" /> : error ? <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-5 py-8 text-sm text-red-700">{error}</div> : sortedProducts.length === 0 ? <div className="rounded-xl border border-stone-200 bg-white px-6 py-16 text-center"><h2 className="text-lg font-semibold">No pieces found</h2><p className="mt-2 text-sm text-stone-500">Try a different collection or category.</p></div> : <><div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:gap-6">{sortedProducts.slice(0, visibleCount).map((product) => <HomeProductCard key={product._id} product={product} actions={actions} />)}</div>{visibleCount < sortedProducts.length && <div className="py-10 text-center"><button type="button" onClick={() => setVisibleCount((count) => count + 12)} className="rounded-full border border-[#202320] px-6 py-2.5 text-xs font-semibold hover:bg-[#202320] hover:text-white">Load more</button></div>}</>}
     </div>
-  );
+  </main>;
 }

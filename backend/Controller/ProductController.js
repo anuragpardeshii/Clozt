@@ -1,56 +1,36 @@
 const Product = require("../Models/Product");
-const multer = require("multer");
-const cloudinary = require("cloudinary").v2;
-
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
-// Use memory storage instead of disk storage
-const storage = multer.memoryStorage();
-
-const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
-}).array('images', 10); // Allow up to 10 images
-
-// Helper function to upload buffer to Cloudinary
-const uploadToCloudinary = async (buffer) => {
-  return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      { folder: 'clozt_products' },
-      (error, result) => {
-        if (error) return reject(error);
-        resolve(result.secure_url);
-      }
-    );
-    
-    uploadStream.end(buffer);
-  });
+const Cart = require("../Models/Cart");
+const Wishlist = require("../Models/Wishlist");
+const Review = require("../Models/Review");
+const pagination = require('../services/pagination');
+const mongoose = require('mongoose');
+exports.getAdminProducts = async (req, res) => {
+  try {
+    const { page, limit, skip } = pagination(req.query);
+    const search = typeof req.query.search === 'string' ? req.query.search.trim().slice(0, 80) : '';
+    const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const filter = search ? { $or: ['title', 'category', 'color'].map((field) => ({ [field]: { $regex: escaped, $options: 'i' } })) } : {};
+    const [products, total] = await Promise.all([
+      Product.find(filter).sort({ _id: -1 }).skip(skip).limit(limit).lean(),
+      Product.countDocuments(filter),
+    ]);
+    return res.json({ products, total, page, limit, pages: Math.max(1, Math.ceil(total / limit)) });
+  } catch (error) {
+    console.error('Error fetching admin products:', error);
+    return res.status(500).json({ message: 'Could not fetch products' });
+  }
 };
-
-// Middleware to handle file uploads
-exports.handleProductUpload = (req, res, next) => {
-  upload(req, res, async (err) => {
-    if (err) {
-      return res.status(400).json({ message: "Error uploading files", error: err.message });
-    }
-    
-    try {
-      if (req.files && req.files.length > 0) {
-        const uploadPromises = req.files.map(file => uploadToCloudinary(file.buffer));
-        req.fileUrls = await Promise.all(uploadPromises);
-      }
-      next();
-    } catch (error) {
-      return res.status(500).json({ message: "Error processing uploads", error: error.message });
-    }
-  });
+exports.getAdminProduct = async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: 'Invalid product ID' });
+    const product = await Product.findById(req.params.id).lean();
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    return res.json(product);
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    return res.status(500).json({ message: 'Could not fetch product' });
+  }
 };
-
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find().lean();
@@ -59,29 +39,37 @@ exports.getAllProducts = async (req, res) => {
     console.error("Error fetching products:", error);
     res
       .status(500)
-      .json({ message: "Error fetching products", error: error.message });
+      .json({ message: "Error fetching products" });
   }
 };
 
 exports.getFilteredProducts = async (req, res) => {
   try {
     const { listing, category } = req.params;
-
-    const formattedListing = listing.charAt(0).toUpperCase() + listing.slice(1);
-    const formattedCategory =
-      category.charAt(0).toUpperCase() + category.slice(1);
-
-    const products = await Product.find({
-      listings: { $in: [formattedListing] },
-      category: formattedCategory,
-    }).lean();
+    const categoryNames = {
+      top: ['Top', 'T-shirt', 'T-shirts', 'Tshirt'],
+      't-shirts': ['Top', 'T-shirt', 'T-shirts', 'Tshirt'],
+      shirts: ['Shirt', 'Shirts'],
+      denim: ['Denim'],
+      'winter-wear': ['Winter', 'Winter Wear'],
+    };
+    const categories = categoryNames[category.toLowerCase()];
+    if (!categories) return res.status(404).json({ message: 'Category not found' });
+    const filter = { category: { $in: categories.map((name) => new RegExp(`^${name}$`, 'i')) } };
+    const listingName = listing.toLowerCase();
+    if (listingName === 'men') filter.gender = /^male$/i;
+    else if (listingName === 'women') filter.gender = /^female$/i;
+    else if (listingName === 'new-arrival') filter.listings = /^new arrivals$/i;
+    else if (listingName === 'sale') filter.listings = /^sale$/i;
+    else if (listingName !== 'all') return res.status(404).json({ message: 'Listing not found' });
+    const products = await Product.find(filter).sort({ _id: -1 }).lean();
 
     res.status(200).json(products);
   } catch (error) {
     console.error("Error fetching filtered products:", error);
     res
       .status(500)
-      .json({ message: "Error fetching products", error: error.message });
+      .json({ message: "Error fetching products" });
   }
 };
 
@@ -118,7 +106,7 @@ exports.updateProduct = async (req, res) => {
     }
 
     // Handle new images if any were uploaded
-    if (req.fileUrls && req.fileUrls.length > 0) {
+    if (updatedData.existingImages || req.fileUrls.length > 0) {
       updatedData.images = [...(updatedData.existingImages || []), ...req.fileUrls];
     }
 
@@ -149,22 +137,28 @@ exports.updateProduct = async (req, res) => {
     res.status(200).json(updatedProduct);
   } catch (error) {
     console.error("Error updating product:", error);
-    res.status(500).json({ message: "Error updating product", error: error.message });
+    res.status(500).json({ message: "Error updating product" });
   }
 };
 
 exports.listings = async (req, res) => {
   try {
-    const { listing } = req.params;
-    const products = await Product.find({
-      listings: { $in: [new RegExp("^" + listing + "$", "i")] }, // Case-insensitive search
-    }).lean();
+    const listing = req.params.listing.toLowerCase();
+    const filters = {
+      men: { gender: /^male$/i },
+      women: { gender: /^female$/i },
+      'new-arrival': { listings: /^new arrivals$/i },
+      sale: { listings: /^sale$/i },
+      all: {},
+    };
+    if (!Object.hasOwn(filters, listing)) return res.status(404).json({ message: 'Listing not found' });
+    const products = await Product.find(filters[listing]).sort({ _id: -1 }).lean();
     res.status(200).json(products);
   } catch (error) {
     console.error("Error fetching listings:", error);
     res
       .status(500)
-      .json({ message: "Error fetching products", error: error.message });
+      .json({ message: "Error fetching products" });
   }
 };
 
@@ -231,8 +225,6 @@ exports.createProduct = async (req, res) => {
     console.error("Error creating product:", error);
     res.status(500).json({
       message: "Error creating product",
-      error: error.message,
-      stack: error.stack,
     });
   }
 };
@@ -246,11 +238,16 @@ exports.deleteProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
+    await Promise.all([
+      Cart.updateMany({}, { $pull: { products: { product: id } } }),
+      Wishlist.updateMany({}, { $pull: { products: id } }),
+      Review.deleteMany({ product: id }),
+    ]);
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
     console.error("Error deleting product:", error);
     res
       .status(500)
-      .json({ message: "Error deleting product", error: error.message });
+      .json({ message: "Error deleting product" });
   }
 };

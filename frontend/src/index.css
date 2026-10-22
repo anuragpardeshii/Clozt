@@ -2,6 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+.catalog-filter-bar > div > .relative > .absolute {
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 30;
+  border: 1px solid #e7e5e4;
+  box-shadow: 0 14px 36px rgb(28 35 29 / 16%);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .product-card-cart {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+  }
+
+  .product-card-cart button {
+    pointer-events: none;
+  }
+
+  .product-card:hover .product-card-cart,
+  .product-card:focus-within .product-card-cart {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .product-card:hover .product-card-cart button,
+  .product-card:focus-within .product-card-cart button {
+    pointer-events: auto;
+  }
+}
+
 /* * {
   font-family: "Belleza", serif;
   font-weight: 400;
@@ -22,6 +54,13 @@ input:-webkit-autofill {
 .nav-padding {
   padding: 0.5rem 1rem;
 }
+.clozt-loader { display: grid; justify-items: center; align-content: center; gap: .5rem; min-height: 150px; color: #28352f; }
+.clozt-loader-mark { display: grid; place-items: center; width: 3.4rem; height: 3.4rem; border: 1px solid #718c7a; border-radius: 50%; font-family: Georgia, serif; font-size: 2rem; animation: clozt-breathe 1.7s ease-in-out infinite; }
+.clozt-loader-word { letter-spacing: .4em; font-size: .66rem; font-weight: 800; }
+.clozt-loader-line { width: 4rem; height: 2px; background: #28352f; transform-origin: left; animation: clozt-sweep 1.7s ease-in-out infinite; }
+@keyframes clozt-breathe { 50% { transform: scale(1.08); opacity: .6; } }
+@keyframes clozt-sweep { 50% { transform: scaleX(.25); opacity: .5; } }
+@media (prefers-reduced-motion: reduce) { .clozt-loader-mark, .clozt-loader-line { animation: none; } }
 
 @media (min-width: 320px) {
   .nav-padding {

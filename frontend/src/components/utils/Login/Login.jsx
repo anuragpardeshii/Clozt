@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 
 export default function Login() {
@@ -8,29 +8,15 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await axios.get("https://clozt-backend.vercel.app/api/users/auth/check", {
-          withCredentials: true,
-        });
-
-        if (res.data.loggedIn) {
-          setIsLoggedIn(true);
-          login(res.data.user);
-          navigate("/");
-        }
-      } catch (error) {
-        setIsLoggedIn(false);
-      }
-    };
-
-    checkAuth();
-  }, [navigate, login]);
+  const location = useLocation();
+  const { user, login } = useAuth();
+  const destination = (account) => {
+    const requestedPath = location.state?.from;
+    return requestedPath && (!requestedPath.startsWith('/admin') || account.role === 'admin')
+      ? requestedPath
+      : '/';
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -39,7 +25,7 @@ export default function Login() {
 
     try {
       const res = await axios.post(
-        "https://clozt-backend.vercel.app/api/users/login",
+        "/api/users/login",
         { email, password },
         { withCredentials: true }
       );
@@ -47,7 +33,7 @@ export default function Login() {
       if (res.status === 200) {
         setMessage("Login successful!");
         login(res.data.user);
-        navigate("/");
+        navigate(destination(res.data.user), { replace: true });
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -61,13 +47,7 @@ export default function Login() {
     }
   };
 
-  if (isLoggedIn) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-white">
-        Redirecting...
-      </div>
-    );
-  }
+  if (user) return <Navigate to={destination(user)} replace />;
 
   return (
     <section className="bg-gray-50 min-h-screen dark:bg-gray-900">
@@ -86,6 +66,7 @@ export default function Login() {
         <div>
           <div className="lg:max-w-xl sm:max-w-lg mx-auto p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow-xl dark:bg-gray-800">
             <h2 className="text-2xl text-center font-bold text-gray-900 dark:text-white">Login</h2>
+            {location.state?.registered && <p className="text-green-700">Account created. Please log in.</p>}
             <form onSubmit={handleLogin} className="max-w-md mx-auto">
               <div className="mb-5">
                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">

@@ -1,5 +1,7 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
+import CloztLoader from '../components/CloztLoader';
 
 const AuthContext = createContext(null);
 
@@ -7,71 +9,42 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Check auth status on mount
   useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const { data, status } = await axios.get('https://clozt-backend.vercel.app/api/users/auth/check', {
-          withCredentials: true,
-        });
-
-        if (status === 200 && data?.user) {
-          setUser(data.user);
-          localStorage.setItem('user', JSON.stringify(data.user));
-        } else {
-          handleLogout();
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        handleLogout();
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuthStatus();
+    let active = true;
+    axios.get('/api/users/auth/check')
+      .then(({ data }) => {
+        if (active) setUser(data.loggedIn ? data.user : null);
+      })
+      .catch(() => {
+        if (active) setUser(null);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => { active = false; };
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-  };
-
-  const handleLogout = () => {
+  const login = useCallback((userData) => setUser(userData), []);
+  const logout = useCallback(async () => {
+    await axios.post('/api/users/logout');
     setUser(null);
-    localStorage.removeItem('user');
-  };
+  }, []);
+  const value = useMemo(() => ({
+    user,
+    login,
+    logout,
+    loading,
+    isAuthenticated: Boolean(user),
+    isAdmin: user?.role === 'admin',
+  }), [user, login, logout, loading]);
 
-  const logout = async () => {
-    handleLogout();
-    try {
-      await axios.post('https://clozt-backend.vercel.app/api/users/logout', {}, { withCredentials: true });
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
-  };
-
-  const isAuthenticated = !!user;
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        login,
-        logout,
-        loading,
-        isAuthenticated,
-      }}
-    >
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{loading ? <main className="min-h-screen grid place-items-center"><CloztLoader label="Loading Clozt" /></main> : children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 }
+
+AuthProvider.propTypes = { children: PropTypes.node.isRequired };

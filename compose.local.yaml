@@ -1,0 +1,45 @@
+services:
+  mongo:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:?Set MONGO_ROOT_USER in .env}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?Set MONGO_ROOT_PASSWORD in .env}
+      MONGO_APP_USER: ${MONGO_APP_USER:?Set MONGO_APP_USER in .env}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD:?Set MONGO_APP_PASSWORD in .env}
+      MONGO_DB: ${MONGO_DB:-clozt}
+    volumes:
+      - mongo_data:/data/db
+      - ./mongo/create-users.js:/docker-entrypoint-initdb.d/01-create-users.js:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --username \"$${MONGO_INITDB_ROOT_USERNAME}\" --password \"$${MONGO_INITDB_ROOT_PASSWORD}\" --authenticationDatabase admin --eval 'db.adminCommand({ ping: 1 }).ok' >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 12
+
+  mongo-auth-bootstrap:
+    image: mongo:7
+    profiles: [setup]
+    environment:
+      MONGO_BOOTSTRAP_EXISTING: "1"
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:?Set MONGO_ROOT_USER in .env}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?Set MONGO_ROOT_PASSWORD in .env}
+      MONGO_APP_USER: ${MONGO_APP_USER:?Set MONGO_APP_USER in .env}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD:?Set MONGO_APP_PASSWORD in .env}
+      MONGO_DB: ${MONGO_DB:-clozt}
+    volumes:
+      - ./mongo/create-users.js:/create-users.js:ro
+    entrypoint: ["mongosh", "--quiet", "mongodb://mongo:27017/admin", "/create-users.js"]
+
+  api:
+    environment:
+      MONGO_URI: ""
+      MONGO_HOST: mongo
+      MONGO_DB: ${MONGO_DB:-clozt}
+      MONGO_APP_USER: ${MONGO_APP_USER:?Set MONGO_APP_USER in .env}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD:?Set MONGO_APP_PASSWORD in .env}
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+volumes:
+  mongo_data:

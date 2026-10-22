@@ -1,14 +1,8 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import React from "react";
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import "./index.css";
 import MainLayout from "./components/Layout/MainLayout";
-import AdminDashboard from "./components/Admin/AdminDasbord";
-import AdminLogin from "./components/Admin/Login/Signup/AdminLogin";
-import AdminProtectedRoute from "./components/Admin/AdminProtectedRoute";
-import Navbar from "./components/utils/Navbar/Navbar";
-import Footer from "./components/utils/Footer/Footer";
 import Home from "./components/home/Home";
-import Admin from "./components/Admin/Admin";
 import Help from "./components/Help/Help";
 import About from "./components/About/About";
 import Men from "./components/Products/Men/Men";
@@ -18,18 +12,62 @@ import Women from "./components/Products/Women/Women";
 import Details from "./components/utils/Details/Details";
 import Cart from "./components/utils/Cart/Cart";
 import Wishlist from "./components/Wishlist/Wishlist";
+import Addresses from "./components/utils/Addresses/Addresses";
 import Order from "./components/utils/Orders/Order";
-import Summary from "./components/utils/Summary/Summary";
 import Login from "./components/utils/Login/Login";
 import Signup from "./components/utils/Signup/Signup";
 import PageNotFound from "./components/utils/PageNotFound";
 import "flowbite";
-import AdminRegister from "./components/Admin/Login/Signup/AdminRegister";
 import ProductList from "./components/Products/ProductList";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from "./context/AuthContext";
+import CloztLoader from './components/CloztLoader';
+
+const adminUrl = import.meta.env.VITE_ADMIN_URL || "http://localhost:5174/";
+
+function AdminRedirect() {
+  const { pathname } = useLocation();
+  const destinations = {
+    "/admin/add-new-products": "products/new",
+    "/admin/all-products": "products",
+    "/admin/orders": "orders",
+    "/admin/coupons": "coupons",
+  };
+  const destination = destinations[pathname] || "analytics";
+
+  useEffect(() => {
+    window.location.replace(new URL(destination, adminUrl.endsWith("/") ? adminUrl : `${adminUrl}/`).toString());
+  }, [destination]);
+
+  return <CloztLoader label="Opening admin dashboard" />;
+}
+
+function TrackStorefrontVisit() {
+  const { user } = useAuth();
+  const { pathname } = useLocation();
+  useEffect(() => {
+    if (user?.role === 'admin' || pathname.startsWith('/admin')) return undefined;
+    let sessionId;
+    try {
+      sessionId = window.sessionStorage.getItem('clozt-visit-session');
+      if (!sessionId) {
+        sessionId = window.crypto.randomUUID();
+        window.sessionStorage.setItem('clozt-visit-session', sessionId);
+      }
+    } catch { return undefined; }
+    const apiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+    const send = () => fetch(`${apiUrl}/api/analytics/visit`, {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId, path: pathname }), keepalive: true,
+    }).catch(() => undefined);
+    send();
+    const interval = window.setInterval(send, 5 * 60 * 1000);
+    return () => window.clearInterval(interval);
+  }, [pathname, user?.role]);
+  return null;
+}
 
 function App() {
-  const { user, login, logout, loading } = useAuth();
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isLoginOrSignup =
@@ -39,16 +77,9 @@ function App() {
     <>
       {isAdminRoute ? (
         <Routes>
-          <Route path="/admin-login" element={<AdminLogin />} />
-          <Route path="/admin-signup" element={<AdminRegister/>}></Route>
-          <Route
-            path="/admin/*"
-            element={
-              <AdminProtectedRoute>
-                <AdminDashboard />
-              </AdminProtectedRoute>
-            }
-          />
+          <Route path="/admin-login" element={<Navigate to="/login" replace />} />
+          <Route path="/admin-signup" element={<Navigate to="/signup" replace />} />
+          <Route path="/admin/*" element={<AdminRedirect />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       ) : isLoginOrSignup ? (
@@ -70,9 +101,10 @@ function App() {
             <Route path="/:listing/:category" element={<ProductList/>} />
             <Route path="/product/:id" element={<Details />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/order-summary" element={<Summary />} />
+            <Route path="/order-summary" element={<Navigate to="/cart" replace />} />
             <Route path="/orders" element={<Order />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/addresses" element={<Addresses />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </MainLayout>
@@ -85,6 +117,7 @@ function AppWrapper() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <TrackStorefrontVisit />
         <App />
       </AuthProvider>
     </BrowserRouter>

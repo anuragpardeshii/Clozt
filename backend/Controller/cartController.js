@@ -1,164 +1,131 @@
 const Cart = require("../Models/Cart");
+const Product = require("../Models/Product");
+const mongoose = require("mongoose");
 
-// ✅ Get Cart with Populated Products
+const populatedCart = (userId) => Cart.findOne({ user: userId })
+  .populate({
+    path: "products.product",
+    select: "title description price salePrice listings images sizes category gender color",
+  })
+  .lean();
+
 const getCart = async (req, res) => {
   try {
-    console.log("User ID from request:", req.user?._id); // Debugging log
-
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ message: "Unauthorized: Please log in" });
-    }
-
-    const userId = req.user._id;
-    
-    // ✅ Ensure product images are included
-    const cart = await Cart.findOne({ user: userId })
-      .populate({
-        path: "products.product",
-        select: "title description price images",
-      })
-      .lean(); // Use lean() for better performance
-
-    console.log("Cart found in DB:", cart); // Debugging log
-
-    if (!cart) {
-      return res.status(200).json({ products: [], total: 0 });
-    }
-
-    res.status(200).json(cart);
+    const cart = await populatedCart(req.user._id);
+    if (!cart) return res.json({ products: [], total: 0 });
+    cart.products = cart.products.filter((item) => item.product);
+    return res.json(cart);
   } catch (error) {
     console.error("Error fetching cart:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
-// ✅ Add to Cart with Proper Product References
 const addToCart = async (req, res) => {
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ message: "Unauthorized: Login first" });
+    const { productId } = req.body;
+    const size = typeof req.body.size === "string" ? req.body.size.trim() : "";
+    const quantity = req.body.quantity === undefined ? 1 : Number(req.body.quantity);
+    if (!mongoose.isValidObjectId(productId) || !Number.isInteger(quantity) || quantity < 1) {
+      return res.status(400).json({ message: "Valid product and quantity are required" });
     }
+    if (!size) return res.status(400).json({ message: "Select a size before adding to cart" });
 
-    const userId = req.user._id;
-    const { productId, quantity } = req.body;
+    const product = await Product.findById(productId);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+    const stock = product.sizes?.get(size) || 0;
+    if (stock < 1) return res.status(400).json({ message: "Selected size is unavailable" });
 
-    // Use findOneAndUpdate for atomic operation
-    const cart = await Cart.findOneAndUpdate(
-      { user: userId },
-      {},
-      { upsert: true, new: true, setDefaultsOnInsert: true }
-    );
-
-    const productIndex = cart.products.findIndex((p) => p.product.toString() === productId);
-    
-    if (productIndex > -1) {
-      // Update existing product quantity
-      await Cart.findOneAndUpdate(
-        { user: userId, "products.product": productId },
-        { $inc: { "products.$.quantity": quantity } },
-        { new: true }
-      );
-    } else {
-      // Add new product to cart
-      await Cart.findOneAndUpdate(
-        { user: userId },
-        { $push: { products: { product: productId, quantity } } },
-        { new: true }
-      );
+    let cart = await Cart.findOne({ user: req.user._id });
+    if (!cart) cart = new Cart({ user: req.user._id, products: [] });
+    const item = cart.products.find((entry) => entry.product.toString() === productId && entry.size === size);
+    if ((item?.quantity || 0) + quantity > stock) {
+      return res.status(400).json({ message: "Requested quantity exceeds available stock" });
     }
-
-    // ✅ Re-populate cart to include images
-    const updatedCart = await Cart.findOne({ user: userId })
-      .populate({
-        path: "products.product",
-        select: "title description price images",
-      })
-      .lean();
-
-    res.status(200).json(updatedCart);
+    if (item) item.quantity += quantity;
+    else cart.products.push({ product: productId, size, quantity });
+    await cart.save();
+    return res.json(await populatedCart(req.user._id));
   } catch (error) {
     console.error("Error adding to cart:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
-// ✅ Update Item Quantity Correctly
 const updateQuantity = async (req, res) => {
   try {
-    const { productId } = req.params;
-    const { quantity } = req.body;
-    
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ message: "Unauthorized: Login first" });
+    const { itemId } = req.params;
+    const quantity = Number(req.body.quantity);
+    if (!mongoose.isValidObjectId(itemId) || !Number.isInteger(quantity) || quantity < 0) {
+      return res.status(400).json({ message: "Valid cart item and quantity are required" });
     }
-    
-    const userId = req.user._id;
-    
+    const cart = await Cart.findOne({ user: req.user._id });
+    const item = cart?.products.id(itemId);
+    if (!item) return res.status(404).json({ message: "Cart item not found" });
+
     if (quantity === 0) {
-      // Remove the product if quantity is 0
-      await Cart.findOneAndUpdate(
-        { user: userId },
-        { $pull: { products: { product: productId } } },
-        { new: true }
-      );
+      item.deleteOne();
     } else {
-      // Update the quantity
-      await Cart.findOneAndUpdate(
-        { user: userId, "products.product": productId },
-        { $set: { "products.$.quantity": quantity } },
-        { new: true }
-      );
+      const product = await Product.findById(item.product);
+      if (!product || !item.size || (product.sizes?.get(item.size) || 0) < quantity) {
+        return res.status(400).json({ message: "Selected size or quantity is unavailable" });
+      }
+      item.quantity = quantity;
     }
-    
-    const updatedCart = await Cart.findOne({ user: userId })
-      .populate({
-        path: "products.product",
-        select: "title description price images",
-      })
-      .lean();
-      
-    if (!updatedCart) return res.status(404).json({ message: "Cart not found" });
-    
-    res.status(200).json(updatedCart);
+    await cart.save();
+    return res.json(await populatedCart(req.user._id));
   } catch (error) {
-    console.error("Error updating quantity:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error updating cart:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
-// ✅ Remove Item from Cart Correctly
+const updateSize = async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    const size = typeof req.body.size === "string" ? req.body.size.trim() : "";
+    if (!mongoose.isValidObjectId(itemId) || !size) {
+      return res.status(400).json({ message: "Choose a valid cart item and size" });
+    }
+    const cart = await Cart.findOne({ user: req.user._id });
+    const item = cart?.products.id(itemId);
+    if (!item) return res.status(404).json({ message: "Cart item not found" });
+    const product = await Product.findById(item.product);
+    const stock = product?.sizes?.get(size) || 0;
+    const matchingItem = cart.products.find((entry) => entry._id.toString() !== itemId && entry.product.toString() === item.product.toString() && entry.size === size);
+    if (stock < item.quantity + (matchingItem?.quantity || 0)) {
+      return res.status(400).json({ message: "Selected size does not have enough stock" });
+    }
+    if (matchingItem) {
+      matchingItem.quantity += item.quantity;
+      item.deleteOne();
+    } else {
+      item.size = size;
+    }
+    await cart.save();
+    return res.json(await populatedCart(req.user._id));
+  } catch (error) {
+    console.error("Error updating cart size:", error);
+    return res.status(500).json({ message: "Could not update size" });
+  }
+};
+
 const removeFromCart = async (req, res) => {
   try {
-    const { productId } = req.params;
-
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ message: "Unauthorized: Login first" });
+    const { itemId } = req.params;
+    if (!mongoose.isValidObjectId(itemId)) {
+      return res.status(400).json({ message: "Invalid cart item" });
     }
-
-    const userId = req.user._id;
-    
-    // Use atomic operation to remove item
-    const updatedCart = await Cart.findOneAndUpdate(
-      { user: userId },
-      { $pull: { products: { product: productId } } },
-      { new: true }
-    )
-    .populate({
-      path: "products.product",
-      select: "title description price images",
-    })
-    .lean();
-
-    if (!updatedCart) {
-      return res.status(404).json({ message: "Cart not found" });
-    }
-
-    res.status(200).json({ message: "Item removed", cart: updatedCart });
+    const cart = await Cart.findOne({ user: req.user._id });
+    const item = cart?.products.id(itemId);
+    if (!item) return res.status(404).json({ message: "Cart item not found" });
+    item.deleteOne();
+    await cart.save();
+    return res.json({ message: "Item removed", cart: await populatedCart(req.user._id) });
   } catch (error) {
-    console.error("Error removing item:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error removing cart item:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
-// ✅ Properly export all functions
-module.exports = { getCart, addToCart, updateQuantity, removeFromCart };
+module.exports = { getCart, addToCart, updateQuantity, updateSize, removeFromCart };

@@ -1,9 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import ProductCardActions from "../ProductCardActions";
+import useProductActions from "../useProductActions";
+import CloztLoader from '../../CloztLoader';
+import { effectivePrice, matchesCategory } from '../catalogFilters';
 // import womenVideo from "";
 
-export default function sale() {
+export default function Sale() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -15,7 +19,7 @@ export default function sale() {
   const [selectedGender, setSelectedGender] = useState(null);
   const [sortOrder, setSortOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState({ type: null, id: null });
+  const { wishlistIds, actionLoading, handleWishlistClick, handleCartClick } = useProductActions();
   const sortRef = useRef(null);
   const categoryRef = useRef(null);
   const genderRef = useRef(null);
@@ -45,8 +49,8 @@ export default function sale() {
     const fetchProducts = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get("https://clozt-backend.vercel.app/api/products");
-        const saleProducts = response.data.filter((product) => product.listings.includes("Sale"));
+        const response = await axios.get("/api/products/sale");
+        const saleProducts = Array.isArray(response.data) ? response.data : [];
         setProducts(saleProducts);
         setFilteredProducts(saleProducts);
       } catch (error) {
@@ -64,9 +68,7 @@ export default function sale() {
     
     // Apply category filter
     if (selectedCategory) {
-      result = result.filter(product => 
-        product.category && product.category.toLowerCase().includes(selectedCategory.toLowerCase())
-      );
+      result = result.filter((product) => matchesCategory(product.category, selectedCategory));
     }
     
     // Apply gender filter
@@ -78,9 +80,9 @@ export default function sale() {
     
     // Apply sorting
     if (sortOrder === 'lowToHigh') {
-      result.sort((a, b) => a.price - b.price);
+      result.sort((first, second) => effectivePrice(first) - effectivePrice(second));
     } else if (sortOrder === 'highToLow') {
-      result.sort((a, b) => b.price - a.price);
+      result.sort((first, second) => effectivePrice(second) - effectivePrice(first));
     }
     
     setFilteredProducts(result);
@@ -108,53 +110,6 @@ export default function sale() {
   
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
-  };
-
-  const handleAddToWishlist = async (e, product) => {
-    e.stopPropagation(); // Prevent product click event
-    
-    if (!product || !product._id) {
-      console.error("Invalid product data", product);
-      return;
-    }
-
-    setActionLoading({ type: 'wishlist', id: product._id });
-    
-    try {
-      await axios.post(
-        "https://clozt-backend.vercel.app/api/wishlist/add",
-        { productId: product._id },
-        { withCredentials: true }
-      );
-    } catch (error) {
-      console.error(
-        "Error adding to wishlist:",
-        error.response?.data || error.message
-      );
-    } finally {
-      setActionLoading({ type: null, id: null });
-    }
-  };
-
-  const handleAddToCart = async (e, productId) => {
-    e.stopPropagation(); // Prevent product click event
-    
-    setActionLoading({ type: 'cart', id: productId });
-    
-    try {
-      await axios.post(
-        "https://clozt-backend.vercel.app/api/cart/add",
-        { productId },
-        { withCredentials: true }
-      );
-    } catch (error) {
-      console.error(
-        "Error adding to cart:",
-        error.response?.data || error.message
-      );
-    } finally {
-      setActionLoading({ type: null, id: null });
-    }
   };
 
   const handleLoadMore = () => {
@@ -198,7 +153,7 @@ export default function sale() {
       </div>
 
       {/* Product Categories - breadcrumb and filters */}
-      <div className="flex justify-between flex-wrap items-center pb-4 mb-4 border-b-2 border-gray-100">
+      <div className="catalog-filter-bar relative z-20 flex justify-between flex-wrap items-center pb-4 mb-4 border-b-2 border-gray-100">
         {/* Breadcrumb navigation - unchanged */}
         <div>
           <nav className="flex" aria-label="Breadcrumb">
@@ -438,9 +393,7 @@ export default function sale() {
 
       {/* Loading State */}
       {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
-        </div>
+        <CloztLoader label="Loading sale products" />
       ) : filteredProducts.length === 0 ? (
         <div className="text-center py-10">
           <h3 className="text-xl font-medium">No products found</h3>
@@ -454,42 +407,31 @@ export default function sale() {
               <div
                 key={product._id}
                 onClick={() => handleProductClick(product._id)}
-                className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 flex flex-col h-full cursor-pointer"
+                className="product-card group relative bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 flex flex-col h-full cursor-pointer"
               >
-                <div className="p-4 flex-shrink-0">
+                <div className="relative p-4 flex-shrink-0">
                   <img
                     className="rounded-t-lg w-full h-[300px] object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     src={product.images?.[0] || "https://via.placeholder.com/300"}
                     alt={product.title}
                     loading="lazy"
                   />
+                  <ProductCardActions
+                    productId={product._id}
+                    isWishlisted={wishlistIds.has(product._id)}
+                    actionLoading={actionLoading}
+                    onCartClick={handleCartClick}
+                    onWishlistClick={handleWishlistClick}
+                  />
                 </div>
                 <div className="px-5 pb-5 flex flex-col flex-grow justify-between">
                   <div className="text-center">
-                    <h5 className="text-md font-semibold text-gray-900 dark:text-white mb-2">
+                    <h5 className="text-sm font-medium leading-snug text-gray-900 dark:text-white mb-1">
                       {product.title}
                     </h5>
-                    <p className="text-lg font-bold text-gray-900 dark:text-white">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white">
                       ₹{product.price}
                     </p>
-                  </div>
-                  <div className="flex gap-4 mt-4 justify-around">
-                    <button
-                      onClick={(e) => handleAddToCart(e, product._id)}
-                      disabled={actionLoading.type === 'cart' && actionLoading.id === product._id}
-                      className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-70"
-                    >
-                      {actionLoading.type === 'cart' && actionLoading.id === product._id ? 
-                        'Adding...' : 'Add to cart'}
-                    </button>
-                    <button
-                      onClick={(e) => handleAddToWishlist(e, product)}
-                      disabled={actionLoading.type === 'wishlist' && actionLoading.id === product._id}
-                      className="text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-medium text-sm disabled:opacity-70"
-                    >
-                      {actionLoading.type === 'wishlist' && actionLoading.id === product._id ? 
-                        'Adding...' : 'Wishlist'}
-                    </button>
                   </div>
                 </div>
               </div>

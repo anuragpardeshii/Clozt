@@ -1,6 +1,9 @@
 const User = require("../Models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const authCookie = require("../config/authCookie");
+const TrafficEvent = require('../Models/TrafficEvent');
+const pagination = require('../services/pagination');
 
 /**
  * @desc User Registration
@@ -9,9 +12,13 @@ const bcrypt = require("bcryptjs");
 exports.register = async (req, res) => {
   try {
     const { username, email, mobile, password } = req.body;
+    if ([username, email, mobile, password].some((field) => typeof field !== "string" || !field.trim())) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
     // Check if the user already exists
-    const existingUser = await User.findOne({ email });
+    const normalizedEmail = email.trim().toLowerCase();
+    const existingUser = await User.findOne({ email: normalizedEmail }).collation({ locale: "en", strength: 2 });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -22,7 +29,7 @@ exports.register = async (req, res) => {
     // Create a new user using create method for better atomicity
     await User.create({
       username,
-      email,
+      email: normalizedEmail,
       mobile,
       password: hashedPassword,
     });
@@ -43,14 +50,14 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     // Validate input
-    if (!email || !password) {
+    if (typeof email !== "string" || typeof password !== "string" || !email.trim() || !password) {
       return res
         .status(400)
         .json({ success: false, message: "Email and password are required" });
     }
 
     // Find user by email
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.trim().toLowerCase() }).collation({ locale: "en", strength: 2 });
     if (!user) {
       return res
         .status(401)
@@ -65,6 +72,10 @@ exports.login = async (req, res) => {
         .json({ success: false, message: "Invalid email or password" });
     }
 
+    const signedInAt = new Date();
+    await User.updateOne({ _id: user._id }, { $set: { lastLoginAt: signedInAt, lastActiveAt: signedInAt } });
+    if (user.role === 'customer') TrafficEvent.create({ kind: 'sign_in', user: user._id, createdAt: signedInAt }).catch((error) => console.error('Sign-in analytics error:', error));
+
     // Create JWT token
     const token = jwt.sign(
       { userId: user._id }, 
@@ -76,10 +87,8 @@ exports.login = async (req, res) => {
 
     // Send cookie with token
     res.cookie("userToken", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict", // Changed from "Strict" to lowercase "strict"
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      ...authCookie,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     // Use mongoose's lean() for better performance and exclude password
@@ -88,7 +97,6 @@ exports.login = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      token,
       user: userInfo,
     });
   } catch (error) {
@@ -96,8 +104,24 @@ exports.login = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Server error",
-      error: error.message,
     });
+  }
+};
+
+exports.getAdminUsers = async (req, res) => {
+  try {
+    const { page, limit, skip } = pagination(req.query);
+    const search = typeof req.query.search === 'string' ? req.query.search.trim().slice(0, 80) : '';
+    const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const filter = { role: 'customer', ...(search && { $or: ['username', 'email'].map((field) => ({ [field]: { $regex: escaped, $options: 'i' } })) }) };
+    const [users, total] = await Promise.all([
+      User.find(filter).select('username email createdAt lastLoginAt lastActiveAt').sort({ createdAt: -1, _id: -1 }).skip(skip).limit(limit).lean(),
+      User.countDocuments(filter),
+    ]);
+    return res.json({ users, total, page, limit, pages: Math.max(1, Math.ceil(total / limit)) });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return res.status(500).json({ message: 'Could not fetch users' });
   }
 };
 
@@ -124,12 +148,7 @@ exports.checkAuth = async (req, res) => {
       return res.json({ loggedIn: true, user });
     } catch (jwtError) {
       // Token is invalid or expired
-      res.cookie("userToken", "", { 
-        expires: new Date(0), 
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict" // Changed from "Strict" to lowercase "strict"
-      });
+      res.clearCookie("userToken", authCookie);
       return res.json({ loggedIn: false });
     }
   } catch (error) {
@@ -144,16 +163,12 @@ exports.checkAuth = async (req, res) => {
  */
 exports.logout = async (req, res) => {
   try {
-    res.clearCookie("userToken", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict", // Changed from "Strict" to lowercase "strict"
-    });
+    res.clearCookie("userToken", authCookie);
     return res.json({ message: "Logged out successfully" });
   } catch (error) {
     console.error("User Logout Error:", error);
     return res
       .status(500)
-      .json({ message: "Logout failed", error: error.message });
+      .json({ message: "Logout failed" });
   }
 };

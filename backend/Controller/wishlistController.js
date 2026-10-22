@@ -6,7 +6,7 @@ const Product = require("../Models/Product");
  */
 const formatWishlist = (wishlist) => ({
   ...wishlist.toObject(),
-  products: wishlist.products.map((product) => ({
+  products: wishlist.products.filter(Boolean).map((product) => ({
     _id: product._id,
     title: product.title,
     description: product.description,
@@ -36,7 +36,7 @@ exports.addToWishlist = async (req, res) => {
       wishlist = new Wishlist({ user: userId, products: [] });
     }
 
-    if (!wishlist.products.includes(productId)) {
+    if (!wishlist.products.some((product) => product.toString() === productId)) {
       wishlist.products.push(productId);
       await wishlist.save();
     }
@@ -46,7 +46,7 @@ exports.addToWishlist = async (req, res) => {
     return res.status(200).json({ message: "Added to wishlist", wishlist: formatWishlist(wishlist) });
   } catch (error) {
     console.error("🔥 Error adding to wishlist:", error);
-    return res.status(500).json({ message: "Internal server error", error: error.message });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -61,7 +61,7 @@ exports.getWishlist = async (req, res) => {
     return res.status(200).json({ wishlist: wishlist ? formatWishlist(wishlist) : { products: [] } });
   } catch (error) {
     console.error("🔥 Error fetching wishlist:", error);
-    return res.status(500).json({ message: "Server error", error: error.message });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -86,6 +86,6 @@ exports.removeFromWishlist = async (req, res) => {
     return res.status(200).json({ message: "Removed from wishlist", wishlist: formatWishlist(wishlist) });
   } catch (error) {
     console.error("🔥 Error removing from wishlist:", error);
-    return res.status(500).json({ message: "Server error", error: error.message });
+    return res.status(500).json({ message: "Server error" });
   }
 };

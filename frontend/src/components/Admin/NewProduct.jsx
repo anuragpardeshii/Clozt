@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import Admin from "./Admin";
+import { useState } from "react";
 import axios from "axios";
 
 export default function NewProduct() {
@@ -56,7 +55,7 @@ export default function NewProduct() {
 
     try {
       const response = await axios.post(
-        "https://clozt-backend.vercel.app/api/products/newproduct",
+        "/api/products/newproduct",
         newFormData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -156,8 +155,7 @@ export default function NewProduct() {
   // Update form JSX for listings and sale price
   return (
     <>
-      <Admin />
-      <div className="p-4 sm:ml-64">
+      <div className="p-4">
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <form
             className="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg"

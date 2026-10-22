@@ -1,245 +1,69 @@
-import Top from "/src/assets/Images/Women/Top.jpg";
-import Shirt from "/src/assets/Images/Women/Shirt.jpeg";
-import Denim from "/src/assets/Images/Women/Denim.jpeg";
-import Winter from "/src/assets/Images/Women/Winter.jpg";
-import backgroundImage from "/src/assets/Images/WomenFashion.jpg";
+import { Link } from 'react-router-dom';
+import summerImage from '../../assets/Images/diversity.jpg';
+import eveningImage from '../../assets/Images/WomenFashion.jpg';
+import trendingImage from '../../assets/Images/Women/Top1.jpeg';
+import topImage from '../../assets/Images/Women/Top.jpg';
+import shirtImage from '../../assets/Images/Women/Shirt.jpeg';
+import denimImage from '../../assets/Images/Women/Denim.jpeg';
+import winterImage from '../../assets/Images/Women/Winter.jpg';
+
+const features = [
+  { title: 'Trending now', image: eveningImage, to: '/women/shirts' },
+  { title: 'Trending now', image: trendingImage, to: '/women/top' },
+];
+
+const categories = [
+  { name: 'T-shirts', slug: 'top', image: topImage },
+  { name: 'Shirts', slug: 'shirts', image: shirtImage },
+  { name: 'Denim', slug: 'denim', image: denimImage },
+  { name: 'Winter wear', slug: 'winter-wear', image: winterImage },
+];
 
 export default function WomenFashion() {
   return (
-    <>
-      {/* <div
-        className="bg-white dark:bg-gray-900 w-100 bg-cover flex items-center justify-center"
-        style={{
-          backgroundImage: `url(${backgroundImage})`,
-          minHeight: "50vh",
-        }}
-      >
-        <div className="py-8 px-4 mx-auto max-w-screen-xl text-center">
-          <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white">
-            Explore Women Fashion
-          </h1>
-          <div className="flex justify-center space-y-2 sm:flex-row sm:justify-center ">
-            <a
-              href="/women"
-              className="py-2 px-4 sm:ms-4  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-            >
-              Explore Men Fashion
-            </a>
+    <section id="womens_collection" className="bg-white py-14 sm:py-16">
+      <div className="container mx-auto px-4">
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <h2 className="text-2xl font-semibold text-[#202320] sm:text-3xl">Women&apos;s Collection</h2>
+          <Link to="/women" className="text-xs font-semibold text-stone-600 transition-colors hover:text-[#202320]">View all</Link>
+        </div>
+
+        <div className="mb-9 grid gap-4 lg:grid-cols-3 lg:gap-6">
+          <Link to="/women" className="group relative block h-[360px] overflow-hidden rounded-xl bg-stone-200 lg:col-span-2 lg:h-[520px]">
+            <img src={summerImage} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
+            <div className="absolute bottom-6 left-6 text-white sm:bottom-8 sm:left-8">
+              <h3 className="text-xl font-semibold sm:text-2xl">Summer Collection</h3>
+              <p className="mt-1 text-xs text-white/85 sm:text-sm">Discover our latest summer styles</p>
+              <span className="mt-4 inline-flex rounded-full bg-white px-5 py-2 text-xs font-semibold text-[#202320] transition-colors group-hover:bg-[#202320] group-hover:text-white">Shop now</span>
+            </div>
+          </Link>
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-1 lg:gap-6">
+            {features.map((feature) => (
+              <Link key={feature.to} to={feature.to} className="group relative block h-[180px] overflow-hidden rounded-xl bg-stone-200 sm:h-[220px] lg:h-[248px]">
+                <img src={feature.image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 text-white sm:bottom-6 sm:left-6">
+                  <h3 className="text-sm font-semibold sm:text-base">{feature.title}</h3>
+                  <span className="mt-1 inline-block text-xs text-white/85 group-hover:underline">Explore →</span>
+                </div>
+              </Link>
+            ))}
           </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+          {categories.map((category) => (
+            <Link key={category.slug} to={`/women/${category.slug}`} className="group text-center">
+              <div className="overflow-hidden rounded-xl bg-stone-200">
+                <img src={category.image} alt="" loading="lazy" className="aspect-[9/10] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              </div>
+              <h3 className="mt-3 text-sm font-semibold text-[#202320] sm:text-base">{category.name}</h3>
+              <span className="mt-1 inline-block text-xs text-stone-500 group-hover:underline">Shop now →</span>
+            </Link>
+          ))}
         </div>
       </div>
-      <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-4 justify-around gap-6 p-8">
-        <a href="/women" className="bg-white dark:bg-gray-800 dark:border-gray-700">
-          <img
-            className=""
-            src={Top}
-            alt=""
-          />
-          <div className="p-2">
-            <a href="/women">
-              <h5 className="mb-2 text-xl text-center font-bold tracking-tight text-gray-900 dark:text-white">
-                T-shirts
-              </h5>
-            </a>
-          </div>
-        </a>
-        <a href="/women" className="bg-white dark:bg-gray-800 dark:border-gray-700">
-          <img
-            className=""
-            src={Shirt}
-            alt=""
-          />
-          <div className="p-2">
-            <a href="/women">
-              <h5 className="mb-2 text-xl text-center font-bold tracking-tight text-gray-900 dark:text-white">
-                Shirts
-              </h5>
-            </a>
-          </div>
-        </a>
-        <a href="/women" className="bg-white dark:bg-gray-800 dark:border-gray-700">
-          <img
-            className=""
-            src={Denim}
-            alt=""
-          />
-          <div className="p-2">
-            <a href="/women">
-              <h5 className="mb-2 text-xl text-center font-bold tracking-tight text-gray-900 dark:text-white">
-                Denim
-              </h5>
-            </a>
-          </div>
-        </a>
-        <a href="/women" className="bg-white dark:bg-gray-800 dark:border-gray-700">
-          <img
-            className=""
-            src={Winter}
-            alt=""
-          />
-          <div className="p-2">
-            <a href="/women">
-              <h5 className="mb-2 text-xl text-center font-bold tracking-tight text-gray-900 dark:text-white">
-                Winter Wear
-              </h5>
-            </a>
-          </div>
-        </a>
-      </div> */}
-      <section id="womens_collection" className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Women's Collection</h2>
-            <a
-              href="/women"
-              className="text-gray-600 hover:text-black transition-colors flex items-center gap-2"
-            >
-              View All
-            </a>
-          </div>
-          {/* Main categories grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="relative group overflow-hidden rounded-lg col-span-2">
-              <div className="bg-[url('https://img.freepik.com/free-photo/three-young-beautiful-smiling-hipster-girls-trendy-summer-clothes-sexy-carefree-women-posing-near-pink-wall-positive-models-having-fun-pointing-shop-sales_158538-6391.jpg?t=st=1739445717~exp=1739449317~hmac=1c1902b62244852a3c9124e85f0ad16e07bb0d4854174ccd6455fade9e12a2b3&w=900')] h-[600px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-              <div className="absolute bottom-8 left-8">
-                <h3 className="text-white text-2xl font-bold mb-2">
-                  Sumer Collection
-                </h3>
-                <p className="text-white/80 mb-4">
-                  Discover our latest summer styles
-                </p>
-                <a
-                  href="/women"
-                  className="inline-flex items-center gap-2 bg-white text-black px-6 py-2 rounded-full hover:bg-black hover:text-white transition-colors"
-                >
-                  Shop Now
-                </a>
-              </div>
-            </div>
-            <div className="space-y-6">
-              <div className="relative group overflow-hidden rounded-lg">
-              {/* https://images.pexels.com/photos/30628347/pexels-photo-30628347/free-photo-of-elegant-woman-in-black-sequin-jacket-with-shadow.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1 */}
-                <div className="bg-[url('https://i.pinimg.com/736x/69/2b/1c/692b1cec1ee86c9ac72ad64ef5b844c0.jpg')] h-[285px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
-                <div className="absolute inset-0 bg-black/30"></div>
-                <div className="absolute bottom-6 left-6">
-                  <h3 className="text-white text-xl font-bold mb-2">
-                    Trending Now
-                  </h3>
-                  <a
-                    href="/women"
-                    className="text-white hover:text-gray-200 transition-colors flex items-center gap-2"
-                  >
-                    Explore
-                  </a>
-                </div>
-              </div>
-              <div className="relative group overflow-hidden rounded-lg">
-                <div className="bg-[url('https://images.pexels.com/photos/7644913/pexels-photo-7644913.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] h-[285px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"></div>
-                <div className="absolute inset-0 bg-black/30"></div>
-                <div className="absolute bottom-6 left-6">
-                  <h3 className="text-white text-xl font-bold mb-2">
-                    Trending Now
-                  </h3>
-                  <a
-                    href="/women"
-                    className="text-white hover:text-gray-200 transition-colors flex items-center gap-2"
-                  >
-                    Explore
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {/* Tops Category */}
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-lg mb-3">
-                <div
-                  className="bg-[url('https://i.pinimg.com/736x/3f/7a/94/3f7a947f4bcb4acf7861f957ae9d4dcd.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                  // style={{ backgroundImage: `url(${Top})` }}
-                ></div>
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
-              </div>
-              <h3 className="text-xl font-medium text-center">T-shirts</h3>
-              <div className="flex justify-center mt-2">
-                <a
-                  href="/women"
-                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
-                >
-                  Shop Now {/*right arrow*/}{" "}
-                  <i className="fa-solid fa-arrow-right"></i>
-                </a>
-              </div>
-            </div>
-
-            <a href="/women">
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-lg mb-3">
-                <div
-                  className="bg-[url('https://i.pinimg.com/736x/0c/46/9a/0c469adaedafd03f41e23a1df355dc63.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                  // style={{ backgroundImage: `url(${Shirt})` }}
-                ></div>
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
-              </div>
-              <h3 className="text-xl font-medium text-center">Shirts</h3>
-              <div className="flex justify-center mt-2">
-                <a
-                  href="/women"
-                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
-                >
-                  Shop Now {/*right arrow*/}{" "}
-                  <i className="fa-solid fa-arrow-right"></i>
-                </a>
-              </div>
-            </div>
-            </a>
-
-<a href="/women">
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-lg mb-3">
-                <div
-                  className="bg-[url('https://i.pinimg.com/736x/f4/64/be/f464be08f63ab378c920a5f0ddeaa19a.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                  // style={{ backgroundImage: `url(${Denim})` }}
-                ></div>
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
-              </div>
-              <h3 className="text-xl font-medium text-center">Denim</h3>
-              <div className="flex justify-center mt-2">
-                <a
-                  href="/women"
-                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
-                >
-                  Shop Now {/*right arrow*/}{" "}
-                  <i className="fa-solid fa-arrow-right"></i>
-                </a>
-              </div>
-            </div>
-            </a>
-            <a href="/women">
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-lg mb-3">
-                <div
-                  className="bg-[url('https://i.pinimg.com/736x/e3/a3/cc/e3a3cc2501ea6aa76a3dcb22897dc2e3.jpg')] h-[400px] bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                  // style={{ backgroundImage: `url(${Winter})` }}
-                ></div>
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
-              </div>
-              <h3 className="text-xl font-medium text-center">Winter Wear</h3>
-              <div className="flex justify-center mt-2">
-                <a
-                  href="/women"
-                  className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
-                >
-                  Shop Now {/*right arrow*/}{" "}
-                  <i className="fa-solid fa-arrow-right"></i>
-                </a>
-              </div>
-            </div>
-            </a>
-          </div>
-        </div>
-      </section>
-    </>
+    </section>
   );
 }

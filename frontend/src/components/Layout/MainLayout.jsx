@@ -1,13 +1,12 @@
 import Navbar2 from "../utils/Navbar/Navbar2";
 import Footer from "../utils/Footer/Footer";
-import { useAuth } from "../../context/AuthContext";
+import PropTypes from "prop-types";
 
 const MainLayout = ({ children }) => {
-  const { user } = useAuth();
   
   return (
     <>
-      <Navbar2 user={user} />
+      <Navbar2 />
       {children}
       <Footer />
     </>
@@ -15,3 +14,5 @@ const MainLayout = ({ children }) => {
 };
 
 export default MainLayout;
+
+MainLayout.propTypes = { children: PropTypes.node.isRequired };

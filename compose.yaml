@@ -1,0 +1,40 @@
+services:
+  api:
+    build: ./backend
+    volumes:
+      - product_uploads:/app/uploads
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3000
+      MONGO_URI: ${MONGO_URI:-}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:8080,http://localhost:8081}
+      COOKIE_SAME_SITE: ${COOKIE_SAME_SITE:-lax}
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ""
+        VITE_ADMIN_URL: ${ADMIN_URL:-http://localhost:8081/}
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+  admin:
+    build:
+      context: ./frontend-admin
+      args:
+        VITE_API_URL: ""
+        VITE_STOREFRONT_URL: ${STOREFRONT_URL:-http://localhost:8080/}
+    ports:
+      - "8081:80"
+    depends_on:
+      - api
+
+volumes:
+  product_uploads:

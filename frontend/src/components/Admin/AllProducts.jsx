@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import Admin from "./Admin";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function AllProducts() {
@@ -24,7 +23,7 @@ export default function AllProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("https://clozt-backend.vercel.app/api/products", {
+        const response = await axios.get("/api/products", {
           withCredentials: true,
         });
         setProducts(response.data);
@@ -155,7 +154,7 @@ export default function AllProducts() {
       newImages.forEach((image) => formData.append("images", image));
 
       const response = await axios.put(
-        `https://clozt-backend.vercel.app/api/products/${editingProduct._id}`,
+        `/api/products/${editingProduct._id}`,
         formData,
         {
           headers: {
@@ -183,9 +182,19 @@ export default function AllProducts() {
     }
   };
 
+  const handleDeleteProduct = async (product) => {
+    if (!window.confirm(`Delete ${product.title}?`)) return;
+    try {
+      await axios.delete(`/api/products/${product._id}`, { withCredentials: true });
+      setProducts((previous) => previous.filter((item) => item._id !== product._id));
+    } catch (error) {
+      alert(error.response?.data?.message || 'Could not delete product.');
+    }
+  };
+
   return (
     <>
-      <div className="p-4 sm:ml-64">
+      <div className="p-4">
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
@@ -430,6 +439,12 @@ export default function AllProducts() {
                           className="text-blue-600 hover:underline"
                         >
                           Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProduct(product)}
+                          className="ml-4 text-red-600 hover:underline"
+                        >
+                          Delete
                         </button>
                       </td>
                     </tr>

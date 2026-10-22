@@ -27,6 +27,7 @@ dist/
 # Dependency directories
 jspm_packages/
 .env
+uploads/
 
 # Config files
 .env.local

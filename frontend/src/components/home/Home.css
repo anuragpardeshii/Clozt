@@ -65,11 +65,6 @@
     z-index: 1; /* Behind the text */
   }
   
-  /* Text container */
-  .relative {
-    z-index: 10; /* Above the video */
-  }
-  
   /* Mobile and responsive height adjustments */
   @media (max-width: 840px) {
     .adjust-height {
