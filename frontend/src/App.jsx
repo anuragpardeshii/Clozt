@@ -22,8 +22,7 @@ import ProductList from "./components/Products/ProductList";
 import { AuthProvider } from "./context/AuthContext";
 import { useAuth } from "./context/AuthContext";
 import CloztLoader from './components/CloztLoader';
-
-const adminUrl = import.meta.env.VITE_ADMIN_URL || "http://localhost:5174/";
+import { adminUrl } from './config/siteUrls';
 
 function AdminRedirect() {
   const { pathname } = useLocation();

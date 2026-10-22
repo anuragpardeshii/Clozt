@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
+import { storefrontUrl } from '../siteUrls';
 import CloztLoader from '../components/CloztLoader';
 
 export default function Login() {
@@ -48,7 +49,7 @@ export default function Login() {
           {error && <p className="error" role="alert">{error}</p>}
           <button type="submit" disabled={submitting}>{submitting ? 'Signing in…' : 'Sign in'}</button>
         </form>
-        <a className="login-store-link" href={import.meta.env.VITE_STOREFRONT_URL || 'http://localhost:5173/'}>← Return to storefront</a>
+        <a className="login-store-link" href={storefrontUrl}>← Return to storefront</a>
       </div>
     </main>
   );

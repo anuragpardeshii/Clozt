@@ -4,8 +4,7 @@ import { User, Heart, ShoppingCart, Search, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { SHOPPING_CHANGED_EVENT } from '../shoppingEvents';
-
-const adminUrl = import.meta.env.VITE_ADMIN_URL || 'http://localhost:5174/';
+import { adminUrl } from '../../../config/siteUrls';
 
 export default function Navbar2() {
   const [profileOpen, setProfileOpen] = useState(false);

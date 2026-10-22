@@ -9,8 +9,7 @@ import Coupons from './pages/Coupons';
 import Analytics from './pages/Analytics';
 import Users from './pages/Users';
 import CloztLoader from './components/CloztLoader';
-
-const storefrontUrl = import.meta.env.VITE_STOREFRONT_URL || 'http://localhost:5173/';
+import { storefrontUrl } from './siteUrls';
 
 function AdminLayout() {
   const { user, loading, logout } = useAuth();

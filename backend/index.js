@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 3000;
 const MONGO_URI = getMongoUri();
 
 // Middleware
-const defaultOrigins = ["https://clozt.vercel.app"];
+const defaultOrigins = ["https://clozt.vercel.app", "https://frontend-admin-inky.vercel.app"];
 if (process.env.NODE_ENV !== "production") {
   defaultOrigins.push("http://localhost:5173", "http://localhost:5174");
 }
