@@ -57,7 +57,7 @@ The existing storefront is at <https://clozt.vercel.app/>. A no-cost demo setup 
 
 The admin and storefront share the same account and API, but browsers may block cross-site login cookies between `vercel.app` and `onrender.com`. If sessions fail despite correct CORS settings, use a same-site custom domain/reverse proxy instead of weakening authentication. Render Free sleeps after inactivity and its filesystem is ephemeral, so Cloudinary and Atlas are required for durable uploads and data.
 
-If deploying the API on Vercel instead, set the project's Root Directory to `backend` and its Settings → Build and Deployment → Node.js Version to `24.x` before redeploying; Node.js 18 is no longer supported there. Configure the same API environment variables above and use the Vercel API URL in each frontend's `VITE_API_URL`. Vercel functions cannot persist local uploads, so configure Cloudinary for product images.
+If deploying the API on Vercel instead, set the project's Root Directory to `backend` and its Settings → Build and Deployment → Node.js Version to `24.x` before redeploying; Node.js 18 is no longer supported there. The backend's `vercel.json` selects Vercel's Express preset without legacy build rules. Configure the same API environment variables above and use the Vercel API URL in each frontend's `VITE_API_URL`. Vercel functions cannot persist local uploads, so configure Cloudinary for product images.
 
 ### Keep Atlas active
 
