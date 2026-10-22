@@ -4,6 +4,50 @@ const Wishlist = require("../Models/Wishlist");
 const Review = require("../Models/Review");
 const pagination = require('../services/pagination');
 const mongoose = require('mongoose');
+const categoryNames = {
+  top: ['Top', 'T-shirt', 'T-shirts', 'Tshirt'],
+  't-shirts': ['Top', 'T-shirt', 'T-shirts', 'Tshirt'],
+  shirts: ['Shirt', 'Shirts'],
+  shirt: ['Shirt', 'Shirts'],
+  denim: ['Denim'],
+  'winter-wear': ['Winter', 'Winter Wear'],
+  winter: ['Winter', 'Winter Wear'],
+};
+
+const categoryFilter = (category) => {
+  const names = categoryNames[String(category).toLowerCase()];
+  return names ? { $in: names.map((name) => new RegExp(`^${name}$`, 'i')) } : null;
+};
+
+const paginatedCatalog = async (req, res, filter) => {
+  const search = typeof req.query.search === 'string' ? req.query.search.trim().slice(0, 80) : '';
+  if (search) {
+    const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    filter.$or = ['title', 'description', 'color', 'category'].map((field) => ({ [field]: { $regex: escaped, $options: 'i' } }));
+  }
+  if (!Object.hasOwn(req.query, 'page')) {
+    const products = await Product.find(filter).sort({ _id: -1 }).lean();
+    return res.status(200).json(products);
+  }
+
+  const { page, limit, skip } = pagination(req.query);
+  const sort = req.query.sort;
+  const priceDirection = sort === 'price-asc' || sort === 'lowToHigh' ? 1 : sort === 'price-desc' || sort === 'highToLow' ? -1 : 0;
+  const [rows, total] = await Promise.all([
+    priceDirection
+      ? Product.aggregate([
+        { $match: filter },
+        { $addFields: { catalogPrice: { $cond: [{ $and: [{ $in: ['Sale', { $ifNull: ['$listings', []] }] }, { $ne: ['$salePrice', null] }] }, '$salePrice', '$price'] } } },
+        { $sort: { catalogPrice: priceDirection, _id: -1 } },
+        { $skip: skip },
+        { $limit: limit + 1 },
+        { $project: { catalogPrice: 0 } },
+      ])
+      : Product.find(filter).sort(sort === 'newest' ? { createdAt: -1, _id: -1 } : { _id: -1 }).skip(skip).limit(limit + 1).lean(),
+    page === 1 ? Product.countDocuments(filter) : Promise.resolve(null),
+  ]);
+  return res.status(200).json({ products: rows.slice(0, limit), total, page, limit, hasMore: rows.length > limit });
+};
 exports.getAdminProducts = async (req, res) => {
   try {
     const { page, limit, skip } = pagination(req.query);
@@ -46,25 +90,16 @@ exports.getAllProducts = async (req, res) => {
 exports.getFilteredProducts = async (req, res) => {
   try {
     const { listing, category } = req.params;
-    const categoryNames = {
-      top: ['Top', 'T-shirt', 'T-shirts', 'Tshirt'],
-      't-shirts': ['Top', 'T-shirt', 'T-shirts', 'Tshirt'],
-      shirts: ['Shirt', 'Shirts'],
-      denim: ['Denim'],
-      'winter-wear': ['Winter', 'Winter Wear'],
-    };
-    const categories = categoryNames[category.toLowerCase()];
-    if (!categories) return res.status(404).json({ message: 'Category not found' });
-    const filter = { category: { $in: categories.map((name) => new RegExp(`^${name}$`, 'i')) } };
+    const selectedCategory = category.toLowerCase() === 'all' ? null : categoryFilter(category);
+    if (category.toLowerCase() !== 'all' && !selectedCategory) return res.status(404).json({ message: 'Category not found' });
+    const filter = selectedCategory ? { category: selectedCategory } : {};
     const listingName = listing.toLowerCase();
     if (listingName === 'men') filter.gender = /^male$/i;
     else if (listingName === 'women') filter.gender = /^female$/i;
     else if (listingName === 'new-arrival') filter.listings = /^new arrivals$/i;
     else if (listingName === 'sale') filter.listings = /^sale$/i;
     else if (listingName !== 'all') return res.status(404).json({ message: 'Listing not found' });
-    const products = await Product.find(filter).sort({ _id: -1 }).lean();
-
-    res.status(200).json(products);
+    return await paginatedCatalog(req, res, filter);
   } catch (error) {
     console.error("Error fetching filtered products:", error);
     res
@@ -152,8 +187,16 @@ exports.listings = async (req, res) => {
       all: {},
     };
     if (!Object.hasOwn(filters, listing)) return res.status(404).json({ message: 'Listing not found' });
-    const products = await Product.find(filters[listing]).sort({ _id: -1 }).lean();
-    res.status(200).json(products);
+    const filter = { ...filters[listing] };
+    if (req.query.category) {
+      const selectedCategory = categoryFilter(req.query.category);
+      if (!selectedCategory) return res.status(400).json({ message: 'Invalid category' });
+      filter.category = selectedCategory;
+    }
+    if (req.query.gender && ['male', 'female'].includes(String(req.query.gender).toLowerCase())) {
+      filter.gender = new RegExp(`^${req.query.gender}$`, 'i');
+    }
+    return await paginatedCatalog(req, res, filter);
   } catch (error) {
     console.error("Error fetching listings:", error);
     res

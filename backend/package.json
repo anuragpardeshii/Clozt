@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
+    "dev": "node --watch index.js",
     "migrate": "node scripts/migrate.js",
     "promote-admin": "node scripts/promote-user.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,7 +17,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
-    "cloudinary": "^1.41.3",
+    "cloudinary": "^2.11.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -27,8 +27,8 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.2"
   },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
+  "engines": {
+    "node": "24.x"
   },
   "overrides": {
     "glob": "^11.0.2",

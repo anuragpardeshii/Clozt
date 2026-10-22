@@ -1,22 +1,18 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import axios from "axios";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import ProductCardActions from "../ProductCardActions";
 import useProductActions from "../useProductActions";
 import CloztLoader from '../../CloztLoader';
-import { effectivePrice, matchesCategory } from '../catalogFilters';
+import useInfiniteProducts from '../useInfiniteProducts';
 // import womenVideo from "";
 
 export default function Women() {
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [visibleCount, setVisibleCount] = useState(10);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [sortOrder, setSortOrder] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { products: filteredProducts, loading: isLoading, loadingMore, hasMore, error, sentinelRef, retry } = useInfiniteProducts('/api/products/women', { category: selectedCategory, sort: sortOrder });
   const { wishlistIds, actionLoading, handleWishlistClick, handleCartClick } = useProductActions();
   const sortRef = useRef(null);
   const categoryRef = useRef(null);
@@ -38,48 +34,6 @@ export default function Women() {
     };
   }, []);
 
-  // Fetch products
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.get("/api/products/women");
-        const femaleProducts = Array.isArray(response.data) ? response.data : [];
-        setProducts(femaleProducts);
-        setFilteredProducts(femaleProducts);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProducts();
-  }, []);
-
-  // Apply filters and sorting - memoized with useCallback
-  const applyFiltersAndSort = useCallback(() => {
-    let result = [...products];
-    
-    // Apply category filter
-    if (selectedCategory) {
-      result = result.filter((product) => matchesCategory(product.category, selectedCategory));
-    }
-    
-    // Apply sorting
-    if (sortOrder === 'lowToHigh') {
-      result.sort((first, second) => effectivePrice(first) - effectivePrice(second));
-    } else if (sortOrder === 'highToLow') {
-      result.sort((first, second) => effectivePrice(second) - effectivePrice(first));
-    }
-    
-    setFilteredProducts(result);
-  }, [products, selectedCategory, sortOrder]);
-
-  // Apply filters and sorting when dependencies change
-  useEffect(() => {
-    applyFiltersAndSort();
-  }, [applyFiltersAndSort]);
-
   const handleSortChange = (order) => {
     setSortOrder(order);
     setSortDropdownOpen(false);
@@ -92,10 +46,6 @@ export default function Women() {
 
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
-  };
-
-  const handleLoadMore = () => {
-    setVisibleCount((prevCount) => prevCount + 10);
   };
 
   return (
@@ -318,7 +268,7 @@ export default function Women() {
       {/* Loading State */}
       {isLoading ? (
         <CloztLoader label="Loading women's products" />
-      ) : filteredProducts.length === 0 ? (
+      ) : filteredProducts.length === 0 && !error ? (
         <div className="text-center py-10">
           <h3 className="text-xl font-medium">No products found</h3>
           <p className="text-gray-500 mt-2">Try changing your filters or check back later</p>
@@ -327,7 +277,7 @@ export default function Women() {
         <>
           {/* Product Cards */}
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 mb-8">
-            {filteredProducts.slice(0, visibleCount).map((product) => (
+            {filteredProducts.map((product) => (
               <div
                 key={product._id}
                 onClick={() => handleProductClick(product._id)}
@@ -362,17 +312,9 @@ export default function Women() {
             ))}
           </div>
 
-          {/* Load More Button */}
-          {visibleCount < filteredProducts.length && (
-            <div className="text-center p-8">
-              <button
-                onClick={handleLoadMore}
-                className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Load More
-              </button>
-            </div>
-          )}
+          {error && <p role="alert" className="py-6 text-center text-sm text-red-700">{error} <button type="button" onClick={retry} className="font-semibold underline">Try again</button></p>}
+          {loadingMore && <p role="status" className="py-6 text-center text-sm text-stone-500">Loading more pieces…</p>}
+          {hasMore && !error && <div ref={sentinelRef} aria-hidden="true" className="h-px" />}
         </>
       )}
     </div>

@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const { uploadDir } = require("./config/cloudinary");
 const bodyParser = require("body-parser");
 const getMongoUri = require("./config/mongoUri");
+const { timingSafeEqual } = require("crypto");
 
 // Route imports
 const productRoutes = require("./Routes/product");
@@ -44,9 +45,37 @@ app.get("/", (req, res) => {
 });
 
 // MongoDB connection
-mongoose.connect(MONGO_URI)
-.then(() => console.log("MongoDB Connected Successfully"))
-.catch((err) => console.error("MongoDB Connection Error:", err.message));
+const connectToMongo = () => mongoose.connect(MONGO_URI)
+.then(() => {
+  console.log("MongoDB Connected Successfully");
+  return true;
+})
+.catch(() => {
+  console.error("MongoDB Connection Error");
+  return false;
+});
+let mongoConnection = connectToMongo();
+
+app.get("/api/internal/mongo-keepalive", async (req, res) => {
+  res.set("Cache-Control", "no-store");
+  const secret = process.env.CRON_SECRET;
+  if (!secret || secret.length < 16) return res.status(503).json({ ok: false });
+  const authorization = req.get("Authorization") || "";
+  const provided = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
+  const expectedBuffer = Buffer.from(secret);
+  const providedBuffer = Buffer.from(provided);
+  if (expectedBuffer.length !== providedBuffer.length || !timingSafeEqual(expectedBuffer, providedBuffer)) {
+    return res.status(401).json({ ok: false });
+  }
+  try {
+    if (!await mongoConnection) mongoConnection = connectToMongo();
+    if (!await mongoConnection || !mongoose.connection.db) return res.status(503).json({ ok: false });
+    await mongoose.connection.db.command({ ping: 1 });
+    return res.json({ ok: true });
+  } catch {
+    return res.status(503).json({ ok: false });
+  }
+});
 
 // API Routes
 app.use("/api/products", productRoutes);

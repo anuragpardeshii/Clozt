@@ -15,6 +15,18 @@ exports.register = async (req, res) => {
     if ([username, email, mobile, password].some((field) => typeof field !== "string" || !field.trim())) {
       return res.status(400).json({ message: "All fields are required" });
     }
+    if (username.trim().length < 2 || username.trim().length > 60) {
+      return res.status(400).json({ message: "Name must be between 2 and 60 characters" });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return res.status(400).json({ message: "Enter a valid email address" });
+    }
+    if (!/^\d{10}$/.test(mobile)) {
+      return res.status(400).json({ message: "Enter a 10-digit mobile number" });
+    }
+    if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/\d/.test(password)) {
+      return res.status(400).json({ message: "Password must have 8 or more characters, including a letter and a number" });
+    }
 
     // Check if the user already exists
     const normalizedEmail = email.trim().toLowerCase();
@@ -28,7 +40,7 @@ exports.register = async (req, res) => {
 
     // Create a new user using create method for better atomicity
     await User.create({
-      username,
+      username: username.trim(),
       email: normalizedEmail,
       mobile,
       password: hashedPassword,

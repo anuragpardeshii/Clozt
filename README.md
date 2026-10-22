@@ -57,8 +57,24 @@ The existing storefront is at <https://clozt.vercel.app/>. A no-cost demo setup 
 
 The admin and storefront share the same account and API, but browsers may block cross-site login cookies between `vercel.app` and `onrender.com`. If sessions fail despite correct CORS settings, use a same-site custom domain/reverse proxy instead of weakening authentication. Render Free sleeps after inactivity and its filesystem is ephemeral, so Cloudinary and Atlas are required for durable uploads and data.
 
+If deploying the API on Vercel instead, set the project's Root Directory to `backend` and its Settings → Build and Deployment → Node.js Version to `24.x` before redeploying; Node.js 18 is no longer supported there. Configure the same API environment variables above and use the Vercel API URL in each frontend's `VITE_API_URL`. Vercel functions cannot persist local uploads, so configure Cloudinary for product images.
+
+### Keep Atlas active
+
+When the API is deployed on Vercel, it is configured to run the protected `/api/internal/mongo-keepalive` route once daily at 03:00 UTC. In that project's **Production** environment variables, set `CRON_SECRET` to a new random value of at least 16 characters (generate one with `openssl rand -hex 32`), then redeploy. Vercel supplies it as a bearer token for the scheduled request. Check **Settings → Cron Jobs** and function logs after deployment; a successful request returns `{"ok":true}`. The endpoint returns an error if the secret is missing, incorrect, or MongoDB cannot be reached. Keep this secret only in the API project, never in a `VITE_*` variable.
+
+This Vercel schedule only runs when the API is deployed on Vercel. If you use the Render setup above instead, configure an external scheduler to send a daily GET to `https://YOUR-API.onrender.com/api/internal/mongo-keepalive` with `Authorization: Bearer <CRON_SECRET>` and set the same secret in Render's environment. Do not put the token in the URL. The Vercel-hosted storefront and admin are static builds and do not need keepalive jobs.
+
+### Environment security
+
+Keep `MONGO_URI`, `JWT_SECRET`, `CRON_SECRET`, Cloudinary credentials, and payment credentials in the API host's private environment variables only. `VITE_*` values are compiled into browser JavaScript, so use them only for public API and site URLs. `.env` and `.env.*` files (except `.env.example`) are ignored by Git and Docker; do not add them with `git add -f`. Give local env files owner-only permissions, such as `chmod 600 .env backend/.env`.
+
+**Important:** Earlier public commits included `backend/.env`. Ignoring it now does not make those historical credentials private. Rotate the Atlas database user password, JWT secret, Cloudinary credentials, and any payment credentials that were present there; update local and hosting environment variables before relying on the deployment. Rotation is necessary even if you later remove the file from Git history.
+
 Checkout currently supports Cash on Delivery. It saves an authenticated order with a server calculated total and displays the order in the customer and admin pages. Customers can manage multiple saved addresses at `/addresses`, choose one default address, select any saved address at checkout, or enter a one-time address. A new checkout address can optionally be saved and made the default. Online payments are not offered.
 
 Admins manage percentage and fixed-amount coupons in the admin app. Coupons can have a minimum bag value, an optional discount cap, an expiration date, and an active state. Customers can browse and apply eligible coupons in the bag; the API rechecks the coupon against the current bag at checkout and saves the discount on the order.
 
 Customers select an available size on the product page before adding to cart. The selected size stays with the cart item and order. Existing cart items created before size selection was introduced have no inferred size; remove and re-add them before checkout. Signed-in customers can leave or update one rating and review per product.
+
+The storefront search opens from the navigation bar and searches the catalog by product name, description, color, or category. Catalog and collection pages fetch 12 products at a time as customers scroll; filtering and sorting run on the API before pagination.

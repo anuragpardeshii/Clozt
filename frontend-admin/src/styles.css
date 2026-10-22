@@ -216,6 +216,9 @@ legend { padding: 0 .35rem; color: #3e4b42; font-size: .81rem; font-weight: 750;
 .login-panel p:not(.eyebrow):not(.error) { margin-bottom: 0; color: var(--muted); font-size: .91rem; line-height: 1.55; }
 .login-panel form { margin-top: 1.9rem; }
 .login-panel form button { width: 100%; margin-top: .35rem; }
+.login-panel .password-input { position: relative; display: block; }
+.login-panel .password-input input { padding-right: 4.5rem; }
+.login-panel form .password-toggle { position: absolute; top: 50%; right: .8rem; width: auto; min-height: auto; margin: 0; padding: .2rem; border: 0; background: none; color: var(--accent); font-size: .75rem; transform: translateY(-50%); }
 .login-panel .error { margin: 0; }
 .login-store-link { display: inline-block; margin-top: 2rem; color: #6b796f; font-size: .79rem; font-weight: 650; }
 .login-store-link:hover { color: var(--accent); }

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { User, Heart, ShoppingCart } from 'lucide-react';
+import { User, Heart, ShoppingCart, Search, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { SHOPPING_CHANGED_EVENT } from '../shoppingEvents';
@@ -11,9 +11,21 @@ export default function Navbar2() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [logoutError, setLogoutError] = useState('');
   const [shoppingCounts, setShoppingCounts] = useState({ cart: 0, wishlist: 0 });
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchInputRef = useRef(null);
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    setSearchQuery(new URLSearchParams(location.search).get('search') || '');
+    setSearchOpen(false);
+  }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    if (searchOpen) searchInputRef.current?.focus();
+  }, [searchOpen]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -66,6 +78,17 @@ export default function Navbar2() {
     }
   };
 
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const query = searchQuery.trim();
+    if (!query) {
+      searchInputRef.current?.focus();
+      return;
+    }
+    setSearchOpen(false);
+    navigate(`/all/all?search=${encodeURIComponent(query)}`);
+  };
+
   return (
     <header className="w-full bg-white sticky top-0 z-50 shadow-sm">
       <nav className="container mx-auto px-4 flex items-center justify-between h-16 md:h-20">
@@ -78,6 +101,7 @@ export default function Navbar2() {
         </div>
         <div className="flex items-center gap-4">
           {isAdmin && <a href={adminUrl} className="text-sm font-semibold text-gray-800">Admin</a>}
+          <button type="button" aria-label={searchOpen ? 'Close product search' : 'Search products'} aria-expanded={searchOpen} aria-controls={searchOpen ? 'navbar-product-search' : undefined} onClick={() => setSearchOpen((current) => !current)} className="inline-flex p-1 text-[#202320] transition-colors hover:text-[#64776a]">{searchOpen ? <X size="1.3rem" aria-hidden="true" /> : <Search size="1.3rem" aria-hidden="true" />}</button>
           <div className="relative profile-dropdown">
             <button type="button" aria-label="Account menu" aria-expanded={profileOpen} onClick={() => setProfileOpen(!profileOpen)}>
               <User size="1.3rem" />
@@ -108,6 +132,7 @@ export default function Navbar2() {
           </Link>
         </div>
       </nav>
+      {searchOpen && <div id="navbar-product-search" className="absolute inset-x-0 top-full border-t border-stone-100 bg-white px-4 py-4 shadow-lg"><form onSubmit={handleSearch} role="search" className="mx-auto flex max-w-2xl items-center gap-3 rounded-full border border-stone-300 bg-[#f7f7f4] px-4 py-2 focus-within:border-[#254b3d]"><Search size={18} className="shrink-0 text-stone-500" aria-hidden="true" /><input ref={searchInputRef} type="search" value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} onKeyDown={(event) => { if (event.key === 'Escape') setSearchOpen(false); }} maxLength={80} aria-label="Search products" placeholder="Search pieces, colours, categories…" className="min-w-0 flex-1 border-0 bg-transparent text-sm text-[#202320] outline-none placeholder:text-stone-400" /><button type="submit" className="rounded-full bg-[#202320] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#365044]">Search</button></form></div>}
       {logoutError && <p role="alert" className="text-center text-red-600">{logoutError}</p>}
     </header>
   );

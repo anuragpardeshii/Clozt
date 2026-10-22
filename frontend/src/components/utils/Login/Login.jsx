@@ -1,47 +1,47 @@
-import { useState } from "react";
-import axios from "axios";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
+import { useState } from 'react';
+import axios from 'axios';
+import { ArrowRight } from 'lucide-react';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
+import AuthShell from '../Auth/AuthShell';
+import AuthField from '../Auth/AuthField';
+import { loginErrors } from '../Auth/authValidation';
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [touched, setTouched] = useState({});
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, login } = useAuth();
+  const errors = loginErrors(form);
   const destination = (account) => {
     const requestedPath = location.state?.from;
-    return requestedPath && (!requestedPath.startsWith('/admin') || account.role === 'admin')
+    return typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//') && (!requestedPath.startsWith('/admin') || account.role === 'admin')
       ? requestedPath
       : '/';
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setForm((current) => ({ ...current, [name]: value }));
+    setTouched((current) => ({ ...current, [name]: true }));
+    setMessage('');
+  };
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    setTouched({ email: true, password: true });
+    if (Object.values(errors).some(Boolean)) return;
     setLoading(true);
-    setMessage("");
-
+    setMessage('');
     try {
-      const res = await axios.post(
-        "/api/users/login",
-        { email, password },
-        { withCredentials: true }
-      );
-
-      if (res.status === 200) {
-        setMessage("Login successful!");
-        login(res.data.user);
-        navigate(destination(res.data.user), { replace: true });
-      }
+      const { data } = await axios.post('/api/users/login', { email: form.email.trim(), password: form.password }, { withCredentials: true });
+      login(data.user);
+      navigate(destination(data.user), { replace: true });
     } catch (error) {
-      console.error("Login error:", error);
-      if (error.response?.status === 401) {
-        setMessage("Invalid email or password. Please try again.");
-      } else {
-        setMessage(error.response?.data?.message || "Login failed. Please try again later.");
-      }
+      setMessage(error.response?.status === 401 ? 'Invalid email or password. Please try again.' : error.response?.data?.message || 'Sign in failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -49,75 +49,13 @@ export default function Login() {
 
   if (user) return <Navigate to={destination(user)} replace />;
 
-  return (
-    <section className="bg-gray-50 min-h-screen dark:bg-gray-900">
-      <div className="py-8 px-4 mx-auto h-screen items-center max-w-screen-xl lg:py-16 grid lg:grid-cols-2 gap-8 lg:gap-16">
-        <div className="flex flex-col sm:max-w-lg mx-auto justify-center">
-          <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-            Stay Stylish, Shop Smart
-          </h1>
-          <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
-            Log in to explore the latest trends, manage your orders, and enjoy a seamless shopping experience with CLOZT.
-          </p>
-          <a href="/signup" className="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center">
-            Sign up
-          </a>
-        </div>
-        <div>
-          <div className="lg:max-w-xl sm:max-w-lg mx-auto p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow-xl dark:bg-gray-800">
-            <h2 className="text-2xl text-center font-bold text-gray-900 dark:text-white">Login</h2>
-            {location.state?.registered && <p className="text-green-700">Account created. Please log in.</p>}
-            <form onSubmit={handleLogin} className="max-w-md mx-auto">
-              <div className="mb-5">
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Your email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  id="email"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                  placeholder="name@example.com"
-                  required
-                />
-              </div>
-              <div className="mb-5">
-                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Your password
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  id="password"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                  required
-                />
-              </div>
-              <div className="text-center">
-                <button
-                  type="submit"
-                  className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700"
-                  style={{ width: "10rem" }}
-                  disabled={loading}
-                >
-                  {loading ? "Logging in..." : "Login"}
-                </button>
-              </div>
-            </form>
-            {message && (
-              <div
-                className={`mt-4 text-sm p-3 rounded-lg ${
-                  message === "Login successful!" ? "text-green-700 bg-green-100" : "text-red-700 bg-red-100"
-                }`}
-              >
-                {message}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  return <AuthShell eyebrow="Clozt / Your account" title="Welcome back." description="Sign in to keep your favourite pieces, orders, and addresses close." footer={<>New to Clozt? <Link to="/signup" className="font-semibold text-[#254b3d] underline underline-offset-4 hover:text-[#202320]">Create an account</Link></>}>
+    {location.state?.registered && <p role="status" className="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-medium text-emerald-800">Account created. Sign in to continue.</p>}
+    <form onSubmit={handleLogin} noValidate className="space-y-5">
+      <AuthField name="email" label="Email address" type="email" value={form.email} onChange={handleChange} error={touched.email ? errors.email : ''} placeholder="you@example.com" autoComplete="email" />
+      <AuthField name="password" label="Password" type="password" value={form.password} onChange={handleChange} error={touched.password ? errors.password : ''} placeholder="Enter your password" autoComplete="current-password" />
+      {message && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-700">{message}</p>}
+      <button type="submit" disabled={loading} className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#202320] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#365044] disabled:cursor-not-allowed disabled:opacity-60">{loading ? 'Signing in…' : 'Sign in'}{!loading && <ArrowRight size={16} aria-hidden="true" />}</button>
+    </form>
+  </AuthShell>;
 }
