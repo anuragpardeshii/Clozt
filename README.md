@@ -57,6 +57,8 @@ The existing storefront is at <https://clozt.vercel.app/> and its Render API is 
 
 The admin and storefront share the same account and API. The Vercel `/api` rewrites keep API requests and login cookies on each frontend's own origin, so browser Network panels still show `clozt.vercel.app` or the admin domain while Vercel forwards those requests to Render. Separate Vercel domains cannot share a host-only login cookie, so sign in on each with the same account. Render Free sleeps after inactivity and its filesystem is ephemeral, so Cloudinary and Atlas are required for durable uploads and data.
 
+The API always allows `https://clozt.vercel.app`; add the exact deployed admin origin to Render's comma-separated `FRONTEND_ORIGIN` setting. Trailing slashes in that setting are normalized. Rejected writes return `Origin not allowed` with a request ID; find that ID and the rejected origin in Render logs. Every API response includes an `X-Request-Id` header, and request logs omit query strings, bodies, and cookies. If login still fails after an origin fix, check the response status and request ID in Render logs.
+
 If deploying the API on Vercel instead, set the project's Root Directory to `backend` and its Settings → Build and Deployment → Node.js Version to `24.x` before redeploying; Node.js 18 is no longer supported there. The backend's `vercel.json` selects Vercel's Express preset without legacy build rules. Configure the same API environment variables above and use the Vercel API URL in each frontend's `VITE_API_URL`. Vercel functions cannot persist local uploads, so configure Cloudinary for product images.
 
 ### Keep Atlas active
